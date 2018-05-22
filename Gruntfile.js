@@ -15,7 +15,7 @@ module.exports = function(grunt) {
 	},
 	watch : {
 	    files : [ 'shaders/*.glsl' ],
-	    tasks : [ 'exec:clean_shaders', 'exec:clean_build_shaders' ]
+	    tasks : [ 'exec' ]
 	}
     });
 
