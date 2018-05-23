@@ -1,5 +1,7 @@
 #define GLSLIFY 1
-uniform vec2 texCoord0;
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
 
 //"import" our random function
 highp float random(vec2 co)
@@ -13,7 +15,7 @@ highp float random(vec2 co)
 }
 
 void main() {
-    //quick pseudo-random 2D noise
-    float n = random(texCoord0);
-    gl_FragColor = vec4(vec3(n), 2.0);
+	//quick pseudo-random 2D noise
+	float n = random((gl_FragCoord.xy - u_mouse) / u_resolution.xy);
+	gl_FragColor = vec4(vec3(n), 1.0);
 }

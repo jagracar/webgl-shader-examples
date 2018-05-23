@@ -22,9 +22,14 @@
 		"glsl-noise": "0.0.0",
 		"glsl-random": "0.0.5",
 		"glslify": "^6.1.1",
+		"glslify-import": "^3.1.0",
 		"grunt": "^1.0.2",
 		"grunt-browserify": "^5.3.0",
+		"grunt-contrib-clean": "^1.1.0",
+		"grunt-contrib-copy": "^1.0.0",
 		"grunt-contrib-watch": "^1.1.0",
-		"grunt-exec": "^3.0.0"
+		"grunt-exec": "^3.0.0",
+		"grunt-replace": "^1.0.1",
+		"three": "^0.92.0"
 	}
 }
