@@ -3,7 +3,7 @@ uniform vec2 u_resolution;
 uniform vec2 u_mouse;
 uniform float u_time;
 
-//"import" our random function
+// Import the random function
 highp float random(vec2 co)
 {
     highp float a = 12.9898;
@@ -15,7 +15,6 @@ highp float random(vec2 co)
 }
 
 void main() {
-	//quick pseudo-random 2D noise
 	float n = random((gl_FragCoord.xy - u_mouse) / u_resolution.xy);
 	gl_FragColor = vec4(vec3(n), 1.0);
 }
