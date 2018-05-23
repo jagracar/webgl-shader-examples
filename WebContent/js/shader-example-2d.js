@@ -1,7 +1,5 @@
 var scene, renderer, camera, clock, uniforms;
 
-var glslify = require("glslify")
-
 init();
 animate();
 
@@ -48,8 +46,8 @@ function init() {
 	// Create the shader material
 	var material = new THREE.ShaderMaterial({
 		uniforms : uniforms,
-		vertexShader : glslify("@@vertexShader"),
-		fragmentShader : glslify("@@fragmentShader")
+		vertexShader : document.getElementById("vertexShader").textContent,
+		fragmentShader : document.getElementById("fragmentShader").textContent
 	});
 
 	// Create the mesh
@@ -95,6 +93,6 @@ function onWindowResize(event) {
  * Updates the uniform values when the mouse moves
  */
 function onMouseMove(event) {
-	uniforms.u_mouse.value.x = event.pageX
-	uniforms.u_mouse.value.y = event.pageY
+	uniforms.u_mouse.value.x = event.pageX;
+	uniforms.u_mouse.value.y = event.pageY;
 }

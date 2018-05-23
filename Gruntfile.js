@@ -1,16 +1,13 @@
 module.exports = function(grunt) {
 
 	/*
-	 * Defines the grunt-replace parameters that will fill the html and js template files of a 2d shader example
+	 * Defines the grunt-replace parameters that will fill the html template file for a 2d shader example
 	 */
-	function replaceParameters2dExample(name, vertexShader, fragmentShader) {
+	function replaceParametersFor2dExample(name, vertexShader, fragmentShader) {
 		var parameters = {
 			files : [ {
 				src : 'html/template-example.html',
 				dest : 'WebContent/' + name + '-example.html'
-			}, {
-				src : 'js/template-2d-example.js',
-				dest : 'WebContent/tmp/' + name + '.js'
 			} ],
 			options : {
 				patterns : [ {
@@ -18,13 +15,13 @@ module.exports = function(grunt) {
 					replacement : name
 				}, {
 					match : 'jsfile',
-					replacement : 'js/' + name + '.js'
+					replacement : 'js/shader-example-2d.js'
 				}, {
 					match : 'vertexShader',
-					replacement : '../shaders/' + vertexShader
+					replacement : '<%= grunt.file.read("WebContent/shaders/' + vertexShader + '") %>'
 				}, {
 					match : 'fragmentShader',
-					replacement : '../shaders/' + fragmentShader
+					replacement : '<%= grunt.file.read("WebContent/shaders/' + fragmentShader + '") %>'
 				} ]
 			}
 		};
@@ -40,9 +37,6 @@ module.exports = function(grunt) {
 		clean : {
 			build : {
 				src : [ 'WebContent/*.html', 'WebContent/shaders/*.glsl', 'WebContent/js/*.js' ]
-			},
-			tmp : {
-				src : [ 'WebContent/tmp' ]
 			}
 		},
 
@@ -52,9 +46,11 @@ module.exports = function(grunt) {
 				src : 'html/index.html',
 				dest : 'WebContent/index.html'
 			},
-			three : {
-				src : 'js/three.js',
-				dest : 'WebContent/js/three.js'
+			jsfiles : {
+				expand : true,
+				flatten : true,
+				src : 'js/*.js',
+				dest : 'WebContent/js/'
 			}
 		},
 
@@ -68,21 +64,13 @@ module.exports = function(grunt) {
 
 		// grunt-replace
 		replace : {
-			random : replaceParameters2dExample('random', 'vert2d.glsl', 'fragRandom.glsl'),
-			noise : replaceParameters2dExample('noise', 'vert2d.glsl', 'fragNoise.glsl')
+			random : replaceParametersFor2dExample('random', 'vert2d.glsl', 'fragRandom.glsl'),
+			noise : replaceParametersFor2dExample('noise', 'vert2d.glsl', 'fragNoise.glsl')
 		},
 
-		// grunt-browserify
-		browserify : {
-			build : {
-				files : {
-					'WebContent/js/random.js' : [ 'WebContent/tmp/random.js' ],
-					'WebContent/js/noise.js' : [ 'WebContent/tmp/noise.js' ]
-				},
-				options : {
-					transform : [ 'glslify' ]
-				}
-			}
+		// grunt-replace
+		jshint : {
+			files : [ 'Gruntfile.js', 'package.json', 'WebContent/js/*example*.js' ]
 		},
 
 		// grunt-contrib-watch
@@ -97,9 +85,9 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-exec');
 	grunt.loadNpmTasks('grunt-replace');
-	grunt.loadNpmTasks('grunt-browserify');
+	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 
 	// Default task
-	grunt.registerTask('default', [ 'clean', 'copy', 'exec', 'replace', 'browserify', 'clean:tmp' ]);
+	grunt.registerTask('default', [ 'clean', 'copy', 'exec', 'replace', 'jshint' ]);
 };
