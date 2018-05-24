@@ -3,7 +3,6 @@ uniform vec2 u_resolution;
 uniform vec2 u_mouse;
 uniform float u_time;
 
-// Import the 2d noise function
 //
 // GLSL textureless classic 2D noise "cnoise",
 // with an RSL-style periodic variant "pnoise".
@@ -77,7 +76,18 @@ float cnoise(vec2 P)
   return 2.3 * n_xy;
 }
 
+float multy_scale_noise(vec2 p) {
+	return cnoise(3.0 * p) + cnoise(9.0 * p) + cnoise(20.0 * p);
+}
+
 void main() {
-	float n = cnoise(5.0 * (gl_FragCoord.xy - u_mouse) / u_resolution.xy);
-	gl_FragColor = vec4(vec3(n), 1.0);
+	float max_dim = max(u_resolution.x, u_resolution.y);
+	vec2 rel_pixel_pos = gl_FragCoord.xy / max_dim;
+	vec2 rel_mouse_pos = u_mouse / max_dim;
+
+	float r = multy_scale_noise(rel_pixel_pos + 0.05 * rel_mouse_pos);
+	float g = multy_scale_noise(rel_pixel_pos + 0.05 * rel_mouse_pos.yx);
+	float b = multy_scale_noise(rel_pixel_pos - 0.05 * rel_mouse_pos);
+
+	gl_FragColor = vec4(vec3(r, g, b), 1.0);
 }

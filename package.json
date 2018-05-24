@@ -1,35 +1,40 @@
 {
-  "name": "webgl-shader-examples",
-  "version": "0.1.0",
-  "description": "Some simple examples of WebGL shaders",
-  "main": "WebContent/index.html",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/jagracar/webgl-shader-examples.git"
-  },
-  "keywords": [
-    "math",
-    "WebGL",
-    "shader"
-  ],
-  "author": "Javier Graciá Carpio",
-  "license": "LGPL-3.0",
-  "bugs": {
-    "url": "https://github.com/jagracar/webgl-shader-examples/issues"
-  },
-  "homepage": "https://github.com/jagracar/webgl-shader-examples",
-  "devDependencies": {
-    "budo": "^11.2.2",
-    "glsl-noise": "0.0.0",
-    "glsl-random": "0.0.5",
-    "glslify": "^6.1.1",
-    "glslify-import": "^3.1.0",
-    "grunt": "^1.0.2",
-    "grunt-contrib-clean": "^1.1.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-jshint": "^1.1.0",
-    "grunt-contrib-watch": "^1.1.0",
-    "grunt-exec": "^3.0.0",
-    "grunt-replace": "^1.0.1"
-  }
+	"name": "webgl-shader-examples",
+	"version": "0.1.0",
+	"description": "Some simple examples of WebGL shaders",
+	"main": "WebContent/index.html",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/jagracar/webgl-shader-examples.git"
+	},
+	"keywords": [
+		"math",
+		"WebGL",
+		"shader"
+	],
+	"author": "Javier Graciá Carpio",
+	"license": "LGPL-3.0",
+	"bugs": {
+		"url": "https://github.com/jagracar/webgl-shader-examples/issues"
+	},
+	"homepage": "https://github.com/jagracar/webgl-shader-examples",
+	"devDependencies": {
+		"budo": "^11.2.2",
+		"glsl-noise": "0.0.0",
+		"glsl-random": "0.0.5",
+		"glslify": "^6.1.1",
+		"glslify-import": "^3.1.0",
+		"grunt": "^1.0.2",
+		"grunt-contrib-clean": "^1.1.0",
+		"grunt-contrib-copy": "^1.0.0",
+		"grunt-contrib-jshint": "^1.1.0",
+		"grunt-contrib-watch": "^1.1.0",
+		"grunt-exec": "^3.0.0",
+		"grunt-replace": "^1.0.1"
+	},
+	"glslify": {
+		"transform": [
+			"glslify-import"
+		]
+	}
 }

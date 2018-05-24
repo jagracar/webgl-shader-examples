@@ -1,11 +1,10 @@
-uniform vec2 u_resolution;
-uniform vec2 u_mouse;
-uniform float u_time;
-
-// Import the random function
+#pragma glslify: import("./imports/uniforms2d.glsl")
 #pragma glslify: random = require("glsl-random")
 
 void main() {
-	float n = random((gl_FragCoord.xy - u_mouse) / u_resolution.xy);
-	gl_FragColor = vec4(vec3(n), 1.0);
+	float max_dim = max(u_resolution.x, u_resolution.y);
+	vec2 rel_pixel_pos = gl_FragCoord.xy / max_dim;
+	vec2 p = floor(20.0 * rel_pixel_pos);
+
+	gl_FragColor = vec4(vec3(random(p), random(20.0 * p), 1.0), 1.0);
 }

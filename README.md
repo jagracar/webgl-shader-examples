@@ -1,7 +1,22 @@
-# webgl-shader-examples
-Some simple examples of WebGL shaders
+# WebGL shader examples
 
-# Installation
+Some simple examples of WebGL shaders.
+
+# Test the examples
+
+Download the git repository:
+
+``` bash
+git clone https://github.com/jagracar/webgl-shader-examples.git
+```
+
+and open the index.html file with your favorite browser:
+
+``` bash
+google-chrome webgl-shader-examples/WebContent/index.html
+```
+
+# Build the project
 
 Install [Node.js](https://nodejs.org) (for Ubuntu):
 
@@ -11,7 +26,7 @@ curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt-get install -y nodejs
 ```
 
-Install [grunt](https://gruntjs.com/), [glslify](https://github.com/glslify/glslify) and [budo](https://github.com/mattdesl/budo) globaly:
+Install [grunt](https://gruntjs.com/), [glslify](https://github.com/glslify/glslify) and [budo](https://github.com/mattdesl/budo) globally:
 
 ``` bash
 sudo npm install -g grunt-cli
@@ -19,7 +34,7 @@ sudo npm install -g glslify
 sudo npm install -g budo
 ```
 
-Download this repository and install the dependencies:
+Download the git repository and install the dependencies:
 
 ``` bash
 git clone https://github.com/jagracar/webgl-shader-examples.git
