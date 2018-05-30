@@ -1,36 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<title>noise shader example</title>
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-<meta name="keywords" content="shader, three.js, javaScript, examples">
-<meta name="description" content="noise shader example">
-<meta name="author" content="Javier Graciá Carpio">
-<style>
-body {
-	background-color: #000000;
-	margin: 0px;
-	overflow: hidden;
-}
-</style>
-</head>
-
-<body>
-	<div id="container"></div>
-
-	<script id="vertexShader" type="x-shader/x-vertex">#define GLSLIFY 1
-void main() {
-    gl_Position = vec4(position, 1.0);
-}
-</script>
-	<script id="fragmentShader" type="x-shader/x-fragment">#define GLSLIFY 1
-// Common uniforms
-uniform vec2 u_resolution;
-uniform vec2 u_mouse;
-uniform float u_time;
-
 /*
  * GLSL textureless classic 2D noise "cnoise",
  * with an RSL-style periodic variant "pnoise".
@@ -99,24 +66,4 @@ float cnoise(vec2 P) {
     return 2.3 * n_xy;
 }
 
-float multy_scale_noise(vec2 p) {
-    return cnoise(3.0 * p) + cnoise(9.0 * p) + cnoise(20.0 * p);
-}
-
-void main() {
-    float max_dim = max(u_resolution.x, u_resolution.y);
-    vec2 rel_pixel_pos = gl_FragCoord.xy / max_dim;
-    vec2 rel_mouse_pos = u_mouse / max_dim;
-
-    float r = multy_scale_noise(rel_pixel_pos + 0.05 * rel_mouse_pos);
-    float g = multy_scale_noise(rel_pixel_pos + 0.05 * rel_mouse_pos.yx);
-    float b = multy_scale_noise(rel_pixel_pos - 0.05 * rel_mouse_pos);
-
-    gl_FragColor = vec4(vec3(r, g, b), 1.0);
-}
-</script>
-
-	<script src="js/three.js"></script>
-	<script src="js/shader-example-2d.js"></script>
-</body>
-</html>
+#pragma glslify: export(cnoise)

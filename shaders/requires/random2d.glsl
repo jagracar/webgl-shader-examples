@@ -1,9 +1,3 @@
-#define GLSLIFY 1
-// Common uniforms
-uniform vec2 u_resolution;
-uniform vec2 u_mouse;
-uniform float u_time;
-
 /*
  * Random number generator with a vec2 seed
  *
@@ -20,9 +14,4 @@ highp float random(vec2 co) {
     return fract(sin(sn) * c);
 }
 
-void main() {
-    float max_dim = max(u_resolution.x, u_resolution.y);
-    vec2 p = floor(20.0 * gl_FragCoord.xy / max_dim);
-
-    gl_FragColor = vec4(vec3(random(p), random(1.234 * p), 1.0), 1.0);
-}
+#pragma glslify: export(random)

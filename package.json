@@ -20,8 +20,6 @@
 	"homepage": "https://github.com/jagracar/webgl-shader-examples",
 	"devDependencies": {
 		"budo": "^11.2.2",
-		"glsl-noise": "0.0.0",
-		"glsl-random": "0.0.5",
 		"glslify": "^6.1.1",
 		"glslify-import": "^3.1.0",
 		"grunt": "^1.0.2",

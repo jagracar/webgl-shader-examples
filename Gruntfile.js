@@ -76,7 +76,7 @@ module.exports = function(grunt) {
 
 		// grunt-contrib-watch
 		watch : {
-			files : [ 'html/*.html', 'shaders/*.glsl', 'js/*.js' ],
+			files : [ 'html/*.html', 'shaders/**/*.glsl', 'js/*.js' ],
 			tasks : [ 'default' ]
 		}
 	});
