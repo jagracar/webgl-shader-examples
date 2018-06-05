@@ -66,7 +66,8 @@ module.exports = function(grunt) {
 		replace : {
 			random : replaceParametersFor2dExample('random', 'vert2d.glsl', 'fragRandom.glsl'),
 			noise : replaceParametersFor2dExample('noise', 'vert2d.glsl', 'fragNoise.glsl'),
-			rain : replaceParametersFor2dExample('rain', 'vert2d.glsl', 'fragRain.glsl')
+			rain : replaceParametersFor2dExample('rain', 'vert2d.glsl', 'fragRain.glsl'),
+			tile : replaceParametersFor2dExample('tile', 'vert2d.glsl', 'fragTile.glsl')
 		},
 
 		// grunt-replace

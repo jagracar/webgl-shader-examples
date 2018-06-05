@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>tile shader example</title>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="keywords" content="shader, three.js, javaScript, examples">
+<meta name="description" content="tile shader example">
+<meta name="author" content="Javier Graciá Carpio">
+<style>
+body {
+	background-color: #000000;
+	margin: 0px;
+	overflow: hidden;
+}
+</style>
+</head>
+
+<body>
+	<div id="container"></div>
+
+	<script id="vertexShader" type="x-shader/x-vertex">#define GLSLIFY 1
+void main() {
+    gl_Position = vec4(position, 1.0);
+}
+</script>
+	<script id="fragmentShader" type="x-shader/x-fragment">#define GLSLIFY 1
+// Common uniforms
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
+
+void main() {
+    vec2 grid_pos = fract(gl_FragCoord.xy/100.0);
+
+    gl_FragColor = vec4(vec3(grid_pos, 1.0), 1.0);
+}
+</script>
+
+	<script src="js/three.js"></script>
+	<script src="js/shader-example-2d.js"></script>
+</body>
+</html>
