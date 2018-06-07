@@ -6,12 +6,10 @@ float line(vec2 pixel, vec2 start, vec2 end, float width) {
     vec2 line_dir = end - start;
     float line_length = length(line_dir);
     float projected_dist = dot(pixel_dir, line_dir) / line_length;
-    float tanjential_dist_sq = dot(pixel_dir, pixel_dir) - pow(projected_dist, 2.0);
-    float width_sq = pow(width, 2.0);
-    float delta = min(3.0 / width, 0.7);
+    float tanjential_dist = sqrt(dot(pixel_dir, pixel_dir) - projected_dist * projected_dist);
 
-    return step(0.0, projected_dist) * step(0.0, line_length - projected_dist)
-            * (1.0 - smoothstep(1.0 - delta, 1.0 + delta, tanjential_dist_sq / width_sq));
+    return smoothstep(-1.0, 1.0, projected_dist) * smoothstep(-1.0, 1.0, line_length - projected_dist)
+            * (1.0 - smoothstep(-1.0, 1.0, tanjential_dist - 0.5 * width));
 }
 
 #pragma glslify: export(line)

@@ -4,8 +4,8 @@
 float rectangle(vec2 pixel, vec2 bottom_left, vec2 sides) {
     vec2 top_right = bottom_left + sides;
 
-    return step(bottom_left.x, pixel.x) * step(bottom_left.y, pixel.y) * step(pixel.x, top_right.x)
-            * step(pixel.y, top_right.y);
+    return smoothstep(-1.0, 1.0, pixel.x - bottom_left.x) * smoothstep(-1.0, 1.0, pixel.y - bottom_left.y)
+            * smoothstep(-1.0, 1.0, top_right.x - pixel.x) * smoothstep(-1.0, 1.0, top_right.y - pixel.y);
 }
 
 #pragma glslify: export(rectangle)
