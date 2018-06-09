@@ -63,6 +63,9 @@ mat2 rotate(float angle) {
     return mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
 }
 
+/*
+ * The main program
+ */
 void main() {
     // Set the background color
     vec3 pixel_color = vec3(0.0);
@@ -99,6 +102,6 @@ void main() {
     // Add a white circle to each grid element
     pixel_color = mix(pixel_color, vec3(1.0), circle(grid2_pos, vec2(50.0, 50.0), 20.0));
 
-    // Return the final pixel color
+    // Fragment shader output
     gl_FragColor = vec4(pixel_color, 1.0);
 }

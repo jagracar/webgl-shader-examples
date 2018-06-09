@@ -6,7 +6,7 @@ module.exports = function(grunt) {
 	function replaceParametersFor2dExample(name, vertexShader, fragmentShader) {
 		var parameters = {
 			files : [ {
-				src : 'html/template-example.html',
+				src : 'html/template-example-2d.html',
 				dest : 'WebContent/' + name + '-example.html'
 			} ],
 			options : {
@@ -16,6 +16,35 @@ module.exports = function(grunt) {
 				}, {
 					match : 'jsfile',
 					replacement : 'js/shader-example-2d.js'
+				}, {
+					match : 'vertexShader',
+					replacement : '<%= grunt.file.read("WebContent/shaders/' + vertexShader + '") %>'
+				}, {
+					match : 'fragmentShader',
+					replacement : '<%= grunt.file.read("WebContent/shaders/' + fragmentShader + '") %>'
+				} ]
+			}
+		};
+
+		return parameters;
+	}
+
+	/*
+	 * Defines the grunt-replace parameters that will fill the html template file for a 3d shader example
+	 */
+	function replaceParametersFor3dExample(name, vertexShader, fragmentShader) {
+		var parameters = {
+			files : [ {
+				src : 'html/template-example-3d.html',
+				dest : 'WebContent/' + name + '-example.html'
+			} ],
+			options : {
+				patterns : [ {
+					match : 'name',
+					replacement : name
+				}, {
+					match : 'jsfile',
+					replacement : 'js/shader-example-3d.js'
 				}, {
 					match : 'vertexShader',
 					replacement : '<%= grunt.file.read("WebContent/shaders/' + vertexShader + '") %>'
@@ -64,13 +93,14 @@ module.exports = function(grunt) {
 
 		// grunt-replace
 		replace : {
-			random : replaceParametersFor2dExample('random', 'vert2d.glsl', 'fragRandom.glsl'),
-			noise : replaceParametersFor2dExample('noise', 'vert2d.glsl', 'fragNoise.glsl'),
-			rain : replaceParametersFor2dExample('rain', 'vert2d.glsl', 'fragRain.glsl'),
-			tile : replaceParametersFor2dExample('tile', 'vert2d.glsl', 'fragTile.glsl')
+			random : replaceParametersFor2dExample('random', 'vert-2d.glsl', 'frag-random.glsl'),
+			noise : replaceParametersFor2dExample('noise', 'vert-2d.glsl', 'frag-noise.glsl'),
+			rain : replaceParametersFor2dExample('rain', 'vert-2d.glsl', 'frag-rain.glsl'),
+			tile : replaceParametersFor2dExample('tile', 'vert-2d.glsl', 'frag-tile.glsl'),
+			sphere : replaceParametersFor3dExample('sphere', 'vert-3d.glsl', 'frag-sphere.glsl')
 		},
 
-		// grunt-replace
+		// grunt-jshint
 		jshint : {
 			files : [ 'Gruntfile.js', 'package.json', 'WebContent/js/*example*.js' ]
 		},

@@ -69,6 +69,9 @@ vec3 background_color(vec2 pixel, vec2 screen_dim, float time) {
     return vec3(0.0, 0.0, 1.0 - smoothstep(-1.0, 0.8 + 0.2 * cos(0.5 * time), pixel.y / screen_dim.y));
 }
 
+/*
+ * The main program
+ */
 void main() {
     // Set the total number of rain drops that are visible at a given time
     const float n_drops = 20.0;
@@ -124,6 +127,6 @@ void main() {
     // Add the background color to the pixel color
     pixel_color += background_color(gl_FragCoord.xy, u_resolution, u_time);
 
-    // Calculate the fragment color
+    // Fragment shader output
     gl_FragColor = vec4(pixel_color, 1.0);
 }

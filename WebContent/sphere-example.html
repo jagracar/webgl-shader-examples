@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>sphere shader example</title>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="keywords" content="shader, three.js, javaScript, examples">
+<meta name="description" content="sphere shader example">
+<meta name="author" content="Javier Graciá Carpio">
+<style>
+body {
+	background-color: #000000;
+	margin: 0px;
+	overflow: hidden;
+}
+</style>
+</head>
+
+<body>
+	<div id="container"></div>
+
+	<script id="vertexShader" type="x-shader/x-vertex">#define GLSLIFY 1
+// Common varyings
+varying vec3 v_position;
+varying vec3 v_normal;
+
+/*
+ * The main program
+ */
+void main() {
+    // Save the varyings
+    v_position = position;
+    v_normal = normalize(normalMatrix * normal);
+
+    // Vertex shader output
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+</script>
+	<script id="fragmentShader" type="x-shader/x-fragment">#define GLSLIFY 1
+// Common uniforms
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
+
+// Common varyings
+varying vec3 v_position;
+varying vec3 v_normal;
+
+/*
+ * The main program
+ */
+void main() {
+    // Fragment shader output
+    gl_FragColor = vec4(0.5 + 0.5 * sin(10.0 * v_position).xyx, 1.0);
+}
+</script>
+
+	<script src="js/three.js"></script>
+	<script src="js/OrbitControls.js"></script>
+	<script src="js/shader-example-3d.js"></script>
+</body>
+</html>
