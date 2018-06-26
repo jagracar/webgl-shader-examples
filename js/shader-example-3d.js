@@ -32,7 +32,7 @@ function init() {
 	clock = new THREE.Clock(true);
 
 	// Create the sphere geometry
-	var geometry = new THREE.SphereGeometry(10, 32, 32);
+	var geometry = new THREE.SphereGeometry(10, 64, 64);
 
 	// Define the shader uniforms
 	uniforms = {
@@ -54,7 +54,8 @@ function init() {
 	var material = new THREE.ShaderMaterial({
 		uniforms : uniforms,
 		vertexShader : document.getElementById("vertexShader").textContent,
-		fragmentShader : document.getElementById("fragmentShader").textContent
+		fragmentShader : document.getElementById("fragmentShader").textContent,
+		transparent : true
 	});
 
 	// Create the mesh
@@ -91,11 +92,16 @@ function render() {
  * Updates the renderer size, the camera aspect ratio and the uniform values when the window is resized
  */
 function onWindowResize(event) {
-	renderer.setSize(window.innerWidth, window.innerHeight);
+	// Update the camera
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
-	uniforms.u_resolution.value.x = renderer.domElement.width;
-	uniforms.u_resolution.value.y = renderer.domElement.height;
+
+	// Update the renderer
+	renderer.setSize(window.innerWidth, window.innerHeight);
+
+	// Update the resolution uniform
+	uniforms.u_resolution.value.x = window.innerWidth;
+	uniforms.u_resolution.value.y = window.innerHeight;
 }
 
 /*
@@ -103,5 +109,5 @@ function onWindowResize(event) {
  */
 function onMouseMove(event) {
 	uniforms.u_mouse.value.x = event.pageX;
-	uniforms.u_mouse.value.y = event.pageY;
+	uniforms.u_mouse.value.y = window.innerHeight - event.pageY;
 }

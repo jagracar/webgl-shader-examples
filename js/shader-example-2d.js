@@ -84,9 +84,12 @@ function render() {
  * Updates the renderer size and the uniform values when the window is resized
  */
 function onWindowResize(event) {
+	// Update the renderer
 	renderer.setSize(window.innerWidth, window.innerHeight);
-	uniforms.u_resolution.value.x = renderer.domElement.width;
-	uniforms.u_resolution.value.y = renderer.domElement.height;
+
+	// Update the resolution uniform
+	uniforms.u_resolution.value.x = window.innerWidth;
+	uniforms.u_resolution.value.y = window.innerHeight;
 }
 
 /*
@@ -94,5 +97,5 @@ function onWindowResize(event) {
  */
 function onMouseMove(event) {
 	uniforms.u_mouse.value.x = event.pageX;
-	uniforms.u_mouse.value.y = event.pageY;
+	uniforms.u_mouse.value.y = window.innerHeight - event.pageY;
 }

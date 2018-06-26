@@ -56,7 +56,7 @@ highp float random(vec2 co) {
  */
 void main() {
     // Create a grid of squares that depends on the mouse position
-    vec2 square = floor((gl_FragCoord.xy + vec2(-u_mouse.x, u_mouse.y)) / 30.0);
+    vec2 square = floor((gl_FragCoord.xy - u_mouse) / 30.0);
 
     // Give a random color to each square
     vec3 square_color = vec3(random(square), random(1.234 * square), 1.0);
