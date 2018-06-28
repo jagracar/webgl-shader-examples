@@ -43,9 +43,9 @@ float ellipse(vec2 pixel, vec2 center, vec2 radii) {
 }
 
 /*
- * Returns a value between 1 and 0 that indicates if the pixel is inside the line
+ * Returns a value between 1 and 0 that indicates if the pixel is inside the line segment
  */
-float line(vec2 pixel, vec2 start, vec2 end, float width) {
+float line_segment_2281831123(vec2 pixel, vec2 start, vec2 end, float width) {
     vec2 pixel_dir = pixel - start;
     vec2 line_dir = end - start;
     float line_length = length(line_dir);
@@ -82,7 +82,7 @@ void main() {
     // Add ten grey lines to each grid element
     for (float i = 0.0; i < 10.0; ++i) {
         pixel_color = mix(pixel_color, vec3(0.8),
-                line(grid1_pos, vec2(10.0, -10.0 * i), vec2(150.0, 100.0 - 10.0 * i), 4.0));
+                line_segment_2281831123(grid1_pos, vec2(10.0, -10.0 * i), vec2(150.0, 100.0 - 10.0 * i), 4.0));
     }
 
     // Apply some rotations to the grid

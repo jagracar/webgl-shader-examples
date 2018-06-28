@@ -97,7 +97,8 @@ module.exports = function(grunt) {
 			noise : replaceParametersFor2dExample('noise', 'vert-2d.glsl', 'frag-noise.glsl'),
 			rain : replaceParametersFor2dExample('rain', 'vert-2d.glsl', 'frag-rain.glsl'),
 			tile : replaceParametersFor2dExample('tile', 'vert-2d.glsl', 'frag-tile.glsl'),
-			sphere : replaceParametersFor3dExample('sphere', 'vert-3d.glsl', 'frag-sphere.glsl')
+			sphere : replaceParametersFor3dExample('sphere', 'vert-3d.glsl', 'frag-sphere.glsl'),
+			pencil : replaceParametersFor3dExample('pencil', 'vert-3d.glsl', 'frag-pencil.glsl')
 		},
 
 		// grunt-jshint
