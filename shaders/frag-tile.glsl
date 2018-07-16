@@ -3,7 +3,7 @@
 #pragma glslify: rectangle = require("./requires/shapes/rectangle")
 #pragma glslify: circle = require("./requires/shapes/circle")
 #pragma glslify: ellipse = require("./requires/shapes/ellipse")
-#pragma glslify: line_segment = require("./requires/shapes/lineSegment")
+#pragma glslify: lineSegment = require("./requires/shapes/lineSegment")
 #pragma glslify: rotate = require("./requires/rotate2d")
 
 /*
@@ -25,7 +25,7 @@ void main() {
     // Add ten grey lines to each grid element
     for (float i = 0.0; i < 10.0; ++i) {
         pixel_color = mix(pixel_color, vec3(0.8),
-                line_segment(grid1_pos, vec2(10.0, -10.0 * i), vec2(150.0, 100.0 - 10.0 * i), 4.0));
+                lineSegment(grid1_pos, vec2(10.0, -10.0 * i), vec2(150.0, 100.0 - 10.0 * i), 4.0));
     }
 
     // Apply some rotations to the grid

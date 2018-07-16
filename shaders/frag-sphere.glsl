@@ -1,6 +1,6 @@
 #pragma glslify: import("./imports/commonUniforms.glsl")
 #pragma glslify: import("./imports/commonVaryings3d.glsl")
-#pragma glslify: diffuse_factor = require("./requires/diffuseFactor")
+#pragma glslify: diffuseFactor = require("./requires/diffuseFactor")
 
 /*
  * The main program
@@ -14,7 +14,7 @@ void main() {
     vec3 sphere_color = vec3(0.5 + 0.5 * cos(2.0 * v_position.y + 3.0 * u_time));
 
     // Apply the light diffusion factor
-    sphere_color *= diffuse_factor(v_normal, light_direction);
+    sphere_color *= diffuseFactor(v_normal, light_direction);
 
     // Fragment shader output
     gl_FragColor = vec4(sphere_color, 1.0);

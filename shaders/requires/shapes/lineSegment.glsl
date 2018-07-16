@@ -1,7 +1,7 @@
 /*
  * Returns a value between 1 and 0 that indicates if the pixel is inside the line segment
  */
-float line_segment(vec2 pixel, vec2 start, vec2 end, float width) {
+float lineSegment(vec2 pixel, vec2 start, vec2 end, float width) {
     vec2 pixel_dir = pixel - start;
     vec2 line_dir = end - start;
     float line_length = length(line_dir);
@@ -12,4 +12,4 @@ float line_segment(vec2 pixel, vec2 start, vec2 end, float width) {
             * (1.0 - smoothstep(-1.0, 1.0, tanjential_dist - 0.5 * width));
 }
 
-#pragma glslify: export(line_segment)
+#pragma glslify: export(lineSegment)
