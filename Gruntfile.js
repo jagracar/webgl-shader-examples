@@ -65,7 +65,7 @@ module.exports = function(grunt) {
 		// grunt-contrib-clean
 		clean : {
 			build : {
-				src : [ 'WebContent/*.html', 'WebContent/shaders/*.glsl', 'WebContent/js/*.js' ]
+				src : [ 'WebContent/*.html', 'WebContent/shaders/*.glsl', 'WebContent/js/*.js', 'WebContent/objects/*.*' ]
 			}
 		},
 
@@ -80,6 +80,12 @@ module.exports = function(grunt) {
 				flatten : true,
 				src : 'js/*.js',
 				dest : 'WebContent/js/'
+			},
+			objectfiles : {
+				expand : true,
+				flatten : true,
+				src : 'objects/*.*',
+				dest : 'WebContent/objects/'
 			}
 		},
 
@@ -97,7 +103,7 @@ module.exports = function(grunt) {
 			noise : replaceParametersFor2dExample('noise', 'vert-2d.glsl', 'frag-noise.glsl'),
 			rain : replaceParametersFor2dExample('rain', 'vert-2d.glsl', 'frag-rain.glsl'),
 			tile : replaceParametersFor2dExample('tile', 'vert-2d.glsl', 'frag-tile.glsl'),
-			sphere : replaceParametersFor3dExample('sphere', 'vert-3d.glsl', 'frag-sphere.glsl'),
+			wave : replaceParametersFor3dExample('wave', 'vert-3d.glsl', 'frag-wave.glsl'),
 			pencil : replaceParametersFor3dExample('pencil', 'vert-3d.glsl', 'frag-pencil.glsl'),
 			dots : replaceParametersFor3dExample('dots', 'vert-3d.glsl', 'frag-dots.glsl')
 		},

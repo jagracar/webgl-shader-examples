@@ -43,8 +43,8 @@ void main() {
     // Move the pixel coordinates origin to the center of the screen
     vec2 pos = gl_FragCoord.xy - 0.5 * u_resolution;
 
-    // Rotate the coordinates by the light direction angle
-    pos = rotate(atan(light_direction.y / light_direction.x) + radians(20.0)) * pos;
+    // Rotate the coordinates 20 degrees
+    pos = rotate(radians(20.0)) * pos;
 
     // Define the first group of pencil lines
     float line_width = 7.0 * (1.0 - smoothstep(0.0, 0.3, df)) + 0.5;
@@ -64,14 +64,14 @@ void main() {
     grid_pos.y = mod(pos.y + lines_sep / 2.0, lines_sep);
     float line_4 = horizontalLine(grid_pos, lines_sep / 2.0, line_width);
 
-    // Calculate the sphere color
-    float sphere_color = 1.0;
-    sphere_color -= 0.8 * line_1 * (1.0 - smoothstep(0.5, 0.75, df));
-    sphere_color -= 0.8 * line_2 * (1.0 - smoothstep(0.4, 0.5, df));
-    sphere_color -= 0.8 * line_3 * (1.0 - smoothstep(0.4, 0.65, df));
-    sphere_color -= 0.8 * line_4 * (1.0 - smoothstep(0.2, 0.4, df));
-    sphere_color = clamp(sphere_color, 0.05, 1.0);
+    // Calculate the surface color
+    float surface_color = 1.0;
+    surface_color -= 0.8 * line_1 * (1.0 - smoothstep(0.5, 0.75, df));
+    surface_color -= 0.8 * line_2 * (1.0 - smoothstep(0.4, 0.5, df));
+    surface_color -= 0.8 * line_3 * (1.0 - smoothstep(0.4, 0.65, df));
+    surface_color -= 0.8 * line_4 * (1.0 - smoothstep(0.2, 0.4, df));
+    surface_color = clamp(surface_color, 0.05, 1.0);
 
     // Fragment shader output
-    gl_FragColor = vec4(vec3(sphere_color), 1.0);
+    gl_FragColor = vec4(vec3(surface_color), 1.0);
 }

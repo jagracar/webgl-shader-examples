@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>sphere shader example</title>
+<title>wave shader example</title>
 <meta charset="utf-8">
 <meta name="viewport"
 	content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 <meta name="keywords" content="shader, three.js, javaScript, examples">
-<meta name="description" content="sphere shader example">
+<meta name="description" content="wave shader example">
 <meta name="author" content="Javier Graciá Carpio">
 <style>
 body {
@@ -62,18 +62,20 @@ void main() {
     float min_resolution = min(u_resolution.x, u_resolution.y);
     vec3 light_direction = -vec3((u_mouse - 0.5 * u_resolution) / min_resolution, 0.25);
 
-    // Set the sphere surface color
-    vec3 sphere_color = vec3(0.5 + 0.5 * cos(2.0 * v_position.y + 3.0 * u_time));
+    // Set the surface color
+    vec3 surface_color = vec3(0.5 + 0.5 * cos(2.0 * v_position.y + 3.0 * u_time));
 
     // Apply the light diffusion factor
-    sphere_color *= diffuseFactor(v_normal, light_direction);
+    surface_color *= diffuseFactor(v_normal, light_direction);
 
     // Fragment shader output
-    gl_FragColor = vec4(sphere_color, 1.0);
+    gl_FragColor = vec4(surface_color, 1.0);
 }
 </script>
 
 	<script src="js/three.js"></script>
+	<script src="js/stats.js"></script>
+	<script src="js/dat.gui.js"></script>
 	<script src="js/OrbitControls.js"></script>
 	<script src="js/shader-example-3d.js"></script>
 </body>

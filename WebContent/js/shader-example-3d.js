@@ -1,4 +1,4 @@
-var scene, renderer, camera, controls, clock, uniforms;
+var scene, renderer, camera, controls, clock, stats, uniforms;
 
 init();
 animate();
@@ -18,7 +18,8 @@ function init() {
 	renderer.setClearColor(new THREE.Color(0, 0, 0));
 
 	// Add the renderer to the sketch container
-	document.getElementById("container").appendChild(renderer.domElement);
+	var container = document.getElementById("container");
+	container.appendChild(renderer.domElement);
 
 	// Camera setup
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 50);
@@ -31,8 +32,13 @@ function init() {
 	// Initialize the clock
 	clock = new THREE.Clock(true);
 
+	// Initialize the statistics monitor and add it to the sketch container
+	stats = new Stats();
+	container.appendChild(stats.dom);
+
 	// Create the sphere geometry
-	var geometry = new THREE.SphereGeometry(10, 64, 64);
+	// var geometry = new THREE.SphereGeometry(10, 64, 64);
+	var geometry = new THREE.TorusKnotGeometry(8, 2.5, 256, 32);
 
 	// Define the shader uniforms
 	uniforms = {
@@ -78,6 +84,7 @@ function init() {
 function animate() {
 	requestAnimationFrame(animate);
 	render();
+	stats.update();
 }
 
 /*

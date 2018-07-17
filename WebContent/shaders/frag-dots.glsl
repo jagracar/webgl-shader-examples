@@ -43,18 +43,18 @@ void main() {
     // Move the pixel coordinates origin to the center of the screen
     vec2 pos = gl_FragCoord.xy - 0.5 * u_resolution;
 
-    // Rotate the coordinates by the light direction angle
-    pos = rotate(atan(light_direction.y / light_direction.x) + radians(20.0)) * pos;
+    // Rotate the coordinates 20 degrees
+    pos = rotate(radians(20.0)) * pos;
 
     // Define the grid
     float grid_step = 12.0;
     vec2 grid_pos = mod(pos, grid_step);
 
-    // Calculate the sphere color
-    float sphere_color = 1.0;
-    sphere_color -= circle(grid_pos, vec2(grid_step / 2.0), 0.8 * grid_step * pow(1.0 - df, 2.0));
-    sphere_color = clamp(sphere_color, 0.05, 1.0);
+    // Calculate the surface color
+    float surface_color = 1.0;
+    surface_color -= circle(grid_pos, vec2(grid_step / 2.0), 0.8 * grid_step * pow(1.0 - df, 2.0));
+    surface_color = clamp(surface_color, 0.05, 1.0);
 
     // Fragment shader output
-    gl_FragColor = vec4(vec3(sphere_color), 1.0);
+    gl_FragColor = vec4(vec3(surface_color), 1.0);
 }

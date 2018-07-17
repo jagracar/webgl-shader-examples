@@ -1,4 +1,4 @@
-var scene, renderer, camera, clock, uniforms;
+var scene, renderer, camera, clock, stats, uniforms;
 
 init();
 animate();
@@ -15,7 +15,8 @@ function init() {
 	renderer.setPixelRatio(window.devicePixelRatio);
 
 	// Add the renderer to the sketch container
-	document.getElementById("container").appendChild(renderer.domElement);
+	var container = document.getElementById("container");
+	container.appendChild(renderer.domElement);
 
 	// Camera setup
 	camera = new THREE.Camera();
@@ -23,6 +24,10 @@ function init() {
 
 	// Initialize the clock
 	clock = new THREE.Clock(true);
+
+	// Initialize the statistics monitor and add it to the sketch container
+	stats = new Stats();
+	container.appendChild(stats.dom);
 
 	// Create the plane geometry
 	var geometry = new THREE.PlaneBufferGeometry(2, 2);
@@ -70,6 +75,7 @@ function init() {
 function animate() {
 	requestAnimationFrame(animate);
 	render();
+	stats.update();
 }
 
 /*
