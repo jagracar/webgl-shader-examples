@@ -1,4 +1,4 @@
-var scene, renderer, camera, controls, clock, stats, uniforms;
+var scene, renderer, camera, controls, clock, stats, controlParameters, uniforms, material, mesh;
 
 init();
 animate();
@@ -36,9 +36,13 @@ function init() {
 	stats = new Stats();
 	container.appendChild(stats.dom);
 
-	// Create the sphere geometry
-	// var geometry = new THREE.SphereGeometry(10, 64, 64);
-	var geometry = new THREE.TorusKnotGeometry(8, 2.5, 256, 32);
+	// Initialize the control parameters
+	controlParameters = {
+		"Geometry" : "sphere"
+	};
+
+	// Add the control panel
+	addControlPanel();
 
 	// Define the shader uniforms
 	uniforms = {
@@ -57,18 +61,15 @@ function init() {
 	};
 
 	// Create the shader material
-	var material = new THREE.ShaderMaterial({
+	material = new THREE.ShaderMaterial({
 		uniforms : uniforms,
 		vertexShader : document.getElementById("vertexShader").textContent,
 		fragmentShader : document.getElementById("fragmentShader").textContent,
 		transparent : true
 	});
 
-	// Create the mesh
-	var mesh = new THREE.Mesh(geometry, material);
-
 	// Add the mesh to the scene
-	scene.add(mesh);
+	addMeshToScene();
 
 	// Update the uniforms
 	onWindowResize();
@@ -76,6 +77,42 @@ function init() {
 	// Add the event listeners
 	window.addEventListener("resize", onWindowResize, false);
 	document.addEventListener("mousemove", onMouseMove, false);
+}
+
+/*
+ * Adds the sketch control panel
+ */
+function addControlPanel() {
+	// Create the control panel
+	var controlPanel = new dat.GUI();
+
+	// Add the controllers
+	controlPanel.add(controlParameters, "Geometry", [ "sphere", "torus" ]).onFinishChange(addMeshToScene);
+}
+
+/*
+ * Adds the mesh to the scence
+ */
+function addMeshToScene() {
+	// If the mesh exists, remove it from the scene
+	if (mesh) {
+		scene.remove(mesh);
+	}
+
+	// Create the desired geometry
+	var geometry;
+
+	if (controlParameters.Geometry == "sphere") {
+		geometry = new THREE.SphereGeometry(10, 64, 64);
+	} else if (controlParameters.Geometry == "torus") {
+		geometry = new THREE.TorusKnotGeometry(8, 2.5, 256, 32);
+	}
+
+	// Create the mesh
+	mesh = new THREE.Mesh(geometry, material);
+
+	// Add the mesh to the scene
+	scene.add(mesh);
 }
 
 /*
