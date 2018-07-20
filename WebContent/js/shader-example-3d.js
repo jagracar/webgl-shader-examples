@@ -1,4 +1,4 @@
-var scene, renderer, camera, controls, clock, stats, controlParameters, uniforms, material, mesh;
+var renderer, scene, camera, clock, stats, controlParameters, uniforms, material, mesh;
 
 init();
 animate();
@@ -7,26 +7,27 @@ animate();
  * Initializes the sketch
  */
 function init() {
-	// Scene setup
-	scene = new THREE.Scene();
-
-	// Get the WebGL renderer
+	// Initialize the WebGL renderer
 	renderer = new THREE.WebGLRenderer({
 		antialias : true
 	});
 	renderer.setPixelRatio(window.devicePixelRatio);
+	renderer.setSize(window.innerWidth, window.innerHeight);
 	renderer.setClearColor(new THREE.Color(0, 0, 0));
 
 	// Add the renderer to the sketch container
 	var container = document.getElementById("container");
 	container.appendChild(renderer.domElement);
 
-	// Camera setup
+	// Initialize the scene
+	scene = new THREE.Scene();
+
+	// Initialize the camera
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 50);
 	camera.position.z = 30;
 
 	// Initialize the camera controls
-	controls = new THREE.OrbitControls(camera, renderer.domElement);
+	var controls = new THREE.OrbitControls(camera, renderer.domElement);
 	controls.enablePan = false;
 
 	// Initialize the clock
@@ -38,21 +39,21 @@ function init() {
 
 	// Initialize the control parameters
 	controlParameters = {
-		"Geometry" : "sphere"
+		"Geometry" : "Torus knot"
 	};
 
-	// Add the control panel
+	// Add the control panel to the sketch
 	addControlPanel();
 
 	// Define the shader uniforms
 	uniforms = {
 		u_time : {
 			type : "f",
-			value : 1.0
+			value : 0.0
 		},
 		u_resolution : {
 			type : "v2",
-			value : new THREE.Vector2()
+			value : new THREE.Vector2(window.innerWidth, window.innerHeight)
 		},
 		u_mouse : {
 			type : "v2",
@@ -68,11 +69,8 @@ function init() {
 		transparent : true
 	});
 
-	// Add the mesh to the scene
+	// Create the mesh and add it to the scene
 	addMeshToScene();
-
-	// Update the uniforms
-	onWindowResize();
 
 	// Add the event listeners
 	window.addEventListener("resize", onWindowResize, false);
@@ -80,39 +78,55 @@ function init() {
 }
 
 /*
- * Adds the sketch control panel
+ * Adds the control panel to the sketch
  */
 function addControlPanel() {
 	// Create the control panel
 	var controlPanel = new dat.GUI();
 
 	// Add the controllers
-	controlPanel.add(controlParameters, "Geometry", [ "sphere", "torus" ]).onFinishChange(addMeshToScene);
+	controlPanel.add(controlParameters, "Geometry", [ "Torus knot", "Sphere", "Icosahedron", "Suzanne" ])
+			.onFinishChange(addMeshToScene);
 }
 
 /*
- * Adds the mesh to the scence
+ * Adds the mesh to the scene
  */
 function addMeshToScene() {
-	// If the mesh exists, remove it from the scene
+	// Remove any previous mesh from the scene
 	if (mesh) {
 		scene.remove(mesh);
 	}
 
-	// Create the desired geometry
-	var geometry;
+	// Handle all the different options
+	if (controlParameters.Geometry == "Suzanne") {
+		// Load the json file that contains the geometry
+		var loader = new THREE.JSONLoader();
+		loader.load("objects/suzanne_geometry.json", function(geometry) {
+			// Scale and rotate the geometry
+			geometry.scale(12, 12, 12);
+			geometry.rotateX(Math.PI / 2);
 
-	if (controlParameters.Geometry == "sphere") {
-		geometry = new THREE.SphereGeometry(10, 64, 64);
-	} else if (controlParameters.Geometry == "torus") {
-		geometry = new THREE.TorusKnotGeometry(8, 2.5, 256, 32);
+			// Create the mesh and add it to the scene
+			mesh = new THREE.Mesh(geometry, material);
+			scene.add(mesh);
+		});
+	} else {
+		// Create the desired geometry
+		var geometry;
+
+		if (controlParameters.Geometry == "Torus knot") {
+			geometry = new THREE.TorusKnotGeometry(8, 2.5, 256, 32);
+		} else if (controlParameters.Geometry == "Sphere") {
+			geometry = new THREE.SphereGeometry(10, 64, 64);
+		} else if (controlParameters.Geometry == "Icosahedron") {
+			geometry = new THREE.IcosahedronGeometry(10, 0);
+		}
+
+		// Create the mesh and add it to the scene
+		mesh = new THREE.Mesh(geometry, material);
+		scene.add(mesh);
 	}
-
-	// Create the mesh
-	mesh = new THREE.Mesh(geometry, material);
-
-	// Add the mesh to the scene
-	scene.add(mesh);
 }
 
 /*
@@ -133,15 +147,15 @@ function render() {
 }
 
 /*
- * Updates the renderer size, the camera aspect ratio and the uniform values when the window is resized
+ * Updates the renderer size, the camera aspect ratio and the uniforms when the window is resized
  */
 function onWindowResize(event) {
+	// Update the renderer
+	renderer.setSize(window.innerWidth, window.innerHeight);
+
 	// Update the camera
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
-
-	// Update the renderer
-	renderer.setSize(window.innerWidth, window.innerHeight);
 
 	// Update the resolution uniform
 	uniforms.u_resolution.value.x = window.innerWidth;
@@ -149,7 +163,7 @@ function onWindowResize(event) {
 }
 
 /*
- * Updates the uniform values when the mouse moves
+ * Updates the uniforms when the mouse moves
  */
 function onMouseMove(event) {
 	uniforms.u_mouse.value.x = event.pageX;
