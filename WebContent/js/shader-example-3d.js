@@ -66,7 +66,10 @@ function init() {
 		uniforms : uniforms,
 		vertexShader : document.getElementById("vertexShader").textContent,
 		fragmentShader : document.getElementById("fragmentShader").textContent,
-		transparent : true
+		transparent : true,
+		extensions : {
+			derivatives : true
+		}
 	});
 
 	// Create the mesh and add it to the scene
@@ -106,6 +109,9 @@ function addMeshToScene() {
 			// Scale and rotate the geometry
 			geometry.scale(12, 12, 12);
 			geometry.rotateX(Math.PI / 2);
+
+			// Calculate the vertex normals
+			geometry.computeVertexNormals();
 
 			// Create the mesh and add it to the scene
 			mesh = new THREE.Mesh(geometry, material);
