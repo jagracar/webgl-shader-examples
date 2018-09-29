@@ -1,0 +1,61 @@
+/*
+ * General layout
+ */
+
+html, body {
+	height: 100%;
+}
+
+
+// First flexbox group
+
+body {
+	display: flex;
+	flex-direction: column;
+}
+
+.nav-container {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 5000;
+}
+
+.main-container {
+	flex: 1 1 auto;
+}
+
+.footer-container {
+	flex: 0 0 auto;
+}
+
+
+// Second flexbox group
+
+.nav-container {
+	display: flex;
+	flex-direction: row;
+}
+
+.nav-header {
+	flex: 0 0 auto;
+}
+
+.nav-menu-wrapper {
+	flex: 1 1 auto;
+}
+
+
+// Layout for small and medium devices
+
+@media (max-width: $M) {
+	.nav-header {
+		flex: 1 1 auto;
+	}
+
+	.nav-menu-wrapper {
+		position: absolute;
+		top: $nav-padding + $nav-margin;
+		left: 0;
+	}
+}

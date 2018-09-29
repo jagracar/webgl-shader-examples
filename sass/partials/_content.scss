@@ -1,0 +1,16 @@
+/*
+ * Content components
+ */
+
+.main-container {
+	padding: $main-container-top-padding $container-sides-padding 0 $container-sides-padding;
+}
+
+
+// Style for small, medium and large devices
+
+@media (max-width: $L) {
+	.main-container {
+		padding: $main-container-top-padding $container-sides-padding-lowres 0 $container-sides-padding-lowres;
+	}
+}

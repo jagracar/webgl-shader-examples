@@ -1,0 +1,125 @@
+/*
+ * Fonts declarations
+ */
+
+@font-face {
+	font-family: "Font Awesome 4.7";
+	font-style: normal;
+	font-weight: normal;
+	src: url("../fonts/fontAwesome-4.7.0/fontawesome-webfont.eot?v=4.7.0");
+	src: url("../fonts/fontAwesome-4.7.0/fontawesome-webfont.eot?#iefix&v=4.7.0") format("embedded-opentype"),
+		 url("../fonts/fontAwesome-4.7.0/fontawesome-webfont.woff2?v=4.7.0") format("woff2"),
+		 url("../fonts/fontAwesome-4.7.0/fonts/fontawesome-webfont.woff?v=4.7.0") format("woff"),
+		 url("../fonts/fontAwesome-4.7.0/fonts/fontawesome-webfont.ttf?v=4.7.0") format("truetype"),
+		 url("../fonts/fontAwesome-4.7.0/fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular") format("svg");
+}
+
+@font-face {
+	font-family: 'Font Awesome 5 Brands';
+	font-style: normal;
+	font-weight: normal;
+	src: url("../fonts/fontAwesome-5.2.0/fa-brands-400.eot");
+	src: url("../fonts/fontAwesome-5.2.0/fa-brands-400.eot?#iefix") format("embedded-opentype"),
+		 url("../fonts/fontAwesome-5.2.0/fa-brands-400.woff2") format("woff2"),
+		 url("../fonts/fontAwesome-5.2.0/fa-brands-400.woff") format("woff"),
+		 url("../fonts/fontAwesome-5.2.0/fa-brands-400.ttf") format("truetype"),
+		 url("../fonts/fontAwesome-5.2.0/fa-brands-400.svg#fontawesome") format("svg");
+}
+
+@font-face {
+	font-family: 'Font Awesome 5 Regular';
+	font-style: normal;
+	font-weight: 400;
+	src: url("../fonts/fontAwesome-5.2.0/fa-regular-400.eot");
+	src: url("../fonts/fontAwesome-5.2.0/fa-regular-400.eot?#iefix") format("embedded-opentype"),
+		 url("../fonts/fontAwesome-5.2.0/fa-regular-400.woff2") format("woff2"),
+		 url("../fonts/fontAwesome-5.2.0/fa-regular-400.woff") format("woff"),
+		 url("../fonts/fontAwesome-5.2.0/fa-regular-400.ttf") format("truetype"),
+		 url("../fonts/fontAwesome-5.2.0/fa-regular-400.svg#fontawesome") format("svg");
+}
+
+@font-face {
+	font-family: 'Font Awesome 5 Solid';
+	font-style: normal;
+	font-weight: 900;
+	src: url("../fonts/fontAwesome-5.2.0/fa-solid-900.eot");
+	src: url("../fonts/fontAwesome-5.2.0/fa-solid-900.eot?#iefix") format("embedded-opentype"),
+		 url("../fonts/fontAwesome-5.2.0/fa-solid-900.woff2") format("woff2"),
+		 url("../fonts/fontAwesome-5.2.0/fa-solid-900.woff") format("woff"),
+		 url("../fonts/fontAwesome-5.2.0/fa-solid-900.ttf") format("truetype"),
+		 url("../fonts/fontAwesome-5.2.0/fa-solid-900.svg#fontawesome") format("svg");
+}
+
+.fab, .far, .fas {
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+	display: inline-block;
+	font-style: normal;
+	font-variant: normal;
+	text-rendering: auto;
+	line-height: 1;
+}
+
+.fab {
+	font-family: 'Font Awesome 5 Brands';
+}
+
+.far {
+	font-family: 'Font Awesome 5 Regular';
+	font-weight: 400;
+}
+
+.fas {
+	font-family: 'Font Awesome 5 Solid';
+	font-weight: 900;
+}
+
+
+/*
+ * Icons
+ */
+
+.menu-icon:before {
+	font-family: "Font Awesome 5 Solid";
+	font-weight: 900;
+	content: "\f0c9";
+}
+
+.love-icon:before {
+	font-family: "Font Awesome 5 Regular";
+	content: "\f004";
+}
+
+.envelope-icon:before {
+	font-family: "Font Awesome 5 Regular";
+	content: "\f0e0";
+}
+
+.phone-icon:before {
+	font-family: "Font Awesome 5 Solid";
+	font-weight: 900;
+	content: "\f095";
+}
+
+.noSpam-icon:before {
+	font-family: "Font Awesome 4.7";
+	content: "\f1fa";
+}
+
+.handMade-icon:before {
+	font-family: "Font Awesome 5 Solid";
+	font-weight: 900;
+	content: "\f1b0";
+}
+
+.up-icon:before {
+	font-family: "Font Awesome 5 Solid";
+	font-weight: 900;
+	content: "\f106";
+}
+
+.down-icon:before {
+	font-family: "Font Awesome 5 Solid";
+	font-weight: 900;
+	content: "\f107";
+}

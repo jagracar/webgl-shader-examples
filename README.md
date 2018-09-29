@@ -1,20 +1,6 @@
 # WebGL shader examples
 
-Some simple examples of WebGL shaders.
-
-# Test the examples
-
-Download the git repository:
-
-``` bash
-git clone https://github.com/jagracar/webgl-shader-examples.git
-```
-
-and open the index.html file with your favorite browser:
-
-``` bash
-google-chrome webgl-shader-examples/WebContent/index.html
-```
+Some simple examples of WebGL shaders. They can be seen live at [webgl-shaders.com](https://webgl-shaders.com).
 
 # Build the project
 

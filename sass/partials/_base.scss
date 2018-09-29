@@ -1,0 +1,64 @@
+/*
+ * General styling
+ */
+
+*, *:before, *:after {
+	box-sizing: border-box;
+}
+
+body {
+	font-family: "HelveticaNeue-Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 0.9em;
+	line-height: 1.4;
+	color: $general-text-color;
+}
+
+a {
+	text-decoration: none;
+	color: $link-color;
+
+	&:hover, &:focus {
+		text-decoration: underline;
+	}
+
+	h1 &, h2 &, h3 &, h4 &, h5 &, h6 & {
+		color: inherit;
+
+		&:hover, &:focus {
+			text-decoration: none;
+		}
+	}
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: normal;
+	color: $header-color;
+
+	small {
+		font-size: 60%;
+	}
+}
+
+h2 {
+	font-size: 2.6em;
+
+	@media (max-width: $M) {
+		font-size: 2.2em;
+	}
+}
+
+h3 {
+	font-size: 1.5em;
+}
+
+h4 {
+	font-size: 1.2em;
+}
+
+p {
+	max-width: 0.8 * $L;
+}
+
+figure {
+	margin: 0;
+}

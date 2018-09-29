@@ -1,32 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>@@name shader example</title>
 <meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-<meta name="keywords" content="shader, three.js, javaScript, examples">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="WebGL, shader, three.js, javaScript, example, 3D">
 <meta name="description" content="@@name shader example">
-<meta name="author" content="Javier Graciá Carpio">
-<style>
-body {
-	background-color: #000000;
-	margin: 0px;
-	overflow: hidden;
-}
-</style>
+<meta name="author" content="Javier Gracia Carpio">
+
+<title>@@name shader example</title>
+
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+<!-- CSS files -->
+<link rel="stylesheet" href="/css/styles.css">
+
+<!-- JavaScript files -->
+<script type="text/javascript" src="/js/libs/three.min.js"></script>
+<script type="text/javascript" src="/js/libs/stats.min.js"></script>
+<script type="text/javascript" src="/js/libs/dat.gui.min.js"></script>
+<script type="text/javascript" src="/js/libs/OrbitControls.js"></script>
 </head>
 
 <body>
-	<div id="container"></div>
+	<!-- Navigation bar -->
+	<header class="nav-container">
+		<h1 class="nav-header">
+			<a href="/index.html" class="nav-item is-header-item">WebGL-shaders</a>
+		</h1>
 
-	<script id="vertexShader" type="x-shader/x-vertex">@@vertexShader</script>
-	<script id="fragmentShader" type="x-shader/x-fragment">@@fragmentShader</script>
+		<nav class="nav-menu-wrapper">
+			<span class="nav-item is-menu-item menu-icon" onclick="return false;"></span>
+		</nav>
+	</header>
 
-	<script src="js/three.js"></script>
-	<script src="js/stats.js"></script>
-	<script src="js/dat.gui.js"></script>
-	<script src="js/OrbitControls.js"></script>
-	<script src="@@jsfile"></script>
+	<!-- Main content -->
+	<main class="main-container">
+	<article class="content">
+		<div class="sketch-container" id="sketch-container">
+			<div class="sketch-gui" id="sketch-gui"></div>
+			<div class="sketch-stats" id="sketch-stats"></div>
+		</div>
+
+		<script type="x-shader/x-vertex" id="vertexShader">@@vertexShader</script>
+		<script type="x-shader/x-fragment" id="fragmentShader">@@fragmentShader</script>
+
+		<script type="text/javascript" src="@@jsfile"></script>
+	</article>
+	</main>
 </body>
 </html>

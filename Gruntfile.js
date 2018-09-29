@@ -15,7 +15,7 @@ module.exports = function(grunt) {
 					replacement : name
 				}, {
 					match : 'jsfile',
-					replacement : 'js/shader-example-2d.js'
+					replacement : '/js/shader-example-2d.js'
 				}, {
 					match : 'vertexShader',
 					replacement : '<%= grunt.file.read("WebContent/shaders/' + vertexShader + '") %>'
@@ -44,7 +44,7 @@ module.exports = function(grunt) {
 					replacement : name
 				}, {
 					match : 'jsfile',
-					replacement : 'js/shader-example-3d.js'
+					replacement : '/js/shader-example-3d.js'
 				}, {
 					match : 'vertexShader',
 					replacement : '<%= grunt.file.read("WebContent/shaders/' + vertexShader + '") %>'
@@ -110,7 +110,27 @@ module.exports = function(grunt) {
 
 		// grunt-jshint
 		jshint : {
-			files : [ 'Gruntfile.js', 'package.json', 'WebContent/js/*example*.js' ]
+			files : [ 'Gruntfile.js', 'package.json', 'WebContent/js/*.js' ]
+		},
+
+		// grunt-contrib-sass
+		sass : {
+			options : {
+				sourcemap : 'none',
+				style : 'expanded'
+			},
+			build : {
+				src : 'sass/styles.scss',
+				dest : 'WebContent/css/styles.css'
+			}
+		},
+
+		// grunt-autoprefixer
+		autoprefixer : {
+			build : {
+				src : 'WebContent/css/styles.css',
+				dest : 'WebContent/css/styles.css'
+			}
 		},
 
 		// grunt-contrib-watch
@@ -126,8 +146,10 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-exec');
 	grunt.loadNpmTasks('grunt-replace');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks('grunt-contrib-sass');
+	grunt.loadNpmTasks('grunt-autoprefixer');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 
 	// Default task
-	grunt.registerTask('default', [ 'clean', 'copy', 'exec', 'replace', 'jshint' ]);
+	grunt.registerTask('default', [ 'clean', 'copy', 'exec', 'replace', 'jshint', 'sass', 'autoprefixer' ]);
 };

@@ -1,0 +1,25 @@
+/*
+ * Footer components
+ */
+
+.footer-container {
+	padding: 0 $container-sides-padding;
+}
+
+.footer-content {
+	border-top: 1px dotted $footer-border-color;
+	color: $footer-color;
+}
+
+.separator {
+	padding: 0 0.5em;
+}
+
+
+// Style for small, medium and large devices
+
+@media (max-width: $L) {
+	.footer-container {
+		padding: 0 $container-sides-padding-lowres;
+	}
+}

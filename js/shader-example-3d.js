@@ -1,177 +1,203 @@
-var renderer, scene, camera, clock, stats, controlParameters, uniforms, material, mesh;
+window.onload = function() {
+	runSketch();
+};
 
-init();
-animate();
+function runSketch() {
+	var renderer, scene, camera, clock, stats, controlParameters, uniforms, material, mesh;
 
-/*
- * Initializes the sketch
- */
-function init() {
-	// Initialize the WebGL renderer
-	renderer = new THREE.WebGLRenderer({
-		antialias : true
-	});
-	renderer.setPixelRatio(window.devicePixelRatio);
-	renderer.setSize(window.innerWidth, window.innerHeight);
-	renderer.setClearColor(new THREE.Color(0, 0, 0));
+	init();
+	animate();
 
-	// Add the renderer to the sketch container
-	var container = document.getElementById("container");
-	container.appendChild(renderer.domElement);
+	/*
+	 * Initializes the sketch
+	 */
+	function init() {
+		// Initialize the WebGL renderer
+		renderer = new THREE.WebGLRenderer({
+			antialias : true
+		});
+		renderer.setPixelRatio(window.devicePixelRatio);
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		renderer.setClearColor(new THREE.Color(0, 0, 0));
 
-	// Initialize the scene
-	scene = new THREE.Scene();
+		// Add the renderer to the sketch container
+		var container = document.getElementById("sketch-container");
+		container.appendChild(renderer.domElement);
 
-	// Initialize the camera
-	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 50);
-	camera.position.z = 30;
+		// Initialize the scene
+		scene = new THREE.Scene();
 
-	// Initialize the camera controls
-	var controls = new THREE.OrbitControls(camera, renderer.domElement);
-	controls.enablePan = false;
+		// Initialize the camera
+		camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 50);
+		camera.position.z = 30;
 
-	// Initialize the clock
-	clock = new THREE.Clock(true);
+		// Initialize the camera controls
+		var controls = new THREE.OrbitControls(camera, renderer.domElement);
+		controls.enablePan = false;
 
-	// Initialize the statistics monitor and add it to the sketch container
-	stats = new Stats();
-	container.appendChild(stats.dom);
+		// Initialize the clock
+		clock = new THREE.Clock(true);
 
-	// Initialize the control parameters
-	controlParameters = {
-		"Geometry" : "Torus knot"
-	};
+		// Initialize the statistics monitor and add it to the sketch container
+		stats = new Stats();
+		stats.dom.style.cssText = "";
+		document.getElementById("sketch-stats").appendChild(stats.dom);
 
-	// Add the control panel to the sketch
-	addControlPanel();
+		// Initialize the control parameters
+		controlParameters = {
+			"Geometry" : "Torus knot"
+		};
 
-	// Define the shader uniforms
-	uniforms = {
-		u_time : {
-			type : "f",
-			value : 0.0
-		},
-		u_resolution : {
-			type : "v2",
-			value : new THREE.Vector2(window.innerWidth, window.innerHeight)
-		},
-		u_mouse : {
-			type : "v2",
-			value : new THREE.Vector2()
-		}
-	};
+		// Add the control panel to the sketch
+		addControlPanel();
 
-	// Create the shader material
-	material = new THREE.ShaderMaterial({
-		uniforms : uniforms,
-		vertexShader : document.getElementById("vertexShader").textContent,
-		fragmentShader : document.getElementById("fragmentShader").textContent,
-		transparent : true,
-		extensions : {
-			derivatives : true
-		}
-	});
+		// Define the shader uniforms
+		uniforms = {
+			u_time : {
+				type : "f",
+				value : 0.0
+			},
+			u_resolution : {
+				type : "v2",
+				value : new THREE.Vector2(window.innerWidth, window.innerHeight)
+						.multiplyScalar(window.devicePixelRatio)
+			},
+			u_mouse : {
+				type : "v2",
+				value : new THREE.Vector2()
+			}
+		};
 
-	// Create the mesh and add it to the scene
-	addMeshToScene();
+		// Create the shader material
+		material = new THREE.ShaderMaterial({
+			uniforms : uniforms,
+			vertexShader : document.getElementById("vertexShader").textContent,
+			fragmentShader : document.getElementById("fragmentShader").textContent,
+			transparent : true,
+			extensions : {
+				derivatives : true
+			}
+		});
 
-	// Add the event listeners
-	window.addEventListener("resize", onWindowResize, false);
-	document.addEventListener("mousemove", onMouseMove, false);
-}
+		// Create the mesh and add it to the scene
+		addMeshToScene();
 
-/*
- * Adds the control panel to the sketch
- */
-function addControlPanel() {
-	// Create the control panel
-	var controlPanel = new dat.GUI();
-
-	// Add the controllers
-	controlPanel.add(controlParameters, "Geometry", [ "Torus knot", "Sphere", "Icosahedron", "Suzanne" ])
-			.onFinishChange(addMeshToScene);
-}
-
-/*
- * Adds the mesh to the scene
- */
-function addMeshToScene() {
-	// Remove any previous mesh from the scene
-	if (mesh) {
-		scene.remove(mesh);
+		// Add the event listeners
+		window.addEventListener("resize", onWindowResize, false);
+		renderer.domElement.addEventListener("mousemove", onMouseMove, false);
+		renderer.domElement.addEventListener("touchstart", onTouchMove, false);
+		renderer.domElement.addEventListener("touchmove", onTouchMove, false);
 	}
 
-	// Handle all the different options
-	if (controlParameters.Geometry == "Suzanne") {
-		// Load the json file that contains the geometry
-		var loader = new THREE.JSONLoader();
-		loader.load("objects/suzanne_geometry.json", function(geometry) {
-			// Scale and rotate the geometry
-			geometry.scale(12, 12, 12);
-			geometry.rotateX(Math.PI / 2);
+	/*
+	 * Adds the control panel to the sketch
+	 */
+	function addControlPanel() {
+		// Create the control panel
+		var controlPanel = new dat.GUI({
+			autoPlace : false
+		});
 
-			// Calculate the vertex normals
-			geometry.computeVertexNormals();
+		// Add the controllers
+		controlPanel.add(controlParameters, "Geometry", [ "Torus knot", "Sphere", "Icosahedron", "Suzanne" ])
+				.onFinishChange(addMeshToScene);
+
+		// Add the GUI to the correct DOM element
+		document.getElementById("sketch-gui").appendChild(controlPanel.domElement);
+	}
+
+	/*
+	 * Adds the mesh to the scene
+	 */
+	function addMeshToScene() {
+		// Remove any previous mesh from the scene
+		if (mesh) {
+			scene.remove(mesh);
+		}
+
+		// Handle all the different options
+		if (controlParameters.Geometry == "Suzanne") {
+			// Load the json file that contains the geometry
+			var loader = new THREE.JSONLoader();
+			loader.load("/objects/suzanne_geometry.json", function(geometry) {
+				// Scale and rotate the geometry
+				geometry.scale(10, 10, 10);
+				geometry.rotateX(Math.PI / 2);
+
+				// Calculate the vertex normals
+				geometry.computeVertexNormals();
+
+				// Create the mesh and add it to the scene
+				mesh = new THREE.Mesh(geometry, material);
+				scene.add(mesh);
+			});
+		} else {
+			// Create the desired geometry
+			var geometry;
+
+			if (controlParameters.Geometry == "Torus knot") {
+				geometry = new THREE.TorusKnotGeometry(6.5, 2.3, 256, 32);
+			} else if (controlParameters.Geometry == "Sphere") {
+				geometry = new THREE.SphereGeometry(10, 64, 64);
+			} else if (controlParameters.Geometry == "Icosahedron") {
+				geometry = new THREE.IcosahedronGeometry(10, 0);
+			}
 
 			// Create the mesh and add it to the scene
 			mesh = new THREE.Mesh(geometry, material);
 			scene.add(mesh);
-		});
-	} else {
-		// Create the desired geometry
-		var geometry;
-
-		if (controlParameters.Geometry == "Torus knot") {
-			geometry = new THREE.TorusKnotGeometry(8, 2.5, 256, 32);
-		} else if (controlParameters.Geometry == "Sphere") {
-			geometry = new THREE.SphereGeometry(10, 64, 64);
-		} else if (controlParameters.Geometry == "Icosahedron") {
-			geometry = new THREE.IcosahedronGeometry(10, 0);
 		}
-
-		// Create the mesh and add it to the scene
-		mesh = new THREE.Mesh(geometry, material);
-		scene.add(mesh);
 	}
-}
 
-/*
- * Animates the sketch
- */
-function animate() {
-	requestAnimationFrame(animate);
-	render();
-	stats.update();
-}
+	/*
+	 * Animates the sketch
+	 */
+	function animate() {
+		requestAnimationFrame(animate);
+		render();
+		stats.update();
+	}
 
-/*
- * Renders the sketch
- */
-function render() {
-	uniforms.u_time.value = clock.getElapsedTime();
-	renderer.render(scene, camera);
-}
+	/*
+	 * Renders the sketch
+	 */
+	function render() {
+		uniforms.u_time.value = clock.getElapsedTime();
+		renderer.render(scene, camera);
+	}
 
-/*
- * Updates the renderer size, the camera aspect ratio and the uniforms when the window is resized
- */
-function onWindowResize(event) {
-	// Update the renderer
-	renderer.setSize(window.innerWidth, window.innerHeight);
+	/*
+	 * Updates the renderer size, the camera aspect ratio and the uniforms when the window is resized
+	 */
+	function onWindowResize(event) {
+		// Update the renderer
+		renderer.setSize(window.innerWidth, window.innerHeight);
 
-	// Update the camera
-	camera.aspect = window.innerWidth / window.innerHeight;
-	camera.updateProjectionMatrix();
+		// Update the camera
+		camera.aspect = window.innerWidth / window.innerHeight;
+		camera.updateProjectionMatrix();
 
-	// Update the resolution uniform
-	uniforms.u_resolution.value.x = window.innerWidth;
-	uniforms.u_resolution.value.y = window.innerHeight;
-}
+		// Update the resolution uniform
+		uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight).multiplyScalar(window.devicePixelRatio);
+	}
 
-/*
- * Updates the uniforms when the mouse moves
- */
-function onMouseMove(event) {
-	uniforms.u_mouse.value.x = event.pageX;
-	uniforms.u_mouse.value.y = window.innerHeight - event.pageY;
+	/*
+	 * Updates the uniforms when the mouse moves
+	 */
+	function onMouseMove(event) {
+		// Update the mouse uniform
+		uniforms.u_mouse.value.set(event.pageX, window.innerHeight - event.pageY).multiplyScalar(
+				window.devicePixelRatio);
+	}
+
+	/*
+	 * Updates the uniforms when the touch moves
+	 */
+	function onTouchMove(event) {
+		event.preventDefault();
+
+		// Update the mouse uniform
+		uniforms.u_mouse.value.set(event.touches[0].pageX, window.innerHeight - event.touches[0].pageY).multiplyScalar(
+				window.devicePixelRatio);
+	}
 }
