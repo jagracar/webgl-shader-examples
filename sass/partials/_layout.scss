@@ -46,6 +46,15 @@ body {
 }
 
 
+// Third flexbox group
+
+.nav-menu-wrapper {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+
 // Layout for small and medium devices
 
 @media (max-width: $M) {
@@ -57,5 +66,9 @@ body {
 		position: absolute;
 		top: $nav-padding + $nav-margin;
 		left: 0;
+	}
+
+	.nav-menu-wrapper {
+		display: block;
 	}
 }

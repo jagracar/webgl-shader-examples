@@ -30,6 +30,21 @@
 
 		<nav class="nav-menu-wrapper">
 			<span class="nav-item is-menu-item menu-icon" onclick="return false;"></span>
+
+			<ul class="nav-menu-list">
+				<li><a href="/index.html" class="nav-item">Back to list</a></li>
+				<li><a href="/js/shader-example-3d.js" class="nav-item">JavaScript file</a></li>
+				<li><a href="/shaders/vert-3d.glsl" class="nav-item">Vertex
+						shader</a></li>
+				<li><a href="/shaders/frag-dots.glsl" class="nav-item">Fragment
+						shader</a></li>
+			</ul>
+
+			<ul class="nav-menu-list">
+				<li><a href="/about.html" class="nav-item">About</a></li>
+				<li><a href="https://github.com/jagracar/webgl-shader-examples"
+					class="nav-item"><span class="github-icon"></span> Github</a></li>
+			</ul>
 		</nav>
 	</header>
 
@@ -41,7 +56,8 @@
 			<div class="sketch-stats" id="sketch-stats"></div>
 		</div>
 
-		<script type="x-shader/x-vertex" id="vertexShader">#define GLSLIFY 1
+		<script type="x-shader/x-vertex" id="vertexShader">
+#define GLSLIFY 1
 // Common varyings
 varying vec3 v_position;
 varying vec3 v_normal;
@@ -57,8 +73,11 @@ void main() {
     // Vertex shader output
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }
-</script>
-		<script type="x-shader/x-fragment" id="fragmentShader">#define GLSLIFY 1
+
+		</script>
+
+		<script type="x-shader/x-fragment" id="fragmentShader">
+#define GLSLIFY 1
 // Common uniforms
 uniform vec2 u_resolution;
 uniform vec2 u_mouse;
@@ -118,7 +137,8 @@ void main() {
     // Fragment shader output
     gl_FragColor = vec4(vec3(surface_color), 1.0);
 }
-</script>
+
+		</script>
 
 		<script type="text/javascript" src="/js/shader-example-3d.js"></script>
 	</article>

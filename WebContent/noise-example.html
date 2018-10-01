@@ -21,15 +21,30 @@
 
 <body>
 	<!-- Navigation bar -->
-    <header class="nav-container">
-    	<h1 class="nav-header">
-    		<a href="/index.html" class="nav-item is-header-item">WebGL-shaders</a>
-    	</h1>
-    
-    	<nav class="nav-menu-wrapper">
-    		<span class="nav-item is-menu-item menu-icon" onclick="return false;"></span>
-    	</nav>
-    </header>
+	<header class="nav-container">
+		<h1 class="nav-header">
+			<a href="/index.html" class="nav-item is-header-item">WebGL-shaders</a>
+		</h1>
+
+		<nav class="nav-menu-wrapper">
+			<span class="nav-item is-menu-item menu-icon" onclick="return false;"></span>
+
+			<ul class="nav-menu-list">
+				<li><a href="/index.html" class="nav-item">Back to list</a></li>
+				<li><a href="/js/shader-example-2d.js" class="nav-item">JavaScript file</a></li>
+				<li><a href="/shaders/vert-2d.glsl" class="nav-item">Vertex
+						shader</a></li>
+				<li><a href="/shaders/frag-noise.glsl" class="nav-item">Fragment
+						shader</a></li>
+			</ul>
+
+			<ul class="nav-menu-list">
+				<li><a href="/about.html" class="nav-item">About</a></li>
+				<li><a href="https://github.com/jagracar/webgl-shader-examples"
+					class="nav-item"><span class="github-icon"></span> Github</a></li>
+			</ul>
+		</nav>
+	</header>
 
 	<!-- Main content -->
 	<main class="main-container">
@@ -37,8 +52,9 @@
 		<div class="sketch-container" id="sketch-container">
 			<div class="sketch-stats" id="sketch-stats"></div>
 		</div>
-	
-		<script type="x-shader/x-vertex" id="vertexShader">#define GLSLIFY 1
+
+		<script type="x-shader/x-vertex" id="vertexShader">
+#define GLSLIFY 1
 /*
  * The main program
  */
@@ -46,8 +62,11 @@ void main() {
     // Vertex shader output
     gl_Position = vec4(position, 1.0);
 }
-</script>
-		<script type="x-shader/x-fragment" id="fragmentShader">#define GLSLIFY 1
+
+		</script>
+		
+		<script type="x-shader/x-fragment" id="fragmentShader">
+#define GLSLIFY 1
 // Common uniforms
 uniform vec2 u_resolution;
 uniform vec2 u_mouse;
@@ -145,7 +164,8 @@ void main() {
     // Fragment shader output
     gl_FragColor = vec4(vec3(r, g, b), 1.0);
 }
-</script>
+
+		</script>
 
 		<script type="text/javascript" src="/js/shader-example-2d.js"></script>
 	</article>

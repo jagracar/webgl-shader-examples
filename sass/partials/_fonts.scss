@@ -85,6 +85,12 @@
 	content: "\f0c9";
 }
 
+.back-icon:before {
+	font-family: "Font Awesome 5 Solid";
+	font-weight: 900;
+	content: "\f060";
+}
+
 .love-icon:before {
 	font-family: "Font Awesome 5 Regular";
 	content: "\f004";
@@ -122,4 +128,9 @@
 	font-family: "Font Awesome 5 Solid";
 	font-weight: 900;
 	content: "\f107";
+}
+
+.github-icon:before {
+	font-family: "Font Awesome 5 Brands";
+	content: "\f09b";
 }

@@ -224,6 +224,12 @@ template {
   content: "\f0c9";
 }
 
+.back-icon:before {
+  font-family: "Font Awesome 5 Solid";
+  font-weight: 900;
+  content: "\f060";
+}
+
 .love-icon:before {
   font-family: "Font Awesome 5 Regular";
   content: "\f004";
@@ -261,6 +267,11 @@ template {
   font-family: "Font Awesome 5 Solid";
   font-weight: 900;
   content: "\f107";
+}
+
+.github-icon:before {
+  font-family: "Font Awesome 5 Brands";
+  content: "\f09b";
 }
 
 /*
@@ -372,6 +383,15 @@ body {
       flex: 1 1 auto;
 }
 
+.nav-menu-wrapper {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: row;
+      flex-direction: row;
+  -ms-flex-pack: justify;
+      justify-content: space-between;
+}
+
 @media (max-width: 816px) {
   .nav-header {
     -ms-flex: 1 1 auto;
@@ -383,6 +403,10 @@ body {
     top: 0.3em;
     left: 0;
   }
+
+  .nav-menu-wrapper {
+    display: block;
+  }
 }
 /*
  * Navigation bar components
@@ -390,9 +414,9 @@ body {
 .nav-container {
   width: 100%;
   padding: 0.3em;
+  border-bottom: 0.05em solid rgba(102, 102, 102, 0.96);
   margin: 0;
   background: linear-gradient(to right, rgba(26, 26, 26, 0.96), rgba(64, 64, 64, 0.96) 30%, rgba(64, 64, 64, 0.96) 70%, rgba(26, 26, 26, 0.96));
-  box-shadow: 0px 3px 3px rgba(102, 102, 102, 0.96);
 }
 .nav-container a:hover, .nav-container a:focus {
   text-decoration: none;
@@ -407,7 +431,7 @@ body {
 }
 
 .nav-header {
-  width: 7em;
+  width: 14em;
   margin: 0;
   font-size: 1.0em;
 }
@@ -415,13 +439,14 @@ body {
 .nav-item {
   display: block;
   min-width: 4em;
-  padding: 0.4em 0.7em;
+  padding: 0.35em 0.65em;
+  border: 0.05em solid rgba(255, 255, 255, 0.1);
   border-radius: 3px;
   font-size: 1.0em;
   text-align: center;
   white-space: nowrap;
   color: #e6e6e6;
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.1);
   transition: color 0.6s, background-color 0.6s;
 }
 .nav-item:hover {
@@ -429,6 +454,11 @@ body {
   background-color: rgba(255, 255, 255, 0.3);
 }
 
+.is-header-item {
+  padding: 0.4em 0.7em;
+  border: 0;
+  background-color: transparent;
+}
 .is-header-item:hover {
   background-color: transparent;
 }
@@ -463,9 +493,11 @@ body {
   .nav-menu-list {
     display: none;
   }
+  .nav-menu-list:first-of-type {
+    margin-top: 0.35em;
+  }
   .nav-menu-wrapper:hover .nav-menu-list {
     display: block;
-    margin-top: 0.3em;
     background: linear-gradient(to right, rgba(26, 26, 26, 0.96), rgba(64, 64, 64, 0.96) 30%, rgba(64, 64, 64, 0.96) 70%, rgba(26, 26, 26, 0.96));
   }
   .nav-menu-list li {
@@ -473,6 +505,8 @@ body {
     border-top: 0.05em solid rgba(255, 255, 255, 0.1);
   }
   .nav-menu-list .nav-item {
+    padding: 0.4em 0.7em;
+    border: 0;
     border-radius: 0;
     text-align: left;
   }

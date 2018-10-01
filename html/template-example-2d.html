@@ -21,15 +21,30 @@
 
 <body>
 	<!-- Navigation bar -->
-    <header class="nav-container">
-    	<h1 class="nav-header">
-    		<a href="/index.html" class="nav-item is-header-item">WebGL-shaders</a>
-    	</h1>
-    
-    	<nav class="nav-menu-wrapper">
-    		<span class="nav-item is-menu-item menu-icon" onclick="return false;"></span>
-    	</nav>
-    </header>
+	<header class="nav-container">
+		<h1 class="nav-header">
+			<a href="/index.html" class="nav-item is-header-item">WebGL-shaders</a>
+		</h1>
+
+		<nav class="nav-menu-wrapper">
+			<span class="nav-item is-menu-item menu-icon" onclick="return false;"></span>
+
+			<ul class="nav-menu-list">
+				<li><a href="/index.html" class="nav-item">Back to list</a></li>
+				<li><a href="@@jsFile" class="nav-item">JavaScript file</a></li>
+				<li><a href="@@vertexShaderFile" class="nav-item">Vertex
+						shader</a></li>
+				<li><a href="@@fragmentShaderFile" class="nav-item">Fragment
+						shader</a></li>
+			</ul>
+
+			<ul class="nav-menu-list">
+				<li><a href="/about.html" class="nav-item">About</a></li>
+				<li><a href="https://github.com/jagracar/webgl-shader-examples"
+					class="nav-item"><span class="github-icon"></span> Github</a></li>
+			</ul>
+		</nav>
+	</header>
 
 	<!-- Main content -->
 	<main class="main-container">
@@ -37,11 +52,16 @@
 		<div class="sketch-container" id="sketch-container">
 			<div class="sketch-stats" id="sketch-stats"></div>
 		</div>
-	
-		<script type="x-shader/x-vertex" id="vertexShader">@@vertexShader</script>
-		<script type="x-shader/x-fragment" id="fragmentShader">@@fragmentShader</script>
 
-		<script type="text/javascript" src="@@jsfile"></script>
+		<script type="x-shader/x-vertex" id="vertexShader">
+@@vertexShaderContent
+		</script>
+		
+		<script type="x-shader/x-fragment" id="fragmentShader">
+@@fragmentShaderContent
+		</script>
+
+		<script type="text/javascript" src="@@jsFile"></script>
 	</article>
 	</main>
 </body>

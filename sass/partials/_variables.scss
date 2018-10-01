@@ -5,8 +5,9 @@ $L: 1440px; // 90em for 16px body font
 
 // Size variables
 $nav-padding: 0.3em;
+$nav-border: 0.05em;
 $nav-margin: 0;
-$nav-header-width: 7em;
+$nav-header-width: 14em;
 $nav-border-radius: 3px;
 $nav-item-min-width: 4em;
 $nav-item-border: 0.05em;
@@ -36,10 +37,11 @@ $link-color: lighten(blue, 20%);
 $border-color: rgba(white, 0.1);
 $nav-bg-color: rgba(lighten(black, 10%), $alpha);
 $nav-middle-bg-color: rgba(lighten(black, 25%), $alpha);
+$nav-border-color: rgba(lighten(black, 40%), $alpha);
 $nav-shadow-color: rgba(darken($shadow-color, 20%), $alpha);
 $nav-item-color: darken(white, 10%);
 $nav-item-hover-color: lighten($nav-item-color, 20%);
-$nav-item-bg-color: transparent;
+$nav-item-bg-color: rgba(white, 0.1);
 $nav-item-hover-bg-color: rgba(white, 0.3);
 $nav-active-item-bg-color: rgba(0, 150, 255, 0.7);
 $nav-active-item-hover-bg-color: rgba(0, 150, 255, 1.0);

@@ -14,13 +14,19 @@ module.exports = function(grunt) {
 					match : 'name',
 					replacement : name
 				}, {
-					match : 'jsfile',
+					match : 'jsFile',
 					replacement : '/js/shader-example-2d.js'
 				}, {
-					match : 'vertexShader',
+					match : 'vertexShaderFile',
+					replacement : '/shaders/' + vertexShader
+				}, {
+					match : 'fragmentShaderFile',
+					replacement : '/shaders/' + fragmentShader
+				}, {
+					match : 'vertexShaderContent',
 					replacement : '<%= grunt.file.read("WebContent/shaders/' + vertexShader + '") %>'
 				}, {
-					match : 'fragmentShader',
+					match : 'fragmentShaderContent',
 					replacement : '<%= grunt.file.read("WebContent/shaders/' + fragmentShader + '") %>'
 				} ]
 			}
@@ -43,13 +49,19 @@ module.exports = function(grunt) {
 					match : 'name',
 					replacement : name
 				}, {
-					match : 'jsfile',
+					match : 'jsFile',
 					replacement : '/js/shader-example-3d.js'
 				}, {
-					match : 'vertexShader',
+					match : 'vertexShaderFile',
+					replacement : '/shaders/' + vertexShader
+				}, {
+					match : 'fragmentShaderFile',
+					replacement : '/shaders/' + fragmentShader
+				}, {
+					match : 'vertexShaderContent',
 					replacement : '<%= grunt.file.read("WebContent/shaders/' + vertexShader + '") %>'
 				}, {
-					match : 'fragmentShader',
+					match : 'fragmentShaderContent',
 					replacement : '<%= grunt.file.read("WebContent/shaders/' + fragmentShader + '") %>'
 				} ]
 			}
@@ -65,7 +77,7 @@ module.exports = function(grunt) {
 		// grunt-contrib-clean
 		clean : {
 			build : {
-				src : [ 'WebContent/*.html', 'WebContent/shaders/*.glsl', 'WebContent/js/*.js', 'WebContent/objects/*.*' ]
+				src : [ 'WebContent/*.html', 'WebContent/shaders/*.glsl' ]
 			}
 		},
 
@@ -75,17 +87,9 @@ module.exports = function(grunt) {
 				src : 'html/index.html',
 				dest : 'WebContent/index.html'
 			},
-			jsfiles : {
-				expand : true,
-				flatten : true,
-				src : 'js/*.js',
-				dest : 'WebContent/js/'
-			},
-			objectfiles : {
-				expand : true,
-				flatten : true,
-				src : 'objects/*.*',
-				dest : 'WebContent/objects/'
+			about : {
+				src : 'html/about.html',
+				dest : 'WebContent/about.html'
 			}
 		},
 
@@ -135,7 +139,7 @@ module.exports = function(grunt) {
 
 		// grunt-contrib-watch
 		watch : {
-			files : [ 'html/*.html', 'shaders/**/*.glsl', 'js/*.js' ],
+			files : [ 'html/*.html', 'shaders/**/*.glsl', 'WebContent/js/*.js' ],
 			tasks : [ 'default' ]
 		}
 	});
