@@ -227,7 +227,7 @@ template {
 .back-icon:before {
   font-family: "Font Awesome 5 Solid";
   font-weight: 900;
-  content: "\f060";
+  content: "\f52b";
 }
 
 .love-icon:before {
@@ -267,6 +267,17 @@ template {
   font-family: "Font Awesome 5 Solid";
   font-weight: 900;
   content: "\f107";
+}
+
+.js-icon:before {
+  font-family: "Font Awesome 5 Brands";
+  content: "\f3b8";
+}
+
+.code-icon:before {
+  font-family: "Font Awesome 5 Solid";
+  font-weight: 900;
+  content: "\f121";
 }
 
 .github-icon:before {
@@ -414,7 +425,7 @@ body {
 .nav-container {
   width: 100%;
   padding: 0.3em;
-  border-bottom: 0.05em solid rgba(102, 102, 102, 0.96);
+  border-bottom: 0.0625em solid rgba(102, 102, 102, 0.96);
   margin: 0;
   background: linear-gradient(to right, rgba(26, 26, 26, 0.96), rgba(64, 64, 64, 0.96) 30%, rgba(64, 64, 64, 0.96) 70%, rgba(26, 26, 26, 0.96));
 }
@@ -439,8 +450,8 @@ body {
 .nav-item {
   display: block;
   min-width: 4em;
-  padding: 0.35em 0.65em;
-  border: 0.05em solid rgba(255, 255, 255, 0.1);
+  padding: 0.3375em 0.6375em;
+  border: 0.0625em solid rgba(255, 255, 255, 0.1);
   border-radius: 3px;
   font-size: 1.0em;
   text-align: center;
@@ -482,8 +493,8 @@ body {
 
   .is-menu-item {
     display: inline-block;
-    padding: 0.35em 0.65em;
-    border: 0.05em solid rgba(255, 255, 255, 0.1);
+    padding: 0.3375em 0.6375em;
+    border: 0.0625em solid rgba(255, 255, 255, 0.1);
     margin-left: 0.3em;
   }
   .nav-menu-wrapper:hover .is-menu-item {
@@ -494,7 +505,7 @@ body {
     display: none;
   }
   .nav-menu-list:first-of-type {
-    margin-top: 0.35em;
+    margin-top: 0.3em;
   }
   .nav-menu-wrapper:hover .nav-menu-list {
     display: block;
@@ -502,7 +513,7 @@ body {
   }
   .nav-menu-list li {
     display: list-item;
-    border-top: 0.05em solid rgba(255, 255, 255, 0.1);
+    border-top: 0.0625em solid rgba(255, 255, 255, 0.1);
   }
   .nav-menu-list .nav-item {
     padding: 0.4em 0.7em;
@@ -518,9 +529,54 @@ body {
   padding: 2.5em 10% 0 10%;
 }
 
+.content {
+  padding-bottom: 2em;
+}
+
+.example-list {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: row;
+      flex-direction: row;
+  -ms-flex-pack: justify;
+      justify-content: space-between;
+}
+.example-list nav {
+  -ms-flex: 0 0 48%;
+      flex: 0 0 48%;
+}
+.example-list ul {
+  padding: 0;
+  margin: 0;
+}
+.example-list li {
+  list-style-type: none;
+}
+.example-list a {
+  display: block;
+  padding: 0.4em;
+  margin-bottom: 0.3em;
+  border-radius: 3px;
+  text-align: center;
+  white-space: nowrap;
+  color: #333333;
+  background-color: #f2f2f2;
+  transition: background-color 0.6s;
+}
+.example-list a:hover, .example-list a:focus, .example-list a.active-sketch {
+  text-decoration: none;
+  color: white;
+  background-color: #bfbfbf;
+}
+
 @media (max-width: 1440px) {
   .main-container {
     padding: 2.5em 5% 0 5%;
+  }
+}
+@media (max-width: 816px) {
+  .example-list {
+    display: block;
   }
 }
 /*

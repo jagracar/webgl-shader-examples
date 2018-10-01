@@ -5,28 +5,23 @@ $L: 1440px; // 90em for 16px body font
 
 // Size variables
 $nav-padding: 0.3em;
-$nav-border: 0.05em;
+$nav-border: 0.0625em;
 $nav-margin: 0;
 $nav-header-width: 14em;
 $nav-border-radius: 3px;
 $nav-item-min-width: 4em;
-$nav-item-border: 0.05em;
+$nav-item-border: 0.0625em;
 $nav-item-padding: 0.4em 0.7em;
-$nav-item-padding-with-border: 0.35em 0.65em;
+$nav-item-padding-with-border: 0.3375em 0.6375em;
 $container-sides-padding: 10%;
 $container-sides-padding-lowres: 5%;
 $main-container-top-padding: 2.5em;
-$sketches-list-width: 20%;
-$sketches-list-margin: 3em;
-$sketches-list-margin-lowres: 1em;
-$sketches-list-item-margin: 0.3em;
-$sketches-list-item-padding: 0.4em;
-$sketches-list-item-border-radius: $nav-border-radius;
-$cv-section-padding: 1px 1.5em 0em 1.5em;
-$cv-section-border: 3px;
-$cv-section-margin: 1.5em;
-$cv-section-border-radius: 15px;
-$cv-descripion-list-margin: 1em;
+$examples-list-width: 20%;
+$examples-list-margin: 3em;
+$examples-list-margin-lowres: 1em;
+$examples-list-item-margin: 0.3em;
+$examples-list-item-padding: 0.4em;
+$examples-list-item-border-radius: $nav-border-radius;
 
 // Color variables
 $alpha: 0.96;
@@ -45,12 +40,10 @@ $nav-item-bg-color: rgba(white, 0.1);
 $nav-item-hover-bg-color: rgba(white, 0.3);
 $nav-active-item-bg-color: rgba(0, 150, 255, 0.7);
 $nav-active-item-hover-bg-color: rgba(0, 150, 255, 1.0);
-$cv-section-bg-color: darken(white, 3%);
-$cv-section-border-color: darken($cv-section-bg-color, 50%);
-$sketches-list-item-color: $general-text-color;
-$sketches-list-item-hover-color: lighten($sketches-list-item-color, 80%);
-$sketches-list-item-bg-color: darken(white, 5%);
-$sketches-list-item-hover-bg-color: darken($sketches-list-item-bg-color, 20%);
+$examples-list-item-color: $general-text-color;
+$examples-list-item-hover-color: lighten($examples-list-item-color, 80%);
+$examples-list-item-bg-color: darken(white, 5%);
+$examples-list-item-hover-bg-color: darken($examples-list-item-bg-color, 20%);
 $footer-color: lighten($general-text-color, 20%);
 $footer-border-color: darken(white, 20%);
 

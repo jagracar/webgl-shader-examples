@@ -4,8 +4,8 @@
 /*
  * Combines the 2d noise function at three different scales
  */
-float multy_scale_noise(vec2 p) {
-    return noise(3.0 * p) + noise(9.0 * p) + noise(20.0 * p);
+float multy_scale_noise(vec2 p, vec2 rel_mouse_pos) {
+    return 0.8 * noise(5.0 * p) + rel_mouse_pos.x * noise(15.0 * p) + rel_mouse_pos.y * noise(60.0 * p);
 }
 
 /*
@@ -18,9 +18,9 @@ void main() {
     vec2 rel_mouse_pos = u_mouse / max_dim;
 
     // Use a slightly shifted noise value for each color
-    float r = multy_scale_noise(rel_pixel_pos + 0.05 * rel_mouse_pos);
-    float g = multy_scale_noise(rel_pixel_pos + 0.05 * rel_mouse_pos.yx);
-    float b = multy_scale_noise(rel_pixel_pos - 0.05 * rel_mouse_pos);
+    float r = multy_scale_noise(rel_pixel_pos + 0.05 * rel_mouse_pos, rel_mouse_pos);
+    float g = multy_scale_noise(rel_pixel_pos + 0.05 * rel_mouse_pos.yx, rel_mouse_pos);
+    float b = multy_scale_noise(rel_pixel_pos - 0.05 * rel_mouse_pos, rel_mouse_pos);
 
     // Fragment shader output
     gl_FragColor = vec4(vec3(r, g, b), 1.0);

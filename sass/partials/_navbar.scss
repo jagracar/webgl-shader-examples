@@ -95,7 +95,7 @@
 		display: none;
 
 		&:first-of-type {
-			margin-top: $nav-padding + $nav-border + $nav-margin;
+			margin-top: $nav-padding + $nav-margin;
 		}
 		
 		.nav-menu-wrapper:hover & {
