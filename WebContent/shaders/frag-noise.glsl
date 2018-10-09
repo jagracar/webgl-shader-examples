@@ -76,7 +76,7 @@ float cnoise(vec2 P) {
  * Combines the 2d noise function at three different scales
  */
 float multy_scale_noise(vec2 p, vec2 rel_mouse_pos) {
-    return 0.5 * cnoise(5.0 * p) + rel_mouse_pos.x * cnoise(15.0 * p) + rel_mouse_pos.y * cnoise(60.0 * p);
+    return 0.8 * cnoise(5.0 * p) + rel_mouse_pos.x * cnoise(15.0 * p) + rel_mouse_pos.y * cnoise(60.0 * p);
 }
 
 /*

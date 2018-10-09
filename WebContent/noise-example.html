@@ -32,16 +32,14 @@
 			<ul class="nav-menu-list">
 				<li><a href="/index.html" class="nav-item">Back to list</a></li>
 				<li><a href="/js/shader-example-2d.js" class="nav-item">JavaScript file</a></li>
-				<li><a href="/shaders/vert-2d.glsl" class="nav-item">Vertex
-						shader</a></li>
-				<li><a href="/shaders/frag-noise.glsl" class="nav-item">Fragment
-						shader</a></li>
+				<li><a href="/shaders/vert-2d.glsl" class="nav-item">Vertex shader</a></li>
+				<li><a href="/shaders/frag-noise.glsl" class="nav-item">Fragment shader</a></li>
 			</ul>
 
 			<ul class="nav-menu-list">
 				<li><a href="/about.html" class="nav-item">About</a></li>
-				<li><a href="https://github.com/jagracar/webgl-shader-examples"
-					class="nav-item"><span class="github-icon"></span> Github</a></li>
+				<li><a href="https://github.com/jagracar/webgl-shader-examples" class="nav-item"><span class="github-icon"></span>
+						Github</a></li>
 			</ul>
 		</nav>
 	</header>
@@ -144,7 +142,7 @@ float cnoise(vec2 P) {
  * Combines the 2d noise function at three different scales
  */
 float multy_scale_noise(vec2 p, vec2 rel_mouse_pos) {
-    return 0.5 * cnoise(5.0 * p) + rel_mouse_pos.x * cnoise(15.0 * p) + rel_mouse_pos.y * cnoise(60.0 * p);
+    return 0.8 * cnoise(5.0 * p) + rel_mouse_pos.x * cnoise(15.0 * p) + rel_mouse_pos.y * cnoise(60.0 * p);
 }
 
 /*

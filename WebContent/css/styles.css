@@ -536,8 +536,8 @@ body {
 .example-list {
   display: -ms-flexbox;
   display: flex;
-  -ms-flex-direction: row;
-      flex-direction: row;
+  -ms-flex-flow: row wrap;
+      flex-flow: row wrap;
   -ms-flex-pack: justify;
       justify-content: space-between;
 }

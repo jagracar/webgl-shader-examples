@@ -1,12 +1,12 @@
 module.exports = function(grunt) {
 
 	/*
-	 * Defines the grunt-replace parameters that will fill the html template file for a 2d shader example
+	 * Defines the grunt-replace parameters that will fill the html template file for a shader example
 	 */
-	function replaceParametersFor2dExample(name, vertexShader, fragmentShader) {
+	function replaceParametersForExample(name, htmlFile, jsFile, vertexShader, fragmentShader) {
 		var parameters = {
 			files : [ {
-				src : 'html/template-example-2d.html',
+				src : 'html/' + htmlFile,
 				dest : 'WebContent/' + name + '-example.html'
 			} ],
 			options : {
@@ -15,42 +15,7 @@ module.exports = function(grunt) {
 					replacement : name
 				}, {
 					match : 'jsFile',
-					replacement : '/js/shader-example-2d.js'
-				}, {
-					match : 'vertexShaderFile',
-					replacement : '/shaders/' + vertexShader
-				}, {
-					match : 'fragmentShaderFile',
-					replacement : '/shaders/' + fragmentShader
-				}, {
-					match : 'vertexShaderContent',
-					replacement : '<%= grunt.file.read("WebContent/shaders/' + vertexShader + '") %>'
-				}, {
-					match : 'fragmentShaderContent',
-					replacement : '<%= grunt.file.read("WebContent/shaders/' + fragmentShader + '") %>'
-				} ]
-			}
-		};
-
-		return parameters;
-	}
-
-	/*
-	 * Defines the grunt-replace parameters that will fill the html template file for a 3d shader example
-	 */
-	function replaceParametersFor3dExample(name, vertexShader, fragmentShader) {
-		var parameters = {
-			files : [ {
-				src : 'html/template-example-3d.html',
-				dest : 'WebContent/' + name + '-example.html'
-			} ],
-			options : {
-				patterns : [ {
-					match : 'name',
-					replacement : name
-				}, {
-					match : 'jsFile',
-					replacement : '/js/shader-example-3d.js'
+					replacement : '/js/' + jsFile
 				}, {
 					match : 'vertexShaderFile',
 					replacement : '/shaders/' + vertexShader
@@ -103,13 +68,15 @@ module.exports = function(grunt) {
 
 		// grunt-replace
 		replace : {
-			random : replaceParametersFor2dExample('random', 'vert-2d.glsl', 'frag-random.glsl'),
-			noise : replaceParametersFor2dExample('noise', 'vert-2d.glsl', 'frag-noise.glsl'),
-			rain : replaceParametersFor2dExample('rain', 'vert-2d.glsl', 'frag-rain.glsl'),
-			tile : replaceParametersFor2dExample('tile', 'vert-2d.glsl', 'frag-tile.glsl'),
-			wave : replaceParametersFor3dExample('wave', 'vert-3d.glsl', 'frag-wave.glsl'),
-			pencil : replaceParametersFor3dExample('pencil', 'vert-3d.glsl', 'frag-pencil.glsl'),
-			dots : replaceParametersFor3dExample('dots', 'vert-3d.glsl', 'frag-dots.glsl')
+			random : replaceParametersForExample('random', 'template-example-2d.html', 'shader-example-2d.js', 'vert-2d.glsl', 'frag-random.glsl'),
+			noise : replaceParametersForExample('noise', 'template-example-2d.html', 'shader-example-2d.js', 'vert-2d.glsl', 'frag-noise.glsl'),
+			rain : replaceParametersForExample('rain', 'template-example-2d.html', 'shader-example-2d.js', 'vert-2d.glsl', 'frag-rain.glsl'),
+			tile : replaceParametersForExample('tile', 'template-example-2d.html', 'shader-example-2d.js', 'vert-2d.glsl', 'frag-tile.glsl'),
+			wave : replaceParametersForExample('wave', 'template-example-3d.html', 'shader-example-3d.js', 'vert-3d.glsl', 'frag-wave.glsl'),
+			pencil : replaceParametersForExample('pencil', 'template-example-3d.html', 'shader-example-3d.js', 'vert-3d.glsl', 'frag-pencil.glsl'),
+			dots : replaceParametersForExample('dots', 'template-example-3d.html', 'shader-example-3d.js', 'vert-3d.glsl', 'frag-dots.glsl'),
+			toon : replaceParametersForExample('toon', 'template-example-3d.html', 'shader-example-3d.js', 'vert-3d.glsl', 'frag-toon.glsl'),
+			edge : replaceParametersForExample('edge', 'template-example-2d.html', 'shader-example-filters.js', 'vert-filters.glsl', 'frag-edge.glsl')
 		},
 
 		// grunt-jshint

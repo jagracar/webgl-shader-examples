@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="keywords" content="WebGL, shader, three.js, javaScript, example, 2D">
-<meta name="description" content="random shader example">
+<meta name="description" content="edge shader example">
 <meta name="author" content="Javier Gracia Carpio">
 
-<title>random shader example</title>
+<title>edge shader example</title>
 
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
@@ -31,9 +31,9 @@
 
 			<ul class="nav-menu-list">
 				<li><a href="/index.html" class="nav-item">Back to list</a></li>
-				<li><a href="/js/shader-example-2d.js" class="nav-item">JavaScript file</a></li>
-				<li><a href="/shaders/vert-2d.glsl" class="nav-item">Vertex shader</a></li>
-				<li><a href="/shaders/frag-random.glsl" class="nav-item">Fragment shader</a></li>
+				<li><a href="/js/shader-example-filters.js" class="nav-item">JavaScript file</a></li>
+				<li><a href="/shaders/vert-filters.glsl" class="nav-item">Vertex shader</a></li>
+				<li><a href="/shaders/frag-edge.glsl" class="nav-item">Fragment shader</a></li>
 			</ul>
 
 			<ul class="nav-menu-list">
@@ -53,10 +53,16 @@
 
 		<script type="x-shader/x-vertex" id="vertexShader">
 #define GLSLIFY 1
+// Texture varyings
+varying vec2 v_uv;
+
 /*
  * The main program
  */
 void main() {
+    // Calculate the varyings
+    v_uv = uv;
+
     // Vertex shader output
     gl_Position = vec4(position, 1.0);
 }
@@ -70,39 +76,57 @@ uniform vec2 u_resolution;
 uniform vec2 u_mouse;
 uniform float u_time;
 
-/*
- * Random number generator with a vec2 seed
- *
- * Credits:
- * http://byteblacksmith.com/improvements-to-the-canonical-one-liner-glsl-rand-for-opengl-es-2-0
- * https://github.com/mattdesl/glsl-random
- */
-highp float random(vec2 co) {
-    highp float a = 12.9898;
-    highp float b = 78.233;
-    highp float c = 43758.5453;
-    highp float dt = dot(co.xy, vec2(a, b));
-    highp float sn = mod(dt, 3.14);
-    return fract(sin(sn) * c);
-}
+// Texture uniforms
+uniform sampler2D u_texture;
+
+// Texture varyings
+varying vec2 v_uv;
+
+// Edge detection kernel
+const mat3 kernel = mat3(-1.0, -1.0, -1.0,
+                         -1.0, +8.0, -1.0,
+                         -1.0, -1.0, -1.0);
 
 /*
  * The main program
  */
 void main() {
-    // Create a grid of squares that depends on the mouse position
-    vec2 square = floor((gl_FragCoord.xy - u_mouse) / 30.0);
+    // Calculate the pixel color based on the mouse position
+    vec3 pixel_color;
 
-    // Give a random color to each square
-    vec3 square_color = vec3(random(square), random(1.234 * square), 1.0);
+    if (gl_FragCoord.x > u_mouse.x) {
+        // Apply the edge detection kernel
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                pixel_color += kernel[i][j] * texture2D(u_texture, v_uv + vec2(i - 1, j - 1) / u_resolution).rgb;
+            }
+        }
+
+        // Use the most extreme color value
+        float min_value = min(pixel_color.r, min(pixel_color.g, pixel_color.b));
+        float max_value = max(pixel_color.r, max(pixel_color.g, pixel_color.b));
+
+        if (abs(min_value) > abs(max_value)) {
+            pixel_color = vec3(min_value);
+        } else {
+            pixel_color = vec3(max_value);
+        }
+
+        // Rescale the pixel color using the mouse y position
+        float scale = 0.2 + 2.5 * u_mouse.y / u_resolution.y;
+        pixel_color = 0.5 + scale * pixel_color;
+    } else {
+        // Use the original image pixel color
+        pixel_color = texture2D(u_texture, v_uv).rgb;
+    }
 
     // Fragment shader output
-    gl_FragColor = vec4(square_color, 1.0);
+    gl_FragColor = vec4(pixel_color, 1.0);
 }
 
 		</script>
 
-		<script type="text/javascript" src="/js/shader-example-2d.js"></script>
+		<script type="text/javascript" src="/js/shader-example-filters.js"></script>
 	</article>
 	</main>
 </body>
