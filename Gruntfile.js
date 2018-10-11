@@ -77,7 +77,8 @@ module.exports = function(grunt) {
 			dots : replaceParametersForExample('dots', 'template-example-3d.html', 'shader-example-3d.js', 'vert-3d.glsl', 'frag-dots.glsl'),
 			toon : replaceParametersForExample('toon', 'template-example-3d.html', 'shader-example-3d.js', 'vert-3d.glsl', 'frag-toon.glsl'),
 			edge : replaceParametersForExample('edge', 'template-example-2d.html', 'shader-example-filters.js', 'vert-filters.glsl', 'frag-edge.glsl'),
-			blur : replaceParametersForExample('blur', 'template-example-2d.html', 'shader-example-filters.js', 'vert-filters.glsl', 'frag-blur.glsl')
+			blur : replaceParametersForExample('blur', 'template-example-2d.html', 'shader-example-filters.js', 'vert-filters.glsl', 'frag-blur.glsl'),
+			lens : replaceParametersForExample('lens', 'template-example-2d.html', 'shader-example-filters.js', 'vert-filters.glsl', 'frag-lens.glsl')
 		},
 
 		// grunt-jshint
