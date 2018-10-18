@@ -35,6 +35,53 @@ module.exports = function(grunt) {
 		return parameters;
 	}
 
+	/*
+	 * Defines the grunt-replace parameters that will fill the html template file for a simulation shader example
+	 */
+	function replaceParametersForSimExample(name, htmlFile, jsFile, positionShader, velocityShader, vertexShader, fragmentShader) {
+		var parameters = {
+			files : [ {
+				src : 'html/' + htmlFile,
+				dest : 'WebContent/' + name + '-example.html'
+			} ],
+			options : {
+				patterns : [ {
+					match : 'name',
+					replacement : name
+				}, {
+					match : 'jsFile',
+					replacement : '/js/' + jsFile
+				}, {
+					match : 'positionShaderFile',
+					replacement : '/shaders/' + positionShader
+				}, {
+					match : 'velocityShaderFile',
+					replacement : '/shaders/' + velocityShader
+				}, {
+					match : 'vertexShaderFile',
+					replacement : '/shaders/' + vertexShader
+				}, {
+					match : 'fragmentShaderFile',
+					replacement : '/shaders/' + fragmentShader
+				}, {
+					match : 'positionShaderContent',
+					replacement : '<%= grunt.file.read("WebContent/shaders/' + positionShader + '") %>'
+				}, {
+					match : 'velocityShaderContent',
+					replacement : '<%= grunt.file.read("WebContent/shaders/' + velocityShader + '") %>'
+				}, {
+					match : 'vertexShaderContent',
+					replacement : '<%= grunt.file.read("WebContent/shaders/' + vertexShader + '") %>'
+				}, {
+					match : 'fragmentShaderContent',
+					replacement : '<%= grunt.file.read("WebContent/shaders/' + fragmentShader + '") %>'
+				} ]
+			}
+		};
+
+		return parameters;
+	}
+
 	// Project configuration.
 	grunt.initConfig({
 		pkg : grunt.file.readJSON('package.json'),
@@ -78,7 +125,8 @@ module.exports = function(grunt) {
 			toon : replaceParametersForExample('toon', 'template-example-3d.html', 'shader-example-3d.js', 'vert-3d.glsl', 'frag-toon.glsl'),
 			edge : replaceParametersForExample('edge', 'template-example-2d.html', 'shader-example-filters.js', 'vert-filters.glsl', 'frag-edge.glsl'),
 			blur : replaceParametersForExample('blur', 'template-example-2d.html', 'shader-example-filters.js', 'vert-filters.glsl', 'frag-blur.glsl'),
-			lens : replaceParametersForExample('lens', 'template-example-2d.html', 'shader-example-filters.js', 'vert-filters.glsl', 'frag-lens.glsl')
+			lens : replaceParametersForExample('lens', 'template-example-2d.html', 'shader-example-filters.js', 'vert-filters.glsl', 'frag-lens.glsl'),
+			gravity : replaceParametersForSimExample('gravity', 'template-example-sim.html', 'shader-example-gravity.js', 'frag-grav-pos.glsl', 'frag-grav-vel.glsl', 'vert-sim.glsl', 'frag-sim.glsl')
 		},
 
 		// grunt-jshint

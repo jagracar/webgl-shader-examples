@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="WebGL, shader, three.js, javaScript, example, 3D, simulation">
+<meta name="description" content="gravity shader example">
+<meta name="author" content="Javier Gracia Carpio">
+
+<title>gravity shader example</title>
+
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+<!-- CSS files -->
+<link rel="stylesheet" href="/css/styles.css">
+
+<!-- JavaScript files -->
+<script type="text/javascript" src="/js/libs/three.min.js"></script>
+<script type="text/javascript" src="/js/libs/stats.min.js"></script>
+<script type="text/javascript" src="/js/libs/dat.gui.min.js"></script>
+<script type="text/javascript" src="/js/libs/OrbitControls.js"></script>
+<script type="text/javascript" src="/js/libs/GPUComputationRenderer.js"></script>
+</head>
+
+<body>
+	<!-- Navigation bar -->
+	<header class="nav-container">
+		<h1 class="nav-header">
+			<a href="/index.html" class="nav-item is-header-item">WebGL-shaders</a>
+		</h1>
+
+		<nav class="nav-menu-wrapper">
+			<span class="nav-item is-menu-item menu-icon" onclick="return false;"></span>
+
+			<ul class="nav-menu-list">
+				<li><a href="/index.html" class="nav-item">Back to list</a></li>
+				<li><a href="/js/shader-example-gravity.js" class="nav-item">JavaScript file</a></li>
+				<li><a href="/shaders/frag-grav-pos.glsl" class="nav-item">Position shader</a></li>
+				<li><a href="/shaders/frag-grav-vel.glsl" class="nav-item">Velocity shader</a></li>
+				<li><a href="/shaders/vert-sim.glsl" class="nav-item">Vertex shader</a></li>
+				<li><a href="/shaders/frag-sim.glsl" class="nav-item">Fragment shader</a></li>
+			</ul>
+
+			<ul class="nav-menu-list">
+				<li><a href="/about.html" class="nav-item">About</a></li>
+				<li><a href="https://github.com/jagracar/webgl-shader-examples" class="nav-item"><span class="github-icon"></span>
+						Github</a></li>
+			</ul>
+		</nav>
+	</header>
+
+	<!-- Main content -->
+	<main class="main-container">
+	<article class="content">
+		<div class="sketch-container" id="sketch-container">
+			<div class="sketch-gui" id="sketch-gui"></div>
+			<div class="sketch-stats" id="sketch-stats"></div>
+		</div>
+
+		<script type="x-shader/x-fragment" id="positionShader">
+#define GLSLIFY 1
+/*
+ * The main program
+ */
+void main() {
+    // Get the particle texture position
+    vec2 uv = gl_FragCoord.xy / resolution;
+
+    // Get the particle current position and velocity
+    vec3 position = texture2D(u_positionTexture, uv).xyz;
+    vec3 velocity = texture2D(u_velocityTexture, uv).xyz;
+
+    // Return the updated particle position
+    gl_FragColor = vec4(position + velocity, 1.0);
+}
+
+		</script>
+
+		<script type="x-shader/x-fragment" id="velocityShader">
+#define GLSLIFY 1
+// The simulation constants
+const float width = resolution.x;
+const float height = resolution.y;
+const float nParticles = width * height;
+
+// Softening factor. This is required to avoid high acceleration values
+//when two particles get too close
+const float softening = 0.1;
+
+/*
+ * The main program
+ */
+void main() {
+    // Get the particle texture position
+    vec2 uv = gl_FragCoord.xy / resolution;
+
+    // Get the particle current position and velocity
+    vec3 position = texture2D(u_positionTexture, uv).xyz;
+    vec3 velocity = texture2D(u_velocityTexture, uv).xyz;
+
+    // Loop over all the particles and calculate the total gravitational force
+    vec3 totalForce = vec3(0.0);
+
+    for (float i = 0.0; i < nParticles; i++) {
+        // Get the position of the attracting particle
+        vec2 particleUv = vec2(mod(i, width) + 0.5, floor(i / width) + 0.5) / resolution;
+        vec3 particlePosition = texture2D(u_positionTexture, particleUv).xyz;
+
+        // Calculate the force direction
+        vec3 forceDirection = particlePosition - position;
+
+        // Calculate the particle distance
+        float distance = length(forceDirection);
+
+        // Move to the next particle if the distance is exactly zero, which
+        // indicates that we are comparing the particle with intself
+        if (distance == 0.0) {
+            continue;
+        }
+
+        // Add the particle gravitational force
+        totalForce += (forceDirection / distance) / pow(distance + softening, 2.0);
+    }
+
+    // Return the updated particle velocity
+    gl_FragColor = vec4(velocity + 0.000001 * totalForce, 1.0);
+}
+
+		</script>
+
+		<script type="x-shader/x-vertex" id="vertexShader">
+#define GLSLIFY 1
+// The particle reference uv texture position
+attribute vec2 reference;
+
+// Texture with the particles current positions
+uniform sampler2D u_positionTexture;
+
+// The particle size
+uniform float u_size;
+
+/*
+ * The main program
+ */
+void main() {
+    // Get the particle new position
+    vec3 newPosition = texture2D(u_positionTexture, reference).xyz;
+
+    // Vertex shader output
+    gl_PointSize = u_size;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+}
+
+		</script>
+
+		<script type="x-shader/x-fragment" id="fragmentShader">
+#define GLSLIFY 1
+/*
+ * The main program
+ */
+void main() {
+    // Fragment shader output
+    gl_FragColor = vec4(0.6, 0.6, 1.0, 1.0);
+}
+
+		</script>
+
+		<script type="text/javascript" src="/js/shader-example-gravity.js"></script>
+	</article>
+	</main>
+</body>
+</html>

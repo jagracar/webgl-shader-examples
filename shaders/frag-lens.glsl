@@ -15,7 +15,7 @@ varying vec2 v_uv;
  */
 void main() {
     // Set the lens radius
-    float lens_radius = 0.3 * u_resolution.x;
+    float lens_radius = min(0.3 * u_resolution.x, 250.0);
 
     // Calculate the direction to the mouse position and the distance
     vec2 mouse_direction = u_mouse - gl_FragCoord.xy;

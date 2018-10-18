@@ -194,8 +194,6 @@ function runSketch() {
 	 * Updates the uniforms when the touch moves
 	 */
 	function onTouchMove(event) {
-		event.preventDefault();
-
 		// Update the mouse uniform
 		uniforms.u_mouse.value.set(event.touches[0].pageX, window.innerHeight - event.touches[0].pageY).multiplyScalar(
 				window.devicePixelRatio);

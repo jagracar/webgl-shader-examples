@@ -16,7 +16,7 @@ varying vec2 v_uv;
  */
 void main() {
     // Set the lens radius
-    float lens_radius = 0.3 * u_resolution.x;
+    float lens_radius = min(0.3 * u_resolution.x, 250.0);
 
     // Calculate the direction to the mouse position and the distance
     vec2 mouse_direction = u_mouse - gl_FragCoord.xy;
@@ -30,7 +30,7 @@ void main() {
         float exp = 1.0;
         vec2 offset = (1.0 - pow(mouse_distance / lens_radius, exp)) * mouse_direction;
 
-        // Apply the lens effect
+        // Get the pixel color at the offset position
         pixel_color = texture2D(u_texture, v_uv + offset / u_resolution).rgb;
     } else {
         // Use the original image pixel color
