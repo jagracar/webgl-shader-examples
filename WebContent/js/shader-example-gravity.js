@@ -30,7 +30,7 @@ function runSketch() {
 
 		// Initialize the camera
 		camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
-		camera.position.z = 30;
+		camera.position.z = 12;
 
 		// Initialize the camera controls
 		var controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -43,8 +43,8 @@ function runSketch() {
 
 		// Initialize the simulator
 		var isDesktop = Math.min(window.innerWidth, window.innerHeight) > 450;
-		var simSizeX = isDesktop? 64 : 16;
-		var simSizeY = isDesktop? 64 : 16;
+		var simSizeX = isDesktop? 64 : 32;
+		var simSizeY = isDesktop? 64 : 32;
 		simulator = getSimulator(simSizeX, simSizeY, renderer);
 		positionVariable = getSimulationVariable("u_positionTexture", simulator);
 
@@ -72,9 +72,13 @@ function runSketch() {
 				type : "t",
 				value : null
 			},
+			u_texture : {
+				type : "t",
+				value : new THREE.TextureLoader().load("img/particle.png")
+			},
 			u_size : {
 				type : "f",
-				value : Math.min(2 * window.devicePixelRatio, 3)
+				value : 50 * window.devicePixelRatio
 			}
 		};
 
@@ -85,7 +89,8 @@ function runSketch() {
 			fragmentShader : document.getElementById("fragmentShader").textContent,
 			depthTest : false,
 			lights: false,
-			blending : THREE.AdditiveBlending,
+			transparent: true,
+			blending : THREE.AdditiveBlending
 		});
 
 		// Create the particles and add them to the scene

@@ -123,7 +123,7 @@ void main() {
     }
 
     // Return the updated particle velocity
-    gl_FragColor = vec4(velocity + totalForce / (nParticles * 255.0), 1.0);
+    gl_FragColor = vec4(velocity + totalForce / (2.0 * pow(nParticles, 1.5)), 1.0);
 }
 
 		</script>
@@ -143,24 +143,30 @@ uniform float u_size;
  * The main program
  */
 void main() {
-    // Get the particle new position
-    vec3 newPosition = texture2D(u_positionTexture, reference).xyz;
+    // Get the particle model view position
+    vec4 mvPosition = modelViewMatrix * texture2D(u_positionTexture, reference);
 
     // Vertex shader output
-    gl_PointSize = u_size;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+    gl_PointSize = -u_size / mvPosition.z;
+    gl_Position = projectionMatrix * mvPosition;
 }
 
 		</script>
 
 		<script type="x-shader/x-fragment" id="fragmentShader">
 #define GLSLIFY 1
+// Texture with the particle profile
+uniform sampler2D u_texture;
+
 /*
  * The main program
  */
 void main() {
+    // Get the particle alpha value from the texture
+    float alpha = 1.2 * texture2D(u_texture, gl_PointCoord).a;
+
     // Fragment shader output
-    gl_FragColor = vec4(0.5, 0.8, 0.9, 1.0);
+    gl_FragColor = vec4(vec3(1.0), alpha);
 }
 
 		</script>

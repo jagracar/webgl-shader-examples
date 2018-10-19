@@ -12,10 +12,10 @@ uniform float u_size;
  * The main program
  */
 void main() {
-    // Get the particle new position
-    vec3 newPosition = texture2D(u_positionTexture, reference).xyz;
+    // Get the particle model view position
+    vec4 mvPosition = modelViewMatrix * texture2D(u_positionTexture, reference);
 
     // Vertex shader output
-    gl_PointSize = u_size;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+    gl_PointSize = -u_size / mvPosition.z;
+    gl_Position = projectionMatrix * mvPosition;
 }

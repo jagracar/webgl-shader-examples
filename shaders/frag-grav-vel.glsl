@@ -43,5 +43,5 @@ void main() {
     }
 
     // Return the updated particle velocity
-    gl_FragColor = vec4(velocity + totalForce / (nParticles * 255.0), 1.0);
+    gl_FragColor = vec4(velocity + totalForce / (2.0 * pow(nParticles, 1.5)), 1.0);
 }
