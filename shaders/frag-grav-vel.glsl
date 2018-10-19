@@ -1,10 +1,10 @@
-// The simulation constants
+// Simulation constants
 const float width = resolution.x;
 const float height = resolution.y;
 const float nParticles = width * height;
 
 // Softening factor. This is required to avoid high acceleration values
-//when two particles get too close
+// when two particles get too close
 const float softening = 0.1;
 
 /*
@@ -43,5 +43,5 @@ void main() {
     }
 
     // Return the updated particle velocity
-    gl_FragColor = vec4(velocity + 0.000001 * totalForce, 1.0);
+    gl_FragColor = vec4(velocity + totalForce / (nParticles * 255.0), 1.0);
 }

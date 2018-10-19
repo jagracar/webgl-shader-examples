@@ -14,7 +14,8 @@ function runSketch() {
 	function init() {
 		// Initialize the WebGL renderer
 		renderer = new THREE.WebGLRenderer({
-			antialias : true
+			antialias : true,
+			precision : "highp"
 		});
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(window.innerWidth, window.innerHeight);
@@ -41,8 +42,9 @@ function runSketch() {
 		document.getElementById("sketch-stats").appendChild(stats.dom);
 
 		// Initialize the simulator
-		var simSizeX = 64;
-		var simSizeY = 64;
+		var isDesktop = Math.min(window.innerWidth, window.innerHeight) > 450;
+		var simSizeX = isDesktop? 64 : 16;
+		var simSizeY = isDesktop? 64 : 16;
 		simulator = getSimulator(simSizeX, simSizeY, renderer);
 		positionVariable = getSimulationVariable("u_positionTexture", simulator);
 
@@ -82,6 +84,7 @@ function runSketch() {
 			vertexShader : document.getElementById("vertexShader").textContent,
 			fragmentShader : document.getElementById("fragmentShader").textContent,
 			depthTest : false,
+			lights: false,
 			blending : THREE.AdditiveBlending,
 		});
 
