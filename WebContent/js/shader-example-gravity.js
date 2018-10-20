@@ -30,7 +30,7 @@ function runSketch() {
 
 		// Initialize the camera
 		camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
-		camera.position.z = 12;
+		camera.position.z = 10;
 
 		// Initialize the camera controls
 		var controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -74,7 +74,7 @@ function runSketch() {
 			},
 			u_texture : {
 				type : "t",
-				value : new THREE.TextureLoader().load("img/particle.png")
+				value : new THREE.TextureLoader().load("img/particle2.png")
 			},
 			u_size : {
 				type : "f",
