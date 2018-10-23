@@ -129,14 +129,23 @@ function runSketch() {
 		gpuSimulator.setVariableDependencies(positionVariable, [ positionVariable, velocityVariable ]);
 		gpuSimulator.setVariableDependencies(velocityVariable, [ positionVariable, velocityVariable ]);
 
-		// Set the wrapping properties
-		velocityVariable.wrapS = THREE.RepeatWrapping;
-		velocityVariable.wrapT = THREE.RepeatWrapping;
-		positionVariable.wrapS = THREE.RepeatWrapping;
-		positionVariable.wrapT = THREE.RepeatWrapping;
+		// Add the position uniforms
+		positionUniforms = positionVariable.material.uniforms;
+		positionUniforms.u_dt = {
+			type : "f",
+			value : 0.3
+		};
 
 		// Add the velocity uniforms
 		velocityUniforms = velocityVariable.material.uniforms;
+		velocityUniforms.u_dt = {
+			type : "f",
+			value : positionUniforms.u_dt.value
+		};
+		velocityUniforms.u_nGalaxies = {
+				type : "f",
+				value : 2
+		};
 		velocityUniforms.u_mass = {
 			type : "f",
 			value : galaxyMass
@@ -169,7 +178,7 @@ function runSketch() {
 		var nParticles = (position.length / 3) - nGalaxies;
 		var galaxyParticles = [ Math.round(nParticles / 2), nParticles - Math.round(nParticles / 2) ];
 		var galaxySizes = [ 0.7 * galaxyHaloSize, 0.7 * galaxyHaloSize ];
-		var galaxyInclinations = [ 0.35 * Math.PI, 2 * Math.PI * Math.random() ];
+		var galaxyInclinations = [ 0.35 * Math.PI, Math.PI * Math.random() ];
 		var galaxyPositions = [ new THREE.Vector3(-galaxyHaloSize, 0, 0), new THREE.Vector3(galaxyHaloSize, 0, 0) ];
 		var galaxyVelocities = [ new THREE.Vector3(0.0005, 0.0001, 0.001), new THREE.Vector3(-0.0005, -0.0001, -0.001) ];
 
@@ -250,7 +259,12 @@ function runSketch() {
 	 * Renders the sketch
 	 */
 	function render() {
-		simulator.compute();
+		// Run several iterations per frame
+		for (var i = 0; i < 20; i++) {
+			simulator.compute();
+		}
+
+		// Render the particles on the screen
 		uniforms.u_positionTexture.value = simulator.getCurrentRenderTarget(positionVariable).texture;
 		renderer.render(scene, camera);
 	}
