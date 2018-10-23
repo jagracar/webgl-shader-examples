@@ -1,3 +1,8 @@
+// Simulation uniforms
+uniform float u_dt;
+uniform float u_mass;
+uniform float u_haloSize;
+
 // Simulation constants
 const float width = resolution.x;
 const float height = resolution.y;
@@ -5,11 +10,6 @@ const float height = resolution.y;
 // Softening factor. This is required to avoid high acceleration values
 // when two particles get too close
 const float softening = 0.001;
-
-uniform float u_dt;
-uniform float u_nGalaxies;
-uniform float u_mass;
-uniform float u_haloSize;
 
 /*
  * The main program
@@ -25,7 +25,7 @@ void main() {
     // Loop over all the particles and calculate the total gravitational force
     vec3 totalForce = vec3(0.0);
 
-    for (float i = 0.0; i < 2.0; i++) {
+    for (float i = 0.0; i < nGalaxies; i++) {
         // Get the position of the attracting particle
         vec2 particleUv = vec2(mod(i, width) + 0.5, floor(i / width) + 0.5) / resolution;
         vec3 particlePosition = texture2D(u_positionTexture, particleUv).xyz;

@@ -1,3 +1,4 @@
+// Simulation uniforms
 uniform float u_dt;
 
 /*

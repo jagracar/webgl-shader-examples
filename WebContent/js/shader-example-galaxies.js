@@ -14,8 +14,7 @@ function runSketch() {
 	function init() {
 		// Initialize the WebGL renderer
 		renderer = new THREE.WebGLRenderer({
-			antialias : true,
-			precision : "highp"
+			antialias : true
 		});
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(window.innerWidth, window.innerHeight);
@@ -129,11 +128,14 @@ function runSketch() {
 		gpuSimulator.setVariableDependencies(positionVariable, [ positionVariable, velocityVariable ]);
 		gpuSimulator.setVariableDependencies(velocityVariable, [ positionVariable, velocityVariable ]);
 
+		// Add the velocity defines
+		velocityVariable.material.defines.nGalaxies = "2.0";
+
 		// Add the position uniforms
 		positionUniforms = positionVariable.material.uniforms;
 		positionUniforms.u_dt = {
 			type : "f",
-			value : 0.3
+			value : 0.2
 		};
 
 		// Add the velocity uniforms
@@ -141,10 +143,6 @@ function runSketch() {
 		velocityUniforms.u_dt = {
 			type : "f",
 			value : positionUniforms.u_dt.value
-		};
-		velocityUniforms.u_nGalaxies = {
-				type : "f",
-				value : 2
 		};
 		velocityUniforms.u_mass = {
 			type : "f",

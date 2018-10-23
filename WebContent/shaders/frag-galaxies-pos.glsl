@@ -1,4 +1,5 @@
 #define GLSLIFY 1
+// Simulation uniforms
 uniform float u_dt;
 
 /*
