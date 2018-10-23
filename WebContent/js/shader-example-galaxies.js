@@ -30,6 +30,8 @@ function runSketch() {
 
 		// Initialize the camera
 		camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
+		camera.position.x = 8;
+		camera.position.y = 5;
 		camera.position.z = 10;
 
 		// Initialize the camera controls
@@ -43,8 +45,8 @@ function runSketch() {
 
 		// Initialize the simulator
 		var isDesktop = Math.min(window.innerWidth, window.innerHeight) > 450;
-		var simSizeX = isDesktop? 64 : 32;
-		var simSizeY = isDesktop? 64 : 32;
+		var simSizeX = isDesktop ? 128 : 64;
+		var simSizeY = isDesktop ? 128 : 64;
 		simulator = getSimulator(simSizeX, simSizeY, renderer);
 		positionVariable = getSimulationVariable("u_positionTexture", simulator);
 
@@ -63,7 +65,7 @@ function runSketch() {
 		// used instead)
 		for (var i = 0; i < nParticles; i++) {
 			references[2 * i] = (i % simSizeX) / simSizeX;
-			references[2 * i + 1] = Math.floor(i / simSizeX) / simSizeY;
+			references[2 * i + 1] = Math.floor(i / simSizeX)/ simSizeY;
 		}
 
 		// Define the particle shader uniforms
@@ -88,8 +90,8 @@ function runSketch() {
 			vertexShader : document.getElementById("vertexShader").textContent,
 			fragmentShader : document.getElementById("fragmentShader").textContent,
 			depthTest : false,
-			lights: false,
-			transparent: true,
+			lights : false,
+			transparent : true,
 			blending : THREE.AdditiveBlending
 		});
 
@@ -113,30 +115,9 @@ function runSketch() {
 		var velocityTexture = gpuSimulator.createTexture();
 
 		// Fill the texture data arrays with the simulation initial conditions
-		var position = positionTexture.image.data;
-		var velocity = velocityTexture.image.data;
-		var nParticles = simSizeX * simSizeY;
-
-		for (var i = 0; i < nParticles; i++) {
-			// Get a random point inside a sphere
-			var distance = 10 * Math.pow(Math.random(), 1 / 3);
-			var cos = 2 * Math.random() - 1;
-			var sin = Math.sqrt(1 - cos * cos);
-			var ang = 2 * Math.PI * Math.random();
-
-			// Calculate the point x,y,z coordinates
-			var particleIndex = 4 * i;
-			position[particleIndex] = distance * sin * Math.cos(ang);
-			position[particleIndex + 1] = distance * sin * Math.sin(ang);
-			position[particleIndex + 2] = distance * cos;
-			position[particleIndex + 3] = 1;
-
-			// Start with zero initial velocity
-			velocity[particleIndex] = 0;
-			velocity[particleIndex + 1] = 0;
-			velocity[particleIndex + 2] = 0;
-			velocity[particleIndex + 3] = 1;
-		}
+		var galaxyMass = 0.00015;
+		var galaxyHaloSize = 6;
+		setInitialConditions(positionTexture, velocityTexture, galaxyMass, galaxyHaloSize);
 
 		// Add the position and velocity variables to the simulator
 		var positionVariable = gpuSimulator.addVariable("u_positionTexture",
@@ -154,6 +135,17 @@ function runSketch() {
 		positionVariable.wrapS = THREE.RepeatWrapping;
 		positionVariable.wrapT = THREE.RepeatWrapping;
 
+		// Add the velocity uniforms
+		velocityUniforms = velocityVariable.material.uniforms;
+		velocityUniforms.u_mass = {
+			type : "f",
+			value : galaxyMass
+		};
+		velocityUniforms.u_haloSize = {
+			type : "f",
+			value : galaxyHaloSize
+		};
+
 		// Initialize the GPU simulator
 		var error = gpuSimulator.init();
 
@@ -162,6 +154,74 @@ function runSketch() {
 		}
 
 		return gpuSimulator;
+	}
+
+	/*
+	 * Sets the simulation initial conditions
+	 */
+	function setInitialConditions(positionTexture, velocityTexture, galaxyMass, galaxyHaloSize) {
+		// Get the position and velocity arrays
+		var position = positionTexture.image.data;
+		var velocity = velocityTexture.image.data;
+
+		// Set the galaxy properties
+		var nGalaxies = 2;
+		var nParticles = (position.length / 3) - nGalaxies;
+		var galaxyParticles = [ Math.round(nParticles / 2), nParticles - Math.round(nParticles / 2) ];
+		var galaxySizes = [ 0.7 * galaxyHaloSize, 0.7 * galaxyHaloSize ];
+		var galaxyInclinations = [ 0.35 * Math.PI, 2 * Math.PI * Math.random() ];
+		var galaxyPositions = [ new THREE.Vector3(-galaxyHaloSize, 0, 0), new THREE.Vector3(galaxyHaloSize, 0, 0) ];
+		var galaxyVelocities = [ new THREE.Vector3(0.0005, 0.0001, 0.001), new THREE.Vector3(-0.0005, -0.0001, -0.001) ];
+
+		// Fill the position and velocity arrays
+		var startIndex = nGalaxies;
+
+		for (var i = 0; i < nGalaxies; i++) {
+			// Use the first indices for the galaxy centers
+			var galaxyIndex = 4 * i;
+			position[galaxyIndex] = galaxyPositions[i].x;
+			position[galaxyIndex + 1] = galaxyPositions[i].y;
+			position[galaxyIndex + 2] = galaxyPositions[i].z;
+			position[galaxyIndex + 3] = 1;
+			velocity[galaxyIndex] = galaxyVelocities[i].x;
+			velocity[galaxyIndex + 1] = galaxyVelocities[i].y;
+			velocity[galaxyIndex + 2] = galaxyVelocities[i].z;
+			velocity[galaxyIndex + 3] = 1;
+
+			// Loop over the galaxy particles
+			var sin = Math.sin(galaxyInclinations[i]);
+			var cos = Math.cos(galaxyInclinations[i]);
+
+			for (var j = startIndex; j < startIndex + galaxyParticles[i]; j++) {
+				// Get a random point inside the galaxy disk
+				var distance = galaxySizes[i] * Math.sqrt(Math.random());
+				var ang = 2 * Math.PI * Math.random();
+
+				// Get the expected velocity at the point distance
+				var massAtPosition = galaxyMass * Math.min(distance, galaxyHaloSize) / galaxyHaloSize;
+				var vel = Math.sqrt(massAtPosition / distance);
+
+				// Calculate the particle position and velocity before applying the galaxy inclination
+				var x = distance * Math.cos(ang);
+				var y = distance * Math.sin(ang);
+				var velx = -vel * Math.sin(ang);
+				var vely = vel * Math.cos(ang);
+
+				// Calculate the particle position and velocity
+				var particleIndex = 4 * j;
+				position[particleIndex] = x + galaxyPositions[i].x;
+				position[particleIndex + 1] = cos * y + galaxyPositions[i].y;
+				position[particleIndex + 2] = -sin * y + galaxyPositions[i].z;
+				position[particleIndex + 3] = 1;
+				velocity[particleIndex] = velx + galaxyVelocities[i].x;
+				velocity[particleIndex + 1] = cos * vely + galaxyVelocities[i].y;
+				velocity[particleIndex + 2] = -sin * vely + galaxyVelocities[i].z;
+				velocity[particleIndex + 3] = 1;
+			}
+
+			// Increase the starting index
+			startIndex += galaxyParticles[i];
+		}
 	}
 
 	/*
