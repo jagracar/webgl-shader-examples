@@ -173,7 +173,7 @@ function runSketch() {
 
 		// Set the galaxy properties
 		var nGalaxies = 2;
-		var nParticles = (position.length / 3) - nGalaxies;
+		var nParticles = (position.length / 4) - nGalaxies;
 		var galaxyParticles = [ Math.round(nParticles / 2), nParticles - Math.round(nParticles / 2) ];
 		var galaxySizes = [ 0.7 * galaxyHaloSize, 0.7 * galaxyHaloSize ];
 		var galaxyInclinations = [ 0.35 * Math.PI, Math.PI * Math.random() ];

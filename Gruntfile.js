@@ -127,7 +127,8 @@ module.exports = function(grunt) {
 			blur : replaceParametersForExample('blur', 'template-example-2d.html', 'shader-example-filters.js', 'vert-filters.glsl', 'frag-blur.glsl'),
 			lens : replaceParametersForExample('lens', 'template-example-2d.html', 'shader-example-filters.js', 'vert-filters.glsl', 'frag-lens.glsl'),
 			gravity : replaceParametersForSimExample('gravity', 'template-example-sim.html', 'shader-example-gravity.js', 'frag-grav-pos.glsl', 'frag-grav-vel.glsl', 'vert-sim.glsl', 'frag-sim.glsl'),
-			galaxies : replaceParametersForSimExample('galaxies', 'template-example-sim.html', 'shader-example-galaxies.js', 'frag-galaxies-pos.glsl', 'frag-galaxies-vel.glsl', 'vert-sim.glsl', 'frag-sim.glsl')
+			galaxies : replaceParametersForSimExample('galaxies', 'template-example-sim.html', 'shader-example-galaxies.js', 'frag-galaxies-pos.glsl', 'frag-galaxies-vel.glsl', 'vert-sim.glsl', 'frag-sim.glsl'),
+			debug : replaceParametersForSimExample('debug', 'template-example-sim.html', 'shader-example-debug.js', 'frag-debug-pos.glsl', 'frag-debug-vel.glsl', 'vert-debug.glsl', 'frag-debug.glsl')
 		},
 
 		// grunt-jshint

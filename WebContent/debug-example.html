@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="WebGL, shader, three.js, javaScript, example, 3D, simulation">
+<meta name="description" content="debug shader example">
+<meta name="author" content="Javier Gracia Carpio">
+
+<title>debug shader example</title>
+
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+<!-- CSS files -->
+<link rel="stylesheet" href="/css/styles.css">
+
+<!-- JavaScript files -->
+<script type="text/javascript" src="/js/libs/three.min.js"></script>
+<script type="text/javascript" src="/js/libs/stats.min.js"></script>
+<script type="text/javascript" src="/js/libs/dat.gui.min.js"></script>
+<script type="text/javascript" src="/js/libs/OrbitControls.js"></script>
+<script type="text/javascript" src="/js/libs/GPUComputationRenderer.js"></script>
+</head>
+
+<body>
+	<!-- Navigation bar -->
+	<header class="nav-container">
+		<h1 class="nav-header">
+			<a href="/index.html" class="nav-item is-header-item">WebGL-shaders</a>
+		</h1>
+
+		<nav class="nav-menu-wrapper">
+			<span class="nav-item is-menu-item menu-icon" onclick="return false;"></span>
+
+			<ul class="nav-menu-list">
+				<li><a href="/index.html" class="nav-item">Back to list</a></li>
+				<li><a href="/js/shader-example-debug.js" class="nav-item">JavaScript file</a></li>
+				<li><a href="/shaders/frag-debug-pos.glsl" class="nav-item">Position shader</a></li>
+				<li><a href="/shaders/frag-debug-vel.glsl" class="nav-item">Velocity shader</a></li>
+				<li><a href="/shaders/vert-debug.glsl" class="nav-item">Vertex shader</a></li>
+				<li><a href="/shaders/frag-debug.glsl" class="nav-item">Fragment shader</a></li>
+			</ul>
+
+			<ul class="nav-menu-list">
+				<li><a href="/about.html" class="nav-item">About</a></li>
+				<li><a href="https://github.com/jagracar/webgl-shader-examples" class="nav-item"><span class="github-icon"></span>
+						Github</a></li>
+			</ul>
+		</nav>
+	</header>
+
+	<!-- Main content -->
+	<main class="main-container">
+	<article class="content">
+		<div class="sketch-container" id="sketch-container">
+			<div class="sketch-gui" id="sketch-gui"></div>
+			<div class="sketch-stats" id="sketch-stats"></div>
+		</div>
+
+		<script type="x-shader/x-fragment" id="positionShader">
+#define GLSLIFY 1
+void main() {
+    vec2 uv = gl_FragCoord.xy / resolution;
+    vec3 position = texture2D(u_positionTexture, uv).xyz;
+    vec3 velocity = texture2D(u_velocityTexture, uv).xyz;
+
+    gl_FragColor = vec4(position + velocity, 1.0);
+}
+
+		</script>
+
+		<script type="x-shader/x-fragment" id="velocityShader">
+#define GLSLIFY 1
+void main() {
+    vec2 uv = gl_FragCoord.xy / resolution;
+    vec3 velocity = texture2D(u_velocityTexture, uv).xyz;
+
+    gl_FragColor = vec4(velocity, 1.0);
+}
+
+		</script>
+
+		<script type="x-shader/x-vertex" id="vertexShader">
+#define GLSLIFY 1
+attribute vec2 reference;
+uniform sampler2D u_positionTexture;
+
+void main() {
+    gl_PointSize = 2.0;
+    gl_Position = projectionMatrix * modelViewMatrix * texture2D(u_positionTexture, reference);
+}
+
+		</script>
+
+		<script type="x-shader/x-fragment" id="fragmentShader">
+#define GLSLIFY 1
+void main() {
+    gl_FragColor = vec4(vec3(1.0), 1);
+}
+
+		</script>
+
+		<script type="text/javascript" src="/js/shader-example-debug.js"></script>
+	</article>
+	</main>
+</body>
+</html>
