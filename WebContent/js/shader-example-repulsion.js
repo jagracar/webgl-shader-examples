@@ -3,7 +3,7 @@ window.onload = function() {
 };
 
 function runSketch() {
-	var renderer, scene, camera, stats, simulator, positionVariable, uniforms;
+	var renderer, scene, camera, clock, stats, simulator, positionVariable, velocityVariable, uniforms;
 
 	init();
 	animate();
@@ -18,7 +18,7 @@ function runSketch() {
 		});
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(window.innerWidth, window.innerHeight);
-		renderer.setClearColor(new THREE.Color(0, 0, 0));
+		renderer.setClearColor(new THREE.Color(0.15, 0.15, 0.15));
 
 		// Add the renderer to the sketch container
 		var container = document.getElementById("sketch-container");
@@ -31,6 +31,9 @@ function runSketch() {
 		camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
 		camera.position.z = 10;
 
+		// Initialize the clock
+		clock = new THREE.Clock(true);
+
 		// Initialize the camera controls
 		var controls = new THREE.OrbitControls(camera, renderer.domElement);
 		controls.enablePan = false;
@@ -42,42 +45,58 @@ function runSketch() {
 
 		// Initialize the simulator
 		var isDesktop = Math.min(window.innerWidth, window.innerHeight) > 450;
-		var simSizeX = isDesktop? 64 : 32;
-		var simSizeY = isDesktop? 64 : 32;
+		var simSizeX = isDesktop ? 64 : 32;
+		var simSizeY = isDesktop ? 64 : 32;
 		simulator = getSimulator(simSizeX, simSizeY, renderer);
 		positionVariable = getSimulationVariable("u_positionTexture", simulator);
+		velocityVariable = getSimulationVariable("u_velocityTexture", simulator);
 
 		// Create the particles geometry
 		var geometry = new THREE.BufferGeometry();
 
 		// Add the particle attributes to the geometry
 		var nParticles = simSizeX * simSizeY;
-		var references = new Float32Array(2 * nParticles);
+		var indices = new Float32Array(nParticles);
 		var positions = new Float32Array(3 * nParticles);
-		geometry.addAttribute("reference", new THREE.BufferAttribute(references, 2));
+		geometry.addAttribute("a_index", new THREE.BufferAttribute(indices, 1));
 		geometry.addAttribute("position", new THREE.BufferAttribute(positions, 3));
 
-		// Fill the references attribute. It's not necessary to fill the positions
+		// Fill the indices attribute. It's not necessary to fill the positions
 		// attribute because it's not used in the shaders (the position texture is
 		// used instead)
 		for (var i = 0; i < nParticles; i++) {
-			references[2 * i] = (i % simSizeX) / simSizeX;
-			references[2 * i + 1] = Math.floor(i / simSizeX) / simSizeY;
+			indices[i] = i;
 		}
 
 		// Define the particle shader uniforms
 		uniforms = {
+			u_width : {
+				type : "f",
+				value : simSizeX
+			},
+			u_height : {
+				type : "f",
+				value : simSizeY
+			},
+			u_particleSize : {
+				type : "f",
+				value : 50 * window.devicePixelRatio
+			},
+			u_nActiveParticles : {
+				type : "f",
+				value : 1
+			},
 			u_positionTexture : {
+				type : "t",
+				value : null
+			},
+			u_velocityTexture : {
 				type : "t",
 				value : null
 			},
 			u_texture : {
 				type : "t",
 				value : new THREE.TextureLoader().load("img/particle2.png")
-			},
-			u_size : {
-				type : "f",
-				value : 50 * window.devicePixelRatio
 			}
 		};
 
@@ -87,8 +106,8 @@ function runSketch() {
 			vertexShader : document.getElementById("vertexShader").textContent,
 			fragmentShader : document.getElementById("fragmentShader").textContent,
 			depthTest : false,
-			lights: false,
-			transparent: true,
+			lights : false,
+			transparent : true,
 			blending : THREE.AdditiveBlending
 		});
 
@@ -117,17 +136,15 @@ function runSketch() {
 		var nParticles = simSizeX * simSizeY;
 
 		for (var i = 0; i < nParticles; i++) {
-			// Get a random point inside a sphere
-			var distance = 10 * Math.pow(Math.random(), 1 / 3);
-			var cos = 2 * Math.random() - 1;
-			var sin = Math.sqrt(1 - cos * cos);
+			// Get a random point inside a disk
+			var distance = 0.2 * Math.pow(Math.random(), 1 / 2);
 			var ang = 2 * Math.PI * Math.random();
 
 			// Calculate the point x,y,z coordinates
 			var particleIndex = 4 * i;
-			position[particleIndex] = distance * sin * Math.cos(ang);
-			position[particleIndex + 1] = distance * sin * Math.sin(ang);
-			position[particleIndex + 2] = distance * cos;
+			position[particleIndex] = distance * Math.cos(ang);
+			position[particleIndex + 1] = distance * Math.sin(ang);
+			position[particleIndex + 2] = 0;
 			position[particleIndex + 3] = 1;
 
 			// Start with zero initial velocity
@@ -146,6 +163,28 @@ function runSketch() {
 		// Specify the variable dependencies
 		gpuSimulator.setVariableDependencies(positionVariable, [ positionVariable, velocityVariable ]);
 		gpuSimulator.setVariableDependencies(velocityVariable, [ positionVariable, velocityVariable ]);
+
+		// Add the position uniforms
+		var positionUniforms = positionVariable.material.uniforms;
+		positionUniforms.u_dt = {
+			type : "f",
+			value : 0.2
+		};
+		positionUniforms.u_nActiveParticles = {
+			type : "f",
+			value : 1
+		};
+
+		// Add the velocity uniforms
+		var velocityUniforms = velocityVariable.material.uniforms;
+		velocityUniforms.u_dt = {
+			type : "f",
+			value : positionUniforms.u_dt.value
+		};
+		velocityUniforms.u_nActiveParticles = {
+			type : "f",
+			value : positionUniforms.u_nActiveParticles.value
+		};
 
 		// Initialize the GPU simulator
 		var error = gpuSimulator.init();
@@ -183,9 +222,22 @@ function runSketch() {
 	 * Renders the sketch
 	 */
 	function render() {
-		simulator.compute();
+		// Run several iterations per frame
+		for (var i = 0; i < 1; i++) {
+			simulator.compute();
+		}
+
+		// Update the uniforms
+		var nActiveParticles = Math.floor(20 * clock.getElapsedTime());
+		positionVariable.material.uniforms.u_nActiveParticles.value = nActiveParticles;
+		velocityVariable.material.uniforms.u_nActiveParticles.value = nActiveParticles;
+		uniforms.u_nActiveParticles.value = nActiveParticles;
 		uniforms.u_positionTexture.value = simulator.getCurrentRenderTarget(positionVariable).texture;
+		uniforms.u_velocityTexture.value = simulator.getCurrentRenderTarget(velocityVariable).texture;
+
+		// Render the particles on the screen
 		renderer.render(scene, camera);
+
 	}
 
 	/*

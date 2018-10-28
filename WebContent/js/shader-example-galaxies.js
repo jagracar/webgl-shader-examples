@@ -64,7 +64,7 @@ function runSketch() {
 		// used instead)
 		for (var i = 0; i < nParticles; i++) {
 			references[2 * i] = (i % simSizeX) / simSizeX;
-			references[2 * i + 1] = Math.floor(i / simSizeX)/ simSizeY;
+			references[2 * i + 1] = Math.floor(i / simSizeX) / simSizeY;
 		}
 
 		// Define the particle shader uniforms
@@ -132,14 +132,14 @@ function runSketch() {
 		velocityVariable.material.defines.nGalaxies = "2.0";
 
 		// Add the position uniforms
-		positionUniforms = positionVariable.material.uniforms;
+		var positionUniforms = positionVariable.material.uniforms;
 		positionUniforms.u_dt = {
 			type : "f",
 			value : 0.2
 		};
 
 		// Add the velocity uniforms
-		velocityUniforms = velocityVariable.material.uniforms;
+		var velocityUniforms = velocityVariable.material.uniforms;
 		velocityUniforms.u_dt = {
 			type : "f",
 			value : positionUniforms.u_dt.value
