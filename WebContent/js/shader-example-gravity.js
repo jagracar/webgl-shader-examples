@@ -14,7 +14,7 @@ function runSketch() {
 	function init() {
 		// Initialize the WebGL renderer
 		renderer = new THREE.WebGLRenderer({
-			antialias : true,
+			antialias : true
 		});
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(window.innerWidth, window.innerHeight);
@@ -42,8 +42,8 @@ function runSketch() {
 
 		// Initialize the simulator
 		var isDesktop = Math.min(window.innerWidth, window.innerHeight) > 450;
-		var simSizeX = isDesktop? 64 : 32;
-		var simSizeY = isDesktop? 64 : 32;
+		var simSizeX = isDesktop ? 64 : 32;
+		var simSizeY = isDesktop ? 64 : 32;
 		simulator = getSimulator(simSizeX, simSizeY, renderer);
 		positionVariable = getSimulationVariable("u_positionTexture", simulator);
 
@@ -52,21 +52,32 @@ function runSketch() {
 
 		// Add the particle attributes to the geometry
 		var nParticles = simSizeX * simSizeY;
-		var references = new Float32Array(2 * nParticles);
+		var indices = new Float32Array(nParticles);
 		var positions = new Float32Array(3 * nParticles);
-		geometry.addAttribute("reference", new THREE.BufferAttribute(references, 2));
+		geometry.addAttribute("a_index", new THREE.BufferAttribute(indices, 1));
 		geometry.addAttribute("position", new THREE.BufferAttribute(positions, 3));
 
-		// Fill the references attribute. It's not necessary to fill the positions
+		// Fill the indices attribute. It's not necessary to fill the positions
 		// attribute because it's not used in the shaders (the position texture is
 		// used instead)
 		for (var i = 0; i < nParticles; i++) {
-			references[2 * i] = (i % simSizeX) / simSizeX;
-			references[2 * i + 1] = Math.floor(i / simSizeX) / simSizeY;
+			indices[i] = i;
 		}
 
 		// Define the particle shader uniforms
 		uniforms = {
+			u_width : {
+				type : "f",
+				value : simSizeX
+			},
+			u_height : {
+				type : "f",
+				value : simSizeY
+			},
+			u_particleSize : {
+				type : "f",
+				value : 50 * window.devicePixelRatio
+			},
 			u_positionTexture : {
 				type : "t",
 				value : null
@@ -74,10 +85,6 @@ function runSketch() {
 			u_texture : {
 				type : "t",
 				value : new THREE.TextureLoader().load("img/particle2.png")
-			},
-			u_size : {
-				type : "f",
-				value : 50 * window.devicePixelRatio
 			}
 		};
 
@@ -87,8 +94,8 @@ function runSketch() {
 			vertexShader : document.getElementById("vertexShader").textContent,
 			fragmentShader : document.getElementById("fragmentShader").textContent,
 			depthTest : false,
-			lights: false,
-			transparent: true,
+			lights : false,
+			transparent : true,
 			blending : THREE.AdditiveBlending
 		});
 

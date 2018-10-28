@@ -14,7 +14,7 @@ function runSketch() {
 	function init() {
 		// Initialize the WebGL renderer
 		renderer = new THREE.WebGLRenderer({
-			antialias : true,
+			antialias : true
 		});
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(window.innerWidth, window.innerHeight);

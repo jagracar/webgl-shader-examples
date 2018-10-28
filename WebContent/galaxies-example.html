@@ -138,24 +138,25 @@ void main() {
 
 		<script type="x-shader/x-vertex" id="vertexShader">
 #define GLSLIFY 1
-// The particle reference uv texture position
-attribute vec2 reference;
+// Particle index attribute
+attribute float a_index;
 
-// Texture with the particles current positions
+// Simulation uniforms
+uniform float u_width;
+uniform float u_height;
+uniform float u_particleSize;
 uniform sampler2D u_positionTexture;
-
-// The particle size
-uniform float u_size;
 
 /*
  * The main program
  */
 void main() {
     // Get the particle model view position
-    vec4 mvPosition = modelViewMatrix * texture2D(u_positionTexture, reference);
+    vec2 uv = vec2((mod(a_index, u_width) + 0.5) / u_width, (floor(a_index / u_width) + 0.5) / u_height);
+    vec4 mvPosition = modelViewMatrix * texture2D(u_positionTexture, uv);
 
     // Vertex shader output
-    gl_PointSize = -u_size / mvPosition.z;
+    gl_PointSize = -u_particleSize / mvPosition.z;
     gl_Position = projectionMatrix * mvPosition;
 }
 
