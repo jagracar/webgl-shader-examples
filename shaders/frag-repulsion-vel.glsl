@@ -9,7 +9,7 @@ const float nParticles = width * height;
 
 // Softening factor. This is required to avoid high acceleration values
 // when two particles get too close
-const float softening = 0.01;
+const float softening = 0.005;
 
 /*
  * The main program
@@ -26,6 +26,7 @@ void main() {
     if ((gl_FragCoord.x - 0.5) + (gl_FragCoord.y - 0.5) * width < u_nActiveParticles) {
         // Loop over all the particles and calculate the total repulsion force
         vec3 totalForce = vec3(0.0);
+        float forceScalingFactor = 0.0001;
 
         for (float i = 0.0; i < nParticles; i++) {
             // Consider only active particles
@@ -51,7 +52,8 @@ void main() {
 
             // Add the particle repulsion force
             float distanceDumping = 1.0 - smoothstep(0.45, 0.5, distance);
-            totalForce += 0.00015 * distanceDumping * (forceDirection / distance) / pow(distance + softening, 2.0);
+            totalForce += forceScalingFactor * distanceDumping * (forceDirection / distance)
+                    / pow(distance + softening, 2.0);
         }
 
         // Return the updated particle velocity

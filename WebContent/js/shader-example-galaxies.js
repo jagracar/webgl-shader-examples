@@ -269,8 +269,10 @@ function runSketch() {
 			simulator.compute();
 		}
 
-		// Render the particles on the screen
+		// Update the uniforms
 		uniforms.u_positionTexture.value = simulator.getCurrentRenderTarget(positionVariable).texture;
+
+		// Render the particles on the screen
 		renderer.render(scene, camera);
 	}
 

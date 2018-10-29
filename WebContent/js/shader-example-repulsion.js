@@ -3,7 +3,7 @@ window.onload = function() {
 };
 
 function runSketch() {
-	var renderer, scene, camera, clock, stats, simulator, positionVariable, velocityVariable, uniforms;
+	var renderer, scene, camera, stats, simulator, positionVariable, velocityVariable, uniforms, frames;
 
 	init();
 	animate();
@@ -31,9 +31,6 @@ function runSketch() {
 		camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
 		camera.position.z = 10;
 
-		// Initialize the clock
-		clock = new THREE.Clock(true);
-
 		// Initialize the camera controls
 		var controls = new THREE.OrbitControls(camera, renderer.domElement);
 		controls.enablePan = false;
@@ -45,8 +42,8 @@ function runSketch() {
 
 		// Initialize the simulator
 		var isDesktop = Math.min(window.innerWidth, window.innerHeight) > 450;
-		var simSizeX = isDesktop ? 64 : 32;
-		var simSizeY = isDesktop ? 64 : 32;
+		var simSizeX = isDesktop ? 64 : 64;
+		var simSizeY = isDesktop ? 64 : 64;
 		simulator = getSimulator(simSizeX, simSizeY, renderer);
 		positionVariable = getSimulationVariable("u_positionTexture", simulator);
 		velocityVariable = getSimulationVariable("u_velocityTexture", simulator);
@@ -80,7 +77,7 @@ function runSketch() {
 			},
 			u_particleSize : {
 				type : "f",
-				value : 50 * window.devicePixelRatio
+				value : 50 * Math.min(window.devicePixelRatio, 2)
 			},
 			u_nActiveParticles : {
 				type : "f",
@@ -117,6 +114,9 @@ function runSketch() {
 
 		// Add the event listeners
 		window.addEventListener("resize", onWindowResize, false);
+
+		// Initialize the frames counter
+		frames = 0;
 	}
 
 	/*
@@ -131,28 +131,7 @@ function runSketch() {
 		var velocityTexture = gpuSimulator.createTexture();
 
 		// Fill the texture data arrays with the simulation initial conditions
-		var position = positionTexture.image.data;
-		var velocity = velocityTexture.image.data;
-		var nParticles = simSizeX * simSizeY;
-
-		for (var i = 0; i < nParticles; i++) {
-			// Get a random point inside a disk
-			var distance = 0.2 * Math.pow(Math.random(), 1 / 2);
-			var ang = 2 * Math.PI * Math.random();
-
-			// Calculate the point x,y,z coordinates
-			var particleIndex = 4 * i;
-			position[particleIndex] = distance * Math.cos(ang);
-			position[particleIndex + 1] = distance * Math.sin(ang);
-			position[particleIndex + 2] = 0;
-			position[particleIndex + 3] = 1;
-
-			// Start with zero initial velocity
-			velocity[particleIndex] = 0;
-			velocity[particleIndex + 1] = 0;
-			velocity[particleIndex + 2] = 0;
-			velocity[particleIndex + 3] = 1;
-		}
+		setInitialConditions(positionTexture, velocityTexture);
 
 		// Add the position and velocity variables to the simulator
 		var positionVariable = gpuSimulator.addVariable("u_positionTexture",
@@ -197,6 +176,37 @@ function runSketch() {
 	}
 
 	/*
+	 * Sets the simulation initial conditions
+	 */
+	function setInitialConditions(positionTexture, velocityTexture) {
+		// Get the position and velocity arrays
+		var position = positionTexture.image.data;
+		var velocity = velocityTexture.image.data;
+
+		// Fill the position and velocity arrays
+		var nParticles = position.length / 4;
+
+		for (var i = 0; i < nParticles; i++) {
+			// Get a random point inside a disk
+			var distance = 0.2 * Math.pow(Math.random(), 1 / 2);
+			var ang = 2 * Math.PI * Math.random();
+
+			// Calculate the point x,y,z coordinates
+			var particleIndex = 4 * i;
+			position[particleIndex] = distance * Math.cos(ang);
+			position[particleIndex + 1] = distance * Math.sin(ang);
+			position[particleIndex + 2] = 0;
+			position[particleIndex + 3] = 1;
+
+			// Start with zero initial velocity
+			velocity[particleIndex] = 0;
+			velocity[particleIndex + 1] = 0;
+			velocity[particleIndex + 2] = 0;
+			velocity[particleIndex + 3] = 1;
+		}
+	}
+
+	/*
 	 * Returns the requested simulation variable
 	 */
 	function getSimulationVariable(variableName, gpuSimulator) {
@@ -228,12 +238,13 @@ function runSketch() {
 		}
 
 		// Update the uniforms
-		var nActiveParticles = Math.floor(20 * clock.getElapsedTime());
+		var nActiveParticles = Math.ceil(0.2 * frames);
 		positionVariable.material.uniforms.u_nActiveParticles.value = nActiveParticles;
 		velocityVariable.material.uniforms.u_nActiveParticles.value = nActiveParticles;
 		uniforms.u_nActiveParticles.value = nActiveParticles;
 		uniforms.u_positionTexture.value = simulator.getCurrentRenderTarget(positionVariable).texture;
 		uniforms.u_velocityTexture.value = simulator.getCurrentRenderTarget(velocityVariable).texture;
+		frames++;
 
 		// Render the particles on the screen
 		renderer.render(scene, camera);

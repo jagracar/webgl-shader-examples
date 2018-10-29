@@ -119,9 +119,52 @@ function runSketch() {
 		var velocityTexture = gpuSimulator.createTexture();
 
 		// Fill the texture data arrays with the simulation initial conditions
+		setInitialConditions(positionTexture, velocityTexture);
+
+		// Add the position and velocity variables to the simulator
+		var positionVariable = gpuSimulator.addVariable("u_positionTexture",
+				document.getElementById("positionShader").textContent, positionTexture);
+		var velocityVariable = gpuSimulator.addVariable("u_velocityTexture",
+				document.getElementById("velocityShader").textContent, velocityTexture);
+
+		// Specify the variable dependencies
+		gpuSimulator.setVariableDependencies(positionVariable, [ positionVariable, velocityVariable ]);
+		gpuSimulator.setVariableDependencies(velocityVariable, [ positionVariable, velocityVariable ]);
+
+		// Add the position uniforms
+		var positionUniforms = positionVariable.material.uniforms;
+		positionUniforms.u_dt = {
+			type : "f",
+			value : 1.0
+		};
+
+		// Add the velocity uniforms
+		var velocityUniforms = velocityVariable.material.uniforms;
+		velocityUniforms.u_dt = {
+			type : "f",
+			value : positionUniforms.u_dt.value
+		};
+
+		// Initialize the GPU simulator
+		var error = gpuSimulator.init();
+
+		if (error !== null) {
+			console.error(error);
+		}
+
+		return gpuSimulator;
+	}
+
+	/*
+	 * Sets the simulation initial conditions
+	 */
+	function setInitialConditions(positionTexture, velocityTexture) {
+		// Get the position and velocity arrays
 		var position = positionTexture.image.data;
 		var velocity = velocityTexture.image.data;
-		var nParticles = simSizeX * simSizeY;
+
+		// Fill the position and velocity arrays
+		var nParticles = position.length / 4;
 
 		for (var i = 0; i < nParticles; i++) {
 			// Get a random point inside a sphere
@@ -143,25 +186,6 @@ function runSketch() {
 			velocity[particleIndex + 2] = 0;
 			velocity[particleIndex + 3] = 1;
 		}
-
-		// Add the position and velocity variables to the simulator
-		var positionVariable = gpuSimulator.addVariable("u_positionTexture",
-				document.getElementById("positionShader").textContent, positionTexture);
-		var velocityVariable = gpuSimulator.addVariable("u_velocityTexture",
-				document.getElementById("velocityShader").textContent, velocityTexture);
-
-		// Specify the variable dependencies
-		gpuSimulator.setVariableDependencies(positionVariable, [ positionVariable, velocityVariable ]);
-		gpuSimulator.setVariableDependencies(velocityVariable, [ positionVariable, velocityVariable ]);
-
-		// Initialize the GPU simulator
-		var error = gpuSimulator.init();
-
-		if (error !== null) {
-			console.error(error);
-		}
-
-		return gpuSimulator;
 	}
 
 	/*
@@ -190,8 +214,15 @@ function runSketch() {
 	 * Renders the sketch
 	 */
 	function render() {
-		simulator.compute();
+		// Run several iterations per frame
+		for (var i = 0; i < 1; i++) {
+			simulator.compute();
+		}
+
+		// Update the uniforms
 		uniforms.u_positionTexture.value = simulator.getCurrentRenderTarget(positionVariable).texture;
+
+		// Render the particles on the screen
 		renderer.render(scene, camera);
 	}
 

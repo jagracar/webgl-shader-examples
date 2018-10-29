@@ -37,7 +37,7 @@ void main() {
         float distance = length(forceDirection);
 
         // Move to the next particle if the distance is exactly zero, which
-        // indicates that we are comparing the particle with intself
+        // indicates that we are comparing the particle with itself
         if (distance == 0.0) {
             continue;
         }

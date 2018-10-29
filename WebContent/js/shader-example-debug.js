@@ -41,7 +41,7 @@ function runSketch() {
 		// Fill the texture data arrays with the simulation initial conditions
 		var position = positionTexture.image.data;
 		var velocity = velocityTexture.image.data;
-		
+
 		for (var i = 0; i < nParticles; i++) {
 			var particleIndex = 4 * i;
 			var distance = 3 * Math.sqrt(Math.random());
@@ -50,7 +50,7 @@ function runSketch() {
 			position[particleIndex + 1] = distance * Math.sin(ang);
 			position[particleIndex + 2] = 0;
 			position[particleIndex + 3] = 1;
-			velocity[particleIndex] = - 0.01 * Math.sin(ang);
+			velocity[particleIndex] = -0.01 * Math.sin(ang);
 			velocity[particleIndex + 1] = 0.01 * Math.cos(ang);
 			velocity[particleIndex + 2] = 0;
 			velocity[particleIndex + 3] = 1;
@@ -77,14 +77,13 @@ function runSketch() {
 		var geometry = new THREE.BufferGeometry();
 
 		// Add the particle attributes to the geometry
-		var references = new Float32Array(2 * nParticles);
+		var indices = new Float32Array(nParticles);
 		var positions = new Float32Array(3 * nParticles);
-		geometry.addAttribute("reference", new THREE.BufferAttribute(references, 2));
+		geometry.addAttribute("a_index", new THREE.BufferAttribute(indices, 1));
 		geometry.addAttribute("position", new THREE.BufferAttribute(positions, 3));
 
 		for (i = 0; i < nParticles; i++) {
-			references[2 * i] = (i % simSizeX) / simSizeX;
-			references[2 * i + 1] = Math.floor(i / simSizeX)/ simSizeY;
+			indices[i] = i;
 			positions[3 * i] = 0;
 			positions[3 * i + 1] = 0;
 			positions[3 * i + 2] = 0;
@@ -92,6 +91,14 @@ function runSketch() {
 
 		// Define the particle shader uniforms
 		uniforms = {
+			u_width : {
+				type : "f",
+				value : simSizeX
+			},
+			u_height : {
+				type : "f",
+				value : simSizeY
+			},
 			u_positionTexture : {
 				type : "t",
 				value : null
@@ -102,7 +109,7 @@ function runSketch() {
 		var material = new THREE.ShaderMaterial({
 			uniforms : uniforms,
 			vertexShader : document.getElementById("vertexShader").textContent,
-			fragmentShader : document.getElementById("fragmentShader").textContent,
+			fragmentShader : document.getElementById("fragmentShader").textContent
 		});
 
 		// Create the particles and add them to the scene

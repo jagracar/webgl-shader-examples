@@ -1,4 +1,7 @@
 #define GLSLIFY 1
+// Simulation uniforms
+uniform float u_dt;
+
 /*
  * The main program
  */
@@ -11,5 +14,5 @@ void main() {
     vec3 velocity = texture2D(u_velocityTexture, uv).xyz;
 
     // Return the updated particle position
-    gl_FragColor = vec4(position + velocity, 1.0);
+    gl_FragColor = vec4(position + u_dt * velocity, 1.0);
 }

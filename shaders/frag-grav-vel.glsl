@@ -1,3 +1,6 @@
+// Simulation uniforms
+uniform float u_dt;
+
 // Simulation constants
 const float width = resolution.x;
 const float height = resolution.y;
@@ -20,6 +23,7 @@ void main() {
 
     // Loop over all the particles and calculate the total gravitational force
     vec3 totalForce = vec3(0.0);
+    float forceScalingFactor = 1.0 / (2.0 * pow(nParticles, 1.5));
 
     for (float i = 0.0; i < nParticles; i++) {
         // Get the position of the attracting particle
@@ -33,15 +37,15 @@ void main() {
         float distance = length(forceDirection);
 
         // Move to the next particle if the distance is exactly zero, which
-        // indicates that we are comparing the particle with intself
+        // indicates that we are comparing the particle with itself
         if (distance == 0.0) {
             continue;
         }
 
         // Add the particle gravitational force
-        totalForce += (forceDirection / distance) / pow(distance + softening, 2.0);
+        totalForce += forceScalingFactor * (forceDirection / distance) / pow(distance + softening, 2.0);
     }
 
     // Return the updated particle velocity
-    gl_FragColor = vec4(velocity + totalForce / (2.0 * pow(nParticles, 1.5)), 1.0);
+    gl_FragColor = vec4(velocity + u_dt * totalForce, 1.0);
 }
