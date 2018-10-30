@@ -3,7 +3,7 @@ window.onload = function() {
 };
 
 function runSketch() {
-	var renderer, scene, camera, stats, simulator, positionVariable, uniforms;
+	var renderer, scene, camera, stats, simulator, positionVariable, velocityVariable, uniforms, frames;
 
 	init();
 	animate();
@@ -18,7 +18,7 @@ function runSketch() {
 		});
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(window.innerWidth, window.innerHeight);
-		renderer.setClearColor(new THREE.Color(0, 0, 0));
+		renderer.setClearColor(new THREE.Color(0.95, 0.95, 0.95));
 
 		// Add the renderer to the sketch container
 		var container = document.getElementById("sketch-container");
@@ -29,9 +29,7 @@ function runSketch() {
 
 		// Initialize the camera
 		camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
-		camera.position.x = 8;
-		camera.position.y = 5;
-		camera.position.z = 10;
+		camera.position.z = 20;
 
 		// Initialize the camera controls
 		var controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -44,10 +42,11 @@ function runSketch() {
 
 		// Initialize the simulator
 		var isDesktop = Math.min(window.innerWidth, window.innerHeight) > 450;
-		var simSizeX = isDesktop ? 128 : 64;
-		var simSizeY = isDesktop ? 128 : 64;
+		var simSizeX = isDesktop ? 64 : 64;
+		var simSizeY = isDesktop ? 64 : 64;
 		simulator = getSimulator(simSizeX, simSizeY, renderer);
 		positionVariable = getSimulationVariable("u_positionTexture", simulator);
+		velocityVariable = getSimulationVariable("u_velocityTexture", simulator);
 
 		// Create the particles geometry
 		var geometry = new THREE.BufferGeometry();
@@ -78,11 +77,23 @@ function runSketch() {
 			},
 			u_particleSize : {
 				type : "f",
-				value : 50 * window.devicePixelRatio
+				value : 80 * Math.min(window.devicePixelRatio, 2)
+			},
+			u_nActiveParticles : {
+				type : "f",
+				value : 1
 			},
 			u_positionTexture : {
 				type : "t",
 				value : null
+			},
+			u_bgTexture : {
+				type : "t",
+				value : velocityVariable.material.uniforms.u_bgTexture.value
+			},
+			u_textureOffset : {
+				type : "v2",
+				value : velocityVariable.material.uniforms.u_textureOffset.value
 			},
 			u_texture : {
 				type : "t",
@@ -97,8 +108,7 @@ function runSketch() {
 			fragmentShader : document.getElementById("fragmentShader").textContent,
 			depthTest : false,
 			lights : false,
-			transparent : true,
-			blending : THREE.AdditiveBlending
+			transparent : true
 		});
 
 		// Create the particles and add them to the scene
@@ -107,6 +117,9 @@ function runSketch() {
 
 		// Add the event listeners
 		window.addEventListener("resize", onWindowResize, false);
+
+		// Initialize the frames counter
+		frames = 0;
 	}
 
 	/*
@@ -121,9 +134,7 @@ function runSketch() {
 		var velocityTexture = gpuSimulator.createTexture();
 
 		// Fill the texture data arrays with the simulation initial conditions
-		var galaxyMass = 0.00015;
-		var galaxyHaloSize = 6;
-		setInitialConditions(positionTexture, velocityTexture, galaxyMass, galaxyHaloSize);
+		setInitialConditions(positionTexture, velocityTexture);
 
 		// Add the position and velocity variables to the simulator
 		var positionVariable = gpuSimulator.addVariable("u_positionTexture",
@@ -135,14 +146,15 @@ function runSketch() {
 		gpuSimulator.setVariableDependencies(positionVariable, [ positionVariable, velocityVariable ]);
 		gpuSimulator.setVariableDependencies(velocityVariable, [ positionVariable, velocityVariable ]);
 
-		// Add the velocity defines
-		velocityVariable.material.defines.nGalaxies = "2.0";
-
 		// Add the position uniforms
 		var positionUniforms = positionVariable.material.uniforms;
 		positionUniforms.u_dt = {
 			type : "f",
 			value : 0.2
+		};
+		positionUniforms.u_nActiveParticles = {
+			type : "f",
+			value : 1
 		};
 
 		// Add the velocity uniforms
@@ -151,13 +163,17 @@ function runSketch() {
 			type : "f",
 			value : positionUniforms.u_dt.value
 		};
-		velocityUniforms.u_mass = {
+		velocityUniforms.u_nActiveParticles = {
 			type : "f",
-			value : galaxyMass
+			value : positionUniforms.u_nActiveParticles.value
 		};
-		velocityUniforms.u_haloSize = {
-			type : "f",
-			value : galaxyHaloSize
+		velocityUniforms.u_bgTexture = {
+			type : "t",
+			value : new THREE.TextureLoader().load("img/dali.jpg")
+		};
+		velocityUniforms.u_textureOffset = {
+			type : "v2",
+			value : new THREE.Vector2(15, 15)
 		};
 
 		// Initialize the GPU simulator
@@ -173,68 +189,31 @@ function runSketch() {
 	/*
 	 * Sets the simulation initial conditions
 	 */
-	function setInitialConditions(positionTexture, velocityTexture, galaxyMass, galaxyHaloSize) {
+	function setInitialConditions(positionTexture, velocityTexture) {
 		// Get the position and velocity arrays
 		var position = positionTexture.image.data;
 		var velocity = velocityTexture.image.data;
 
-		// Set the galaxy properties
-		var nGalaxies = 2;
-		var nParticles = (position.length / 4) - nGalaxies;
-		var galaxyParticles = [ Math.round(nParticles / 2), nParticles - Math.round(nParticles / 2) ];
-		var galaxySizes = [ 0.7 * galaxyHaloSize, 0.7 * galaxyHaloSize ];
-		var galaxyInclinations = [ 0.35 * Math.PI, Math.PI * Math.random() ];
-		var galaxyPositions = [ new THREE.Vector3(-galaxyHaloSize, 0, 0), new THREE.Vector3(galaxyHaloSize, 0, 0) ];
-		var galaxyVelocities = [ new THREE.Vector3(0.0005, 0.0001, 0.001), new THREE.Vector3(-0.0005, -0.0001, -0.001) ];
-
 		// Fill the position and velocity arrays
-		var startIndex = nGalaxies;
+		var nParticles = position.length / 4;
 
-		for (var i = 0; i < nGalaxies; i++) {
-			// Use the first indices for the galaxy centers
-			var galaxyIndex = 4 * i;
-			position[galaxyIndex] = galaxyPositions[i].x;
-			position[galaxyIndex + 1] = galaxyPositions[i].y;
-			position[galaxyIndex + 2] = galaxyPositions[i].z;
-			position[galaxyIndex + 3] = 1;
-			velocity[galaxyIndex] = galaxyVelocities[i].x;
-			velocity[galaxyIndex + 1] = galaxyVelocities[i].y;
-			velocity[galaxyIndex + 2] = galaxyVelocities[i].z;
-			velocity[galaxyIndex + 3] = 1;
+		for (var i = 0; i < nParticles; i++) {
+			// Get a random point inside a disk
+			var distance = 2 * Math.pow(Math.random(), 1 / 2);
+			var ang = 2 * Math.PI * Math.random();
 
-			// Loop over the galaxy particles
-			var sin = Math.sin(galaxyInclinations[i]);
-			var cos = Math.cos(galaxyInclinations[i]);
+			// Calculate the point x,y,z coordinates
+			var particleIndex = 4 * i;
+			position[particleIndex] = distance * Math.cos(ang);
+			position[particleIndex + 1] = distance * Math.sin(ang);
+			position[particleIndex + 2] = 0;
+			position[particleIndex + 3] = 1;
 
-			for (var j = startIndex; j < startIndex + galaxyParticles[i]; j++) {
-				// Get a random point inside the galaxy disk
-				var distance = galaxySizes[i] * Math.sqrt(Math.random());
-				var ang = 2 * Math.PI * Math.random();
-
-				// Get the expected velocity at the point distance
-				var massAtPosition = galaxyMass * Math.min(distance, galaxyHaloSize) / galaxyHaloSize;
-				var vel = Math.sqrt(massAtPosition / distance);
-
-				// Calculate the particle position and velocity before applying the galaxy inclination
-				var x = distance * Math.cos(ang);
-				var y = distance * Math.sin(ang);
-				var velx = -vel * Math.sin(ang);
-				var vely = vel * Math.cos(ang);
-
-				// Calculate the particle position and velocity
-				var particleIndex = 4 * j;
-				position[particleIndex] = x + galaxyPositions[i].x;
-				position[particleIndex + 1] = cos * y + galaxyPositions[i].y;
-				position[particleIndex + 2] = -sin * y + galaxyPositions[i].z;
-				position[particleIndex + 3] = 1;
-				velocity[particleIndex] = velx + galaxyVelocities[i].x;
-				velocity[particleIndex + 1] = cos * vely + galaxyVelocities[i].y;
-				velocity[particleIndex + 2] = -sin * vely + galaxyVelocities[i].z;
-				velocity[particleIndex + 3] = 1;
-			}
-
-			// Increase the starting index
-			startIndex += galaxyParticles[i];
+			// Start with zero initial velocity
+			velocity[particleIndex] = 0;
+			velocity[particleIndex + 1] = 0;
+			velocity[particleIndex + 2] = 0;
+			velocity[particleIndex + 3] = 1;
 		}
 	}
 
@@ -265,15 +244,21 @@ function runSketch() {
 	 */
 	function render() {
 		// Run several iterations per frame
-		for (var i = 0; i < 20; i++) {
+		for (var i = 0; i < 1; i++) {
 			simulator.compute();
 		}
 
 		// Update the uniforms
+		var nActiveParticles = Math.ceil(10 * frames);
+		positionVariable.material.uniforms.u_nActiveParticles.value = nActiveParticles;
+		velocityVariable.material.uniforms.u_nActiveParticles.value = nActiveParticles;
+		uniforms.u_nActiveParticles.value = nActiveParticles;
 		uniforms.u_positionTexture.value = simulator.getCurrentRenderTarget(positionVariable).texture;
+		frames++;
 
 		// Render the particles on the screen
 		renderer.render(scene, camera);
+
 	}
 
 	/*

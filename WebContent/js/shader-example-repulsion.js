@@ -93,7 +93,7 @@ function runSketch() {
 			},
 			u_texture : {
 				type : "t",
-				value : new THREE.TextureLoader().load("img/particle2.png")
+				value : new THREE.TextureLoader().load("img/particle.png")
 			}
 		};
 
@@ -238,7 +238,7 @@ function runSketch() {
 		}
 
 		// Update the uniforms
-		var nActiveParticles = Math.ceil(0.2 * frames);
+		var nActiveParticles = Math.ceil(0.4 * frames);
 		positionVariable.material.uniforms.u_nActiveParticles.value = nActiveParticles;
 		velocityVariable.material.uniforms.u_nActiveParticles.value = nActiveParticles;
 		uniforms.u_nActiveParticles.value = nActiveParticles;

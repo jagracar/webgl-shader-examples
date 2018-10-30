@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="WebGL, shader, three.js, javaScript, example, 3D, simulation">
+<meta name="description" content="stippling shader example">
+<meta name="author" content="Javier Gracia Carpio">
+
+<title>stippling shader example</title>
+
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+<!-- CSS files -->
+<link rel="stylesheet" href="/css/styles.css">
+
+<!-- JavaScript files -->
+<script type="text/javascript" src="/js/libs/three.min.js"></script>
+<script type="text/javascript" src="/js/libs/stats.min.js"></script>
+<script type="text/javascript" src="/js/libs/dat.gui.min.js"></script>
+<script type="text/javascript" src="/js/libs/OrbitControls.js"></script>
+<script type="text/javascript" src="/js/libs/GPUComputationRenderer.js"></script>
+</head>
+
+<body>
+	<!-- Navigation bar -->
+	<header class="nav-container">
+		<h1 class="nav-header">
+			<a href="/index.html" class="nav-item is-header-item">WebGL-shaders</a>
+		</h1>
+
+		<nav class="nav-menu-wrapper">
+			<span class="nav-item is-menu-item menu-icon" onclick="return false;"></span>
+
+			<ul class="nav-menu-list">
+				<li><a href="/index.html" class="nav-item">Back to list</a></li>
+				<li><a href="/js/shader-example-stippling.js" class="nav-item">JavaScript file</a></li>
+				<li><a href="/shaders/frag-stippling-pos.glsl" class="nav-item">Position shader</a></li>
+				<li><a href="/shaders/frag-stippling-vel.glsl" class="nav-item">Velocity shader</a></li>
+				<li><a href="/shaders/vert-stippling.glsl" class="nav-item">Vertex shader</a></li>
+				<li><a href="/shaders/frag-stippling.glsl" class="nav-item">Fragment shader</a></li>
+			</ul>
+
+			<ul class="nav-menu-list">
+				<li><a href="/about.html" class="nav-item">About</a></li>
+				<li><a href="https://github.com/jagracar/webgl-shader-examples" class="nav-item"><span class="github-icon"></span>
+						Github</a></li>
+			</ul>
+		</nav>
+	</header>
+
+	<!-- Main content -->
+	<main class="main-container">
+	<article class="content">
+		<div class="sketch-container" id="sketch-container">
+			<div class="sketch-gui" id="sketch-gui"></div>
+			<div class="sketch-stats" id="sketch-stats"></div>
+		</div>
+
+		<script type="x-shader/x-fragment" id="positionShader">
+#define GLSLIFY 1
+// Simulation uniforms
+uniform float u_dt;
+uniform float u_nActiveParticles;
+
+// Simulation constants
+const float width = resolution.x;
+
+/*
+ * The main program
+ */
+void main() {
+    // Get the particle texture position
+    vec2 uv = gl_FragCoord.xy / resolution;
+
+    // Get the particle current position and velocity
+    vec3 position = texture2D(u_positionTexture, uv).xyz;
+    vec3 velocity = texture2D(u_velocityTexture, uv).xyz;
+
+    // Check if the particle is one of the active particles
+    if ((gl_FragCoord.x - 0.5) + (gl_FragCoord.y - 0.5) * width < u_nActiveParticles) {
+        // Return the updated particle position
+        gl_FragColor = vec4(position + u_dt * velocity, 1.0);
+    } else {
+        // Return the original particle position
+        gl_FragColor = vec4(position, 1.0);
+    }
+}
+
+		</script>
+
+		<script type="x-shader/x-fragment" id="velocityShader">
+#define GLSLIFY 1
+// Simulation uniforms
+uniform float u_dt;
+uniform float u_nActiveParticles;
+uniform sampler2D u_bgTexture;
+uniform vec2 u_textureOffset;
+
+// Simulation constants
+const float width = resolution.x;
+const float height = resolution.y;
+const float nParticles = width * height;
+
+// Softening factor. This is required to avoid high acceleration values
+// when two particles get too close
+const float softening = 0.05;
+
+/*
+ * The main program
+ */
+void main() {
+    // Get the particle texture position
+    vec2 uv = gl_FragCoord.xy / resolution;
+
+    // Get the particle current position and velocity
+    vec3 position = texture2D(u_positionTexture, uv).xyz;
+    vec3 velocity = texture2D(u_velocityTexture, uv).xyz;
+
+    // Check if the particle is one of the active particles
+    if ((gl_FragCoord.x - 0.5) + (gl_FragCoord.y - 0.5) * width < u_nActiveParticles) {
+        // Loop over all the particles and calculate the total repulsion force
+        vec3 totalForce = vec3(0.0);
+
+        for (float i = 0.0; i < nParticles; i++) {
+            // Consider only active particles
+            if (i >= u_nActiveParticles) {
+                break;
+            }
+
+            // Get the position of the repulsing particle
+            vec2 particleUv = vec2(mod(i, width) + 0.5, floor(i / width) + 0.5) / resolution;
+            vec3 particlePosition = texture2D(u_positionTexture, particleUv).xyz;
+
+            // Calculate the force direction
+            vec3 forceDirection = -(particlePosition - position);
+
+            // Calculate the particle distance
+            float distance = length(forceDirection);
+
+            // Move to the next particle if the distance is exactly zero, which
+            // indicates that we are comparing the particle with itself
+            if (distance == 0.0) {
+                continue;
+            }
+
+            // Calculate the force scaling factor from the background texture color
+            vec3 bgColor = texture2D(u_bgTexture, (particlePosition.xy + u_textureOffset) / (2.0 * u_textureOffset)).rgb;
+            float intensity = length(bgColor);
+            float forceScalingFactor = 0.00002 * (1.0 + intensity);
+
+            // Add the particle repulsion force
+            float distanceDumping = 1.0 - smoothstep(intensity + 0.05, intensity + 0.1, distance);
+            totalForce += forceScalingFactor * distanceDumping * (forceDirection / distance)
+                    / pow(distance + softening, 2.0);
+        }
+
+        // Return the updated particle velocity
+        gl_FragColor = vec4(velocity * (1.0 - 0.1 * u_dt) + u_dt * totalForce, 1.0);
+    } else {
+        // Return the original particle velocity
+        gl_FragColor = vec4(velocity, 1.0);
+    }
+}
+
+		</script>
+
+		<script type="x-shader/x-vertex" id="vertexShader">
+#define GLSLIFY 1
+// Particle index attribute
+attribute float a_index;
+
+// Simulation uniforms
+uniform float u_width;
+uniform float u_height;
+uniform float u_particleSize;
+uniform float u_nActiveParticles;
+uniform sampler2D u_positionTexture;
+uniform sampler2D u_bgTexture;
+uniform vec2 u_textureOffset;
+
+/*
+ * The main program
+ */
+void main() {
+    // Check if the particle is one of the active particles
+    if (a_index < u_nActiveParticles) {
+        // Get the particle position
+        vec2 uv = vec2((mod(a_index, u_width) + 0.5) / u_width, (floor(a_index / u_width) + 0.5) / u_height);
+        vec3 position = texture2D(u_positionTexture, uv).xyz;
+
+        // Calculate the model view position
+        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+
+        // Calculate the particle relative size based on the background texture color
+        vec3 bgColor = texture2D(u_bgTexture, (position.xy + u_textureOffset) / (2.0 * u_textureOffset)).rgb;
+        float relativeSize = 1.0 - 0.45 * length(bgColor);
+
+        // Vertex shader output
+        gl_PointSize = -u_particleSize * relativeSize / mvPosition.z;
+        gl_Position = projectionMatrix * mvPosition;
+    } else {
+        // Vertex shader output
+        gl_PointSize = 0.0;
+        gl_Position = vec4(-1000000.0);
+    }
+}
+
+		</script>
+
+		<script type="x-shader/x-fragment" id="fragmentShader">
+#define GLSLIFY 1
+// Texture with the particle profile
+uniform sampler2D u_texture;
+
+/*
+ * The main program
+ */
+void main() {
+    // Get the particle alpha value from the texture
+    float alpha = texture2D(u_texture, gl_PointCoord).a;
+
+    // Fragment shader output
+    gl_FragColor = vec4(vec3(0.0), smoothstep(0.05, 0.1, alpha));
+}
+
+		</script>
+
+		<script type="text/javascript" src="/js/shader-example-stippling.js"></script>
+	</article>
+	</main>
+</body>
+</html>
