@@ -3,7 +3,7 @@ window.onload = function() {
 };
 
 function runSketch() {
-	var renderer, scene, camera, clock, stats, controlParameters, uniforms, material, mesh;
+	var renderer, scene, camera, clock, stats, controlParameters, mesh, uniforms, composer;
 
 	init();
 	animate();
@@ -28,7 +28,7 @@ function runSketch() {
 		scene = new THREE.Scene();
 
 		// Initialize the camera
-		camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 50);
+		camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
 		camera.position.z = 30;
 
 		// Initialize the camera controls
@@ -51,6 +51,15 @@ function runSketch() {
 		// Add the control panel to the sketch
 		addControlPanel();
 
+		// Create the mesh and add it to the scene
+		addMeshToScene();
+
+		// Add some lights to the scene
+		scene.add(new THREE.AmbientLight(0x222222));
+		var light = new THREE.DirectionalLight(0xffffff);
+		light.position.set(1, 1, 1);
+		scene.add(light);
+
 		// Define the shader uniforms
 		uniforms = {
 			u_time : {
@@ -65,25 +74,28 @@ function runSketch() {
 			u_mouse : {
 				type : "v2",
 				value : new THREE.Vector2()
+			},
+			u_texture : {
+				type : "t",
+				value : null
 			}
 		};
 
 		// Create the shader material
-		material = new THREE.ShaderMaterial({
+		var material = new THREE.ShaderMaterial({
 			uniforms : uniforms,
 			vertexShader : document.getElementById("vertexShader").textContent,
-			fragmentShader : document.getElementById("fragmentShader").textContent,
-			transparent : true,
-			extensions : {
-				derivatives : true
-			}
+			fragmentShader : document.getElementById("fragmentShader").textContent
 		});
 
-		// Create the mesh and add it to the scene
-		addMeshToScene();
+		// Initialize the effect composer
+		composer = new THREE.EffectComposer(renderer);
+		composer.addPass(new THREE.RenderPass(scene, camera));
 
-		// Start the user webcam
-		startWebcam();
+		// Add the postprocessing effect
+		var effect = new THREE.ShaderPass(material, "u_texture");
+		effect.renderToScreen = true;
+		composer.addPass(effect);
 
 		// Add the event listeners
 		window.addEventListener("resize", onWindowResize, false);
@@ -117,6 +129,11 @@ function runSketch() {
 		if (mesh) {
 			scene.remove(mesh);
 		}
+
+		// Create the mesh material
+		var material = new THREE.MeshPhongMaterial({
+			color : 0xffffff
+		});
 
 		// Handle all the different options
 		if (controlParameters.Geometry == "Suzanne") {
@@ -153,92 +170,6 @@ function runSketch() {
 	}
 
 	/*
-	 * Starts the user's webcam
-	 */
-	function startWebcam() {
-		// Browser compatibility check
-		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia
-				|| navigator.msGetUserMedia;
-
-		// Try to access the user's webcam
-		if (!navigator.getUserMedia) {
-			displayErrorMessage("navigator.getUserMedia() is not supported in your browser");
-		} else {
-			navigator.getUserMedia({
-				video : true
-			}, webcamSuccessCallback, webcamErrorCallback);
-		}
-	}
-
-	/*
-	 * Handles the webcam media stream
-	 */
-	function webcamSuccessCallback(mediaStream) {
-		// Create the video element, but don't add it to the document
-		videoElement = document.createElement("video");
-		videoElement.autoplay = true;
-
-		// Read the media stream with the video element
-		try {
-			videoElement.srcObject = mediaStream;
-		} catch (error) {
-			window.URL = window.URL || window.webkitURL;
-			videoElement.src = window.URL ? window.URL.createObjectURL(mediaStream) : mediaStream;
-		}
-
-		// Run this when the video element metadata information has finished loading (only once)
-		videoElement.onloadedmetadata = function() {
-			if (this.videoWidth > 0) {
-				// Update the webcam pass size uniform
-				// webcamPass.uniforms.size.value.set(renderer.domElement.width, renderer.domElement.height);
-			}
-
-			// Create the webcam plane and add it to the scene
-			createWebcamPlane();
-		};
-	}
-
-	/*
-	 * Alerts the user that the webcam video cannot be displayed
-	 */
-	function webcamErrorCallback(e) {
-		if (e.name == "PermissionDeniedError" || e.code == 1) {
-			console.error("User denied access to the camera");
-		} else {
-			console.error("No camera available");
-		}
-	}
-
-	/*
-	 * Creates the plane that will show the webcam video output
-	 */
-	function createWebcamPlane() {
-		var geometry, texture, material;
-
-		// Create the webcam plane geometry
-		geometry = new THREE.PlaneGeometry(2, 2, 1, 1);
-
-		// Create the texture that will contain the webcam video output
-		texture = new THREE.Texture(videoElement);
-		texture.format = THREE.RGBFormat;
-		texture.generateMipmaps = false;
-		texture.minFilter = THREE.LinearFilter;
-		texture.magFilter = THREE.LinearFilter;
-
-		// Create the webcam plane material
-		material = new THREE.MeshBasicMaterial();
-		material.depthTest = false;
-		material.depthWrite = false;
-		material.map = texture;
-
-		// Create the webcam plane mesh
-		webcamPlane = new THREE.Mesh(geometry, material);
-
-		// Add it to the scene
-		scene.add(webcamPlane);
-	}
-
-	/*
 	 * Animates the sketch
 	 */
 	function animate() {
@@ -252,7 +183,7 @@ function runSketch() {
 	 */
 	function render() {
 		uniforms.u_time.value = clock.getElapsedTime();
-		renderer.render(scene, camera);
+		composer.render();
 	}
 
 	/*
@@ -261,6 +192,7 @@ function runSketch() {
 	function onWindowResize(event) {
 		// Update the renderer
 		renderer.setSize(window.innerWidth, window.innerHeight);
+		composer.setSize(window.innerWidth, window.innerHeight);
 
 		// Update the camera
 		camera.aspect = window.innerWidth / window.innerHeight;

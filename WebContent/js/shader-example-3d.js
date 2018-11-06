@@ -28,7 +28,7 @@ function runSketch() {
 		scene = new THREE.Scene();
 
 		// Initialize the camera
-		camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 50);
+		camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
 		camera.position.z = 30;
 
 		// Initialize the camera controls
