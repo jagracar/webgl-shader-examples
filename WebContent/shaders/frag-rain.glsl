@@ -12,7 +12,7 @@ uniform float u_time;
  * Credits:
  * http://byteblacksmith.com/improvements-to-the-canonical-one-liner-glsl-rand-for-opengl-es-2-0
  */
-highp float random(float dt) {
+highp float random1d(float dt) {
     highp float c = 43758.5453;
     highp float sn = mod(dt, 3.14);
     return fract(sin(sn) * c);
@@ -23,8 +23,8 @@ highp float random(float dt) {
  */
 vec2 random_drop_pos(float val, vec2 screen_dim, vec2 velocity) {
     float max_x_move = velocity.x * abs(screen_dim.y / velocity.y);
-    float x = -max_x_move * step(0.0, max_x_move) + (screen_dim.x + abs(max_x_move)) * random(val);
-    float y = (1.0 + 0.05 * random(1.234 * val)) * screen_dim.y;
+    float x = -max_x_move * step(0.0, max_x_move) + (screen_dim.x + abs(max_x_move)) * random1d(val);
+    float y = (1.0 + 0.05 * random1d(1.234 * val)) * screen_dim.y;
 
     return vec2(x, y);
 }
