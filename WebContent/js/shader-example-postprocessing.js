@@ -92,7 +92,7 @@ function runSketch() {
 		composer = new THREE.EffectComposer(renderer);
 		composer.addPass(new THREE.RenderPass(scene, camera));
 
-		// Add the postprocessing effect
+		// Add the post-processing effect
 		var effect = new THREE.ShaderPass(material, "u_texture");
 		effect.renderToScreen = true;
 		composer.addPass(effect);
@@ -190,7 +190,7 @@ function runSketch() {
 	 * Updates the renderer size, the camera aspect ratio and the uniforms when the window is resized
 	 */
 	function onWindowResize(event) {
-		// Update the renderer
+		// Update the renderer and the effect composer
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		composer.setSize(window.innerWidth, window.innerHeight);
 
