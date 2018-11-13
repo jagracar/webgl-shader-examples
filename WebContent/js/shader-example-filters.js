@@ -140,10 +140,10 @@ function runSketch() {
 			var constraints = {
 				video : {
 					width : {
-						ideal : window.innerWidth
+						ideal : window.innerWidth * window.devicePixelRatio
 					},
 					height : {
-						ideal : window.innerHeight
+						ideal : window.innerHeight * window.devicePixelRatio
 					},
 					facingMode : "user"
 				}
