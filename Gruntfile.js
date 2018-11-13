@@ -125,6 +125,7 @@ module.exports = function(grunt) {
 			toon : replaceParametersForExample('toon', 'template-example-3d.html', 'shader-example-3d.js', 'vert-3d.glsl', 'frag-toon.glsl'),
 			edge : replaceParametersForExample('edge', 'template-example-2d.html', 'shader-example-filters.js', 'vert-filters.glsl', 'frag-edge.glsl'),
 			blur : replaceParametersForExample('blur', 'template-example-2d.html', 'shader-example-filters.js', 'vert-filters.glsl', 'frag-blur.glsl'),
+			pixels : replaceParametersForExample('pixels', 'template-example-2d.html', 'shader-example-filters.js', 'vert-filters.glsl', 'frag-pixelated.glsl'),
 			lens : replaceParametersForExample('lens', 'template-example-2d.html', 'shader-example-filters.js', 'vert-filters.glsl', 'frag-lens.glsl'),
 			gravity : replaceParametersForSimExample('gravity', 'template-example-sim.html', 'shader-example-gravity.js', 'frag-grav-pos.glsl', 'frag-grav-vel.glsl', 'vert-sim.glsl', 'frag-sim.glsl'),
 			galaxies : replaceParametersForSimExample('galaxies', 'template-example-sim.html', 'shader-example-galaxies.js', 'frag-galaxies-pos.glsl', 'frag-galaxies-vel.glsl', 'vert-sim.glsl', 'frag-sim.glsl'),

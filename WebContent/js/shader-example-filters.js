@@ -3,7 +3,7 @@ window.onload = function() {
 };
 
 function runSketch() {
-	var renderer, scene, camera, clock, stats, uniforms;
+	var renderer, scene, camera, clock, stats, controlParameters, uniforms, videoElement;
 
 	init();
 	animate();
@@ -35,6 +35,14 @@ function runSketch() {
 		stats = new Stats();
 		stats.dom.style.cssText = "";
 		document.getElementById("sketch-stats").appendChild(stats.dom);
+
+		// Initialize the control parameters
+		controlParameters = {
+			"Input" : "Webcam"
+		};
+
+		// Add the control panel to the sketch
+		addControlPanel();
 
 		// Create the plane geometry
 		var geometry = new THREE.PlaneBufferGeometry(2, 2);
@@ -71,8 +79,8 @@ function runSketch() {
 		var mesh = new THREE.Mesh(geometry, material);
 		scene.add(mesh);
 
-		// Load the texture and update the texture uniform
-		loadTextrure("img/portrait.jpg");
+		// Set the input texture
+		setInputTexture();
 
 		// Add the event listeners
 		window.addEventListener("resize", onWindowResize, false);
@@ -82,13 +90,99 @@ function runSketch() {
 	}
 
 	/*
-	 * Loads a texture and updates texture uniform
+	 * Adds the control panel to the sketch
+	 */
+	function addControlPanel() {
+		// Create the control panel
+		var controlPanel = new dat.GUI({
+			autoPlace : false
+		});
+
+		// Add the controllers
+		controlPanel.add(controlParameters, "Input", [ "Webcam", "Image" ]).onFinishChange(setInputTexture);
+
+		// Add the GUI to the correct DOM element
+		document.getElementById("sketch-gui").appendChild(controlPanel.domElement);
+	}
+
+	/*
+	 * Sets the input texture
+	 */
+	function setInputTexture() {
+		// Handle all the different options
+		if (controlParameters.Input == "Webcam") {
+			// Create the video element if it was not done before
+			if (!videoElement) {
+				videoElement = document.createElement("video");
+				videoElement.autoplay = true;
+			}
+
+			// Start the user's webcam
+			startWebcam();
+		} else if (controlParameters.Input == "Image") {
+			// Stop the webcam if it's active
+			if (videoElement && videoElement.srcObject) {
+				videoElement.srcObject.getVideoTracks()[0].stop();
+			}
+
+			// Load the image texture
+			loadTextrure("img/portrait.jpg");
+		}
+	}
+
+	/*
+	 * Starts the user's webcam and updates the texture uniform
+	 */
+	function startWebcam() {
+		// Try to access the webcam stream using the MediadDevices interface
+		if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+			// Set the video constraints
+			var constraints = {
+				video : {
+					width : {
+						ideal : window.innerWidth
+					},
+					height : {
+						ideal : window.innerHeight
+					},
+					facingMode : "user"
+				}
+			};
+
+			// Request the user media
+			var promise = navigator.mediaDevices.getUserMedia(constraints);
+
+			// Add the handlers
+			promise.then(function(stream) {
+				// Add the stream to the video element
+				videoElement.srcObject = stream;
+
+				// Create the texture that will contain the webcam video output
+				var texture = new THREE.VideoTexture(videoElement);
+				texture.format = THREE.RGBFormat;
+				texture.generateMipmaps = false;
+				texture.minFilter = THREE.LinearFilter;
+				texture.magFilter = THREE.LinearFilter;
+				uniforms.u_texture.value = texture;
+			});
+
+			promise.catch(function(error) {
+				console.error("Unable to access the camera/webcam.", error);
+			});
+		} else {
+			console.error("MediaDevices interface not available.");
+		}
+	}
+
+	/*
+	 * Loads a texture and updates the texture uniform
 	 */
 	function loadTextrure(imageFileName) {
 		var loader = new THREE.TextureLoader();
 
 		loader.load(imageFileName, function(texture) {
-			texture.minFilter = THREE.NearestFilter;
+			texture.minFilter = THREE.LinearFilter;
+			texture.magFilter = THREE.LinearFilter;
 			uniforms.u_texture.value = texture;
 		});
 	}
@@ -116,6 +210,11 @@ function runSketch() {
 	function onWindowResize(event) {
 		// Update the renderer
 		renderer.setSize(window.innerWidth, window.innerHeight);
+
+		// Restart the user's webcam if necessary
+		if (controlParameters.Input == "Webcam") {
+			startWebcam();
+		}
 
 		// Update the resolution uniform
 		uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight).multiplyScalar(window.devicePixelRatio);
