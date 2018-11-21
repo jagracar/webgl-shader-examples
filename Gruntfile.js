@@ -133,7 +133,9 @@ module.exports = function(grunt) {
 			repulsion : replaceParametersForSimExample('repulsion', 'template-example-sim.html', 'shader-example-repulsion.js', 'frag-repulsion-pos.glsl', 'frag-repulsion-vel.glsl', 'vert-repulsion.glsl', 'frag-repulsion.glsl'),
 			stippling : replaceParametersForSimExample('stippling', 'template-example-sim.html', 'shader-example-stippling.js', 'frag-stippling-pos.glsl', 'frag-stippling-vel.glsl', 'vert-stippling.glsl', 'frag-stippling.glsl'),
 			badtv : replaceParametersForExample('badtv', 'template-example-post.html', 'shader-example-postprocessing.js', 'vert-filters.glsl', 'frag-badtv.glsl'),
-			pixelated : replaceParametersForExample('pixelated', 'template-example-post.html', 'shader-example-postprocessing.js', 'vert-filters.glsl', 'frag-pixelated.glsl')
+			pixelated : replaceParametersForExample('pixelated', 'template-example-post.html', 'shader-example-postprocessing.js', 'vert-filters.glsl', 'frag-pixelated.glsl'),
+			fire : replaceParametersForExample('fire', 'template-example-2d.html', 'shader-example-evolve.js', 'vert-filters.glsl', 'frag-fire.glsl'),
+			cursor : replaceParametersForExample('cursor', 'template-example-2d.html', 'shader-example-evolve.js', 'vert-filters.glsl', 'frag-cursor.glsl')
 		},
 
 		// grunt-jshint

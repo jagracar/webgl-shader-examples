@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="WebGL, shader, three.js, javaScript, example, 2D">
+<meta name="description" content="cursor shader example">
+<meta name="author" content="Javier Gracia Carpio">
+
+<title>cursor shader example</title>
+
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+<!-- CSS files -->
+<link rel="stylesheet" href="/css/styles.css">
+
+<!-- JavaScript files -->
+<script type="text/javascript" src="/js/libs/three.min.js"></script>
+<script type="text/javascript" src="/js/libs/stats.min.js"></script>
+<script type="text/javascript" src="/js/libs/dat.gui.min.js"></script>
+</head>
+
+<body>
+	<!-- Navigation bar -->
+	<header class="nav-container">
+		<h1 class="nav-header">
+			<a href="/index.html" class="nav-item is-header-item">WebGL-shaders</a>
+		</h1>
+
+		<nav class="nav-menu-wrapper">
+			<span class="nav-item is-menu-item menu-icon" onclick="return false;"></span>
+
+			<ul class="nav-menu-list">
+				<li><a href="/index.html" class="nav-item">Back to list</a></li>
+				<li><a href="/js/shader-example-evolve.js" class="nav-item">JavaScript file</a></li>
+				<li><a href="/shaders/vert-filters.glsl" class="nav-item">Vertex shader</a></li>
+				<li><a href="/shaders/frag-cursor.glsl" class="nav-item">Fragment shader</a></li>
+			</ul>
+
+			<ul class="nav-menu-list">
+				<li><a href="/about.html" class="nav-item">About</a></li>
+				<li><a href="https://github.com/jagracar/webgl-shader-examples" class="nav-item"><span class="github-icon"></span>
+						Github</a></li>
+			</ul>
+		</nav>
+	</header>
+
+	<!-- Main content -->
+	<main class="main-container">
+	<article class="content">
+		<div class="sketch-container" id="sketch-container">
+			<div class="sketch-gui" id="sketch-gui"></div>
+			<div class="sketch-stats" id="sketch-stats"></div>
+		</div>
+
+		<script type="x-shader/x-vertex" id="vertexShader">
+#define GLSLIFY 1
+// Texture varyings
+varying vec2 v_uv;
+
+/*
+ * The main program
+ */
+void main() {
+    // Calculate the varyings
+    v_uv = uv;
+
+    // Vertex shader output
+    gl_Position = vec4(position, 1.0);
+}
+
+		</script>
+
+		<script type="x-shader/x-fragment" id="fragmentShader">
+#define GLSLIFY 1
+// Common uniforms
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
+
+// Texture uniforms
+uniform sampler2D u_texture;
+
+// Texture varyings
+varying vec2 v_uv;
+
+/*
+ * Returns a value between 1 and 0 that indicates if the pixel is inside the circle
+ */
+float circle(vec2 pixel, vec2 center, float radius) {
+    return 1.0 - smoothstep(radius - 1.0, radius + 1.0, length(pixel - center));
+}
+
+/*
+ * The main program
+ */
+void main() {
+    // Get the pixel color
+    vec3 pixel_color = texture2D(u_texture, v_uv).rgb;
+
+	// Draw a circle at the mouse position
+    float circle_radius = 50.0;
+    vec3 circle_color = vec3(0.5, 0.5, 0.8) + vec3(0.3 * cos(u_time), 0.3 * sin(1.3 *u_time), 0.2 * cos(2.7 *u_time));
+    float mix_factor = 0.8 * circle(gl_FragCoord.xy, u_mouse, circle_radius);
+    pixel_color = mix(pixel_color, circle_color, mix_factor);
+
+	// Fragment shader output
+	gl_FragColor = vec4(pixel_color, 1.0);
+}
+
+		</script>
+
+		<script type="text/javascript" src="/js/shader-example-evolve.js"></script>
+	</article>
+	</main>
+</body>
+</html>

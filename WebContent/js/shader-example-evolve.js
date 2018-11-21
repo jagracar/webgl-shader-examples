@@ -3,7 +3,7 @@ window.onload = function() {
 };
 
 function runSketch() {
-	var renderer, scene, camera, clock, stats, uniforms;
+	var renderer, renderTarget1, renderTarget2, sceneShader, sceneScreen, camera, clock, stats, uniforms, materialScreen;
 
 	init();
 	animate();
@@ -21,8 +21,13 @@ function runSketch() {
 		var container = document.getElementById("sketch-container");
 		container.appendChild(renderer.domElement);
 
-		// Initialize the scene
-		scene = new THREE.Scene();
+		// Initialize the render targets
+		renderTarget1 = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+		renderTarget2 = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+
+		// Initialize the scenes
+		sceneShader = new THREE.Scene();
+		sceneScreen = new THREE.Scene();
 
 		// Initialize the camera
 		camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
@@ -52,19 +57,28 @@ function runSketch() {
 			u_mouse : {
 				type : "v2",
 				value : new THREE.Vector2()
+			},
+			u_texture : {
+				type : "t",
+				value : null
 			}
 		};
 
 		// Create the shader material
-		var material = new THREE.ShaderMaterial({
+		var materialShader = new THREE.ShaderMaterial({
 			uniforms : uniforms,
 			vertexShader : document.getElementById("vertexShader").textContent,
 			fragmentShader : document.getElementById("fragmentShader").textContent
 		});
 
-		// Create the mesh and add it to the scene
-		var mesh = new THREE.Mesh(geometry, material);
-		scene.add(mesh);
+		// Create the screen material
+		materialScreen = new THREE.MeshBasicMaterial();
+
+		// Create the meshes and add them to the scene
+		var meshShader = new THREE.Mesh(geometry, materialShader);
+		var meshScreen = new THREE.Mesh(geometry, materialScreen);
+		sceneShader.add(meshShader);
+		sceneScreen.add(meshScreen);
 
 		// Add the event listeners
 		window.addEventListener("resize", onWindowResize, false);
@@ -86,16 +100,33 @@ function runSketch() {
 	 * Renders the sketch
 	 */
 	function render() {
+		// Update the uniforms
 		uniforms.u_time.value = clock.getElapsedTime();
-		renderer.render(scene, camera);
+		uniforms.u_texture.value = renderTarget1.texture;
+
+		// Render the shader scene
+		renderer.render(sceneShader, camera, renderTarget2);
+
+		// Update the screen material texture
+		materialScreen.map = renderTarget2.texture;
+
+		// Render the screen scene
+		renderer.render(sceneScreen, camera);
+
+		// Swap the render targets
+		var tmp = renderTarget1;
+		renderTarget1 = renderTarget2;
+		renderTarget2 = tmp;
 	}
 
 	/*
 	 * Updates the renderer size and the uniforms when the window is resized
 	 */
 	function onWindowResize(event) {
-		// Update the renderer
+		// Update the renderer and the render targets
 		renderer.setSize(window.innerWidth, window.innerHeight);
+		renderTarget1.setSize(window.innerWidth, window.innerHeight);
+		renderTarget2.setSize(window.innerWidth, window.innerHeight);
 
 		// Update the resolution uniform
 		uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight).multiplyScalar(window.devicePixelRatio);

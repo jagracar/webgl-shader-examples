@@ -25,8 +25,7 @@ function runSketch() {
 		scene = new THREE.Scene();
 
 		// Initialize the camera
-		camera = new THREE.Camera();
-		camera.position.z = 1;
+		camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
 		// Initialize the clock
 		clock = new THREE.Clock(true);
