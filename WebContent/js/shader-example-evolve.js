@@ -22,8 +22,9 @@ function runSketch() {
 		container.appendChild(renderer.domElement);
 
 		// Initialize the render targets
-		renderTarget1 = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
-		renderTarget2 = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
+		var size = renderer.getDrawingBufferSize();
+		renderTarget1 = new THREE.WebGLRenderTarget(size.width, size.height);
+		renderTarget2 = new THREE.WebGLRenderTarget(size.width, size.height);
 
 		// Initialize the scenes
 		sceneShader = new THREE.Scene();
@@ -123,10 +124,13 @@ function runSketch() {
 	 * Updates the renderer size and the uniforms when the window is resized
 	 */
 	function onWindowResize(event) {
-		// Update the renderer and the render targets
+		// Update the renderer
 		renderer.setSize(window.innerWidth, window.innerHeight);
-		renderTarget1.setSize(window.innerWidth, window.innerHeight);
-		renderTarget2.setSize(window.innerWidth, window.innerHeight);
+		
+		// Update the render targets
+		var size = renderer.getDrawingBufferSize();
+		renderTarget1.setSize(size.width, size.height);
+		renderTarget2.setSize(size.width, size.height);
 
 		// Update the resolution uniform
 		uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight).multiplyScalar(window.devicePixelRatio);
