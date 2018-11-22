@@ -16,6 +16,7 @@ function runSketch() {
 		renderer = new THREE.WebGLRenderer();
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(window.innerWidth, window.innerHeight);
+		renderer.setClearColor(new THREE.Color(0, 0, 0));
 
 		// Add the renderer to the sketch container
 		var container = document.getElementById("sketch-container");
@@ -101,6 +102,13 @@ function runSketch() {
 	 * Renders the sketch
 	 */
 	function render() {
+		// Start rendering an empty screen scene on the first render target
+		if (!uniforms.u_texture.value) {
+			materialScreen.visible = false;
+			renderer.render(sceneScreen, camera, renderTarget1);
+			materialScreen.visible = true;
+		}
+
 		// Update the uniforms
 		uniforms.u_time.value = clock.getElapsedTime();
 		uniforms.u_texture.value = renderTarget1.texture;
@@ -110,6 +118,7 @@ function runSketch() {
 
 		// Update the screen material texture
 		materialScreen.map = renderTarget2.texture;
+		materialScreen.needsUpdate = true;
 
 		// Render the screen scene
 		renderer.render(sceneScreen, camera);
@@ -126,14 +135,19 @@ function runSketch() {
 	function onWindowResize(event) {
 		// Update the renderer
 		renderer.setSize(window.innerWidth, window.innerHeight);
-		
+
 		// Update the render targets
 		var size = renderer.getDrawingBufferSize();
 		renderTarget1.setSize(size.width, size.height);
 		renderTarget2.setSize(size.width, size.height);
 
-		// Update the resolution uniform
+		// Update the uniforms
 		uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight).multiplyScalar(window.devicePixelRatio);
+		uniforms.u_texture.value = null;
+
+		// Update the screen material texture
+		materialScreen.map = null;
+		materialScreen.needsUpdate = true;
 	}
 
 	/*

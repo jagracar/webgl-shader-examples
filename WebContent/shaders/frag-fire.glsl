@@ -107,6 +107,7 @@ void main() {
         float fade_factor = 1.0 - smoothstep(0.0, u_resolution.x, (gl_FragCoord.y - floor) / 3.0);
         pixel_color.r *= fade_factor;
         pixel_color.g *= 0.99 * fade_factor;
+        pixel_color.b = 0.0;
 	}
 
 	// Fragment shader output
