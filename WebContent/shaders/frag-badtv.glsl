@@ -3,6 +3,7 @@
 uniform vec2 u_resolution;
 uniform vec2 u_mouse;
 uniform float u_time;
+uniform float u_frame;
 
 // Texture uniforms
 uniform sampler2D u_texture;

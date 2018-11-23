@@ -135,7 +135,8 @@ module.exports = function(grunt) {
 			badtv : replaceParametersForExample('badtv', 'template-example-post.html', 'shader-example-postprocessing.js', 'vert-filters.glsl', 'frag-badtv.glsl'),
 			pixelated : replaceParametersForExample('pixelated', 'template-example-post.html', 'shader-example-postprocessing.js', 'vert-filters.glsl', 'frag-pixelated.glsl'),
 			fire : replaceParametersForExample('fire', 'template-example-2d.html', 'shader-example-evolve.js', 'vert-filters.glsl', 'frag-fire.glsl'),
-			cursor : replaceParametersForExample('cursor', 'template-example-2d.html', 'shader-example-evolve.js', 'vert-filters.glsl', 'frag-cursor.glsl')
+			cursor : replaceParametersForExample('cursor', 'template-example-2d.html', 'shader-example-evolve.js', 'vert-filters.glsl', 'frag-cursor.glsl'),
+			sort : replaceParametersForExample('sort', 'template-example-2d.html', 'shader-example-evolveImage.js', 'vert-filters.glsl', 'frag-sort.glsl')
 		},
 
 		// grunt-jshint

@@ -3,6 +3,7 @@
 uniform vec2 u_resolution;
 uniform vec2 u_mouse;
 uniform float u_time;
+uniform float u_frame;
 
 /*
  * Returns a value between 1 and 0 that indicates if the pixel is inside the square

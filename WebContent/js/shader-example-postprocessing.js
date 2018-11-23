@@ -66,6 +66,10 @@ function runSketch() {
 				type : "f",
 				value : 0.0
 			},
+			u_frame : {
+				type : "f",
+				value : 0.0
+			},
 			u_resolution : {
 				type : "v2",
 				value : new THREE.Vector2(window.innerWidth, window.innerHeight)
@@ -183,6 +187,7 @@ function runSketch() {
 	 */
 	function render() {
 		uniforms.u_time.value = clock.getElapsedTime();
+		uniforms.u_frame.value += 1.0;
 		composer.render();
 	}
 

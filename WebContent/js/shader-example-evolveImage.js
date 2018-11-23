@@ -86,11 +86,28 @@ function runSketch() {
 		sceneShader.add(meshShader);
 		sceneScreen.add(meshScreen);
 
+		// Load the image texture
+		loadTextrure("img/portrait.jpg");
+
 		// Add the event listeners
 		window.addEventListener("resize", onWindowResize, false);
 		renderer.domElement.addEventListener("mousemove", onMouseMove, false);
 		renderer.domElement.addEventListener("touchstart", onTouchMove, false);
 		renderer.domElement.addEventListener("touchmove", onTouchMove, false);
+	}
+
+	/*
+	 * Loads a texture and updates the screen material texture uniform
+	 */
+	function loadTextrure(imageFileName) {
+		var loader = new THREE.TextureLoader();
+
+		loader.load(imageFileName, function(texture) {
+			texture.minFilter = THREE.LinearFilter;
+			texture.magFilter = THREE.LinearFilter;
+			materialScreen.map = texture;
+			materialScreen.needsUpdate = true;
+		});
 	}
 
 	/*
@@ -106,32 +123,33 @@ function runSketch() {
 	 * Renders the sketch
 	 */
 	function render() {
-		// Start rendering an empty screen scene on the first render target
-		if (!uniforms.u_texture.value) {
-			materialScreen.visible = false;
-			renderer.render(sceneScreen, camera, renderTarget1);
-			materialScreen.visible = true;
+		// Wait until the image texture is loaded
+		if (materialScreen.map) {
+			// Start rendering the screen scene on the first render target
+			if (!uniforms.u_texture.value) {
+				renderer.render(sceneScreen, camera, renderTarget1);
+			}
+
+			// Update the uniforms
+			uniforms.u_time.value = clock.getElapsedTime();
+			uniforms.u_frame.value += 1.0;
+			uniforms.u_texture.value = renderTarget1.texture;
+
+			// Render the shader scene
+			renderer.render(sceneShader, camera, renderTarget2);
+
+			// Update the screen material texture
+			materialScreen.map = renderTarget2.texture;
+			materialScreen.needsUpdate = true;
+
+			// Render the screen scene
+			renderer.render(sceneScreen, camera);
+
+			// Swap the render targets
+			var tmp = renderTarget1;
+			renderTarget1 = renderTarget2;
+			renderTarget2 = tmp;
 		}
-
-		// Update the uniforms
-		uniforms.u_time.value = clock.getElapsedTime();
-		uniforms.u_frame.value += 1.0;
-		uniforms.u_texture.value = renderTarget1.texture;
-
-		// Render the shader scene
-		renderer.render(sceneShader, camera, renderTarget2);
-
-		// Update the screen material texture
-		materialScreen.map = renderTarget2.texture;
-		materialScreen.needsUpdate = true;
-
-		// Render the screen scene
-		renderer.render(sceneScreen, camera);
-
-		// Swap the render targets
-		var tmp = renderTarget1;
-		renderTarget1 = renderTarget2;
-		renderTarget2 = tmp;
 	}
 
 	/*
