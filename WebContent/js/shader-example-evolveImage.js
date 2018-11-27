@@ -3,7 +3,7 @@ window.onload = function() {
 };
 
 function runSketch() {
-	var renderer, renderTarget1, renderTarget2, sceneShader, sceneScreen, camera, clock, stats, uniforms, materialScreen;
+	var renderer, renderTarget1, renderTarget2, sceneShader, sceneScreen, camera, clock, stats, uniforms, materialScreen, imgTexture;
 
 	init();
 	animate();
@@ -105,7 +105,8 @@ function runSketch() {
 		loader.load(imageFileName, function(texture) {
 			texture.minFilter = THREE.LinearFilter;
 			texture.magFilter = THREE.LinearFilter;
-			materialScreen.map = texture;
+			imgTexture = texture;
+			materialScreen.map = imgTexture;
 			materialScreen.needsUpdate = true;
 		});
 	}
@@ -168,9 +169,8 @@ function runSketch() {
 		uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight).multiplyScalar(window.devicePixelRatio);
 		uniforms.u_texture.value = null;
 
-		// Update the screen material texture
-		materialScreen.map = null;
-		materialScreen.needsUpdate = true;
+		// Start again from the original image texture
+		materialScreen.map = imgTexture;
 	}
 
 	/*
