@@ -97,7 +97,7 @@ function runSketch() {
 			},
 			u_texture : {
 				type : "t",
-				value : new THREE.TextureLoader().load("img/particle.png")
+				value : new THREE.TextureLoader().load("img/particle2.png")
 			}
 		};
 
@@ -199,7 +199,7 @@ function runSketch() {
 
 		for (var i = 0; i < nParticles; i++) {
 			// Get a random point inside a disk
-			var distance = 2 * Math.pow(Math.random(), 1 / 2);
+			var distance = 4 * Math.pow(Math.random(), 1 / 2);
 			var ang = 2 * Math.PI * Math.random();
 
 			// Calculate the point x,y,z coordinates
