@@ -11,6 +11,13 @@ uniform sampler2D u_bgTexture;
 uniform vec2 u_textureOffset;
 
 /*
+ * Returns the texture background color at the given position
+ */
+vec3 get_background_color(vec3 position) {
+    return texture2D(u_bgTexture, (position.xy + u_textureOffset) / (2.0 * u_textureOffset)).rgb;
+}
+
+/*
  * The main program
  */
 void main() {
@@ -24,8 +31,8 @@ void main() {
         vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
 
         // Calculate the particle relative size based on the background texture color
-        vec3 bgColor = texture2D(u_bgTexture, (position.xy + u_textureOffset) / (2.0 * u_textureOffset)).rgb;
-        float relativeSize = 1.0 - 0.45 * length(bgColor);
+        vec3 bgColor = get_background_color(position);
+        float relativeSize = 1.0 - 0.3 * dot(bgColor, vec3(1.0));
 
         // Vertex shader output
         gl_PointSize = -u_particleSize * relativeSize / mvPosition.z;

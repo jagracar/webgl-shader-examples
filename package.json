@@ -35,5 +35,6 @@
 		"transform": [
 			"glslify-import"
 		]
-	}
+	},
+	"dependencies": {}
 }

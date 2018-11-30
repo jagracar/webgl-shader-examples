@@ -6,5 +6,5 @@ uniform sampler2D u_texture;
  */
 void main() {
     // Fragment shader output
-    gl_FragColor =texture2D(u_texture, gl_PointCoord);
+    gl_FragColor = vec4(vec3(0.0), texture2D(u_texture, gl_PointCoord).a);
 }
