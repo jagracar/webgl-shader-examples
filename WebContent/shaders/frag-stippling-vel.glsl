@@ -44,10 +44,6 @@ void main() {
         vec3 bgColor = get_background_color(position);
         float chargeSize = calculate_charge_size(bgColor);
 
-        // Calculate the maximum distance at which the particle could be
-        // affected by other particles
-        float maxDistance = chargeSize + calculate_charge_size(vec3(1.0));
-
         // Loop over all the particles and calculate the total repulsion force
         vec3 totalForce = vec3(0.0);
 
@@ -61,28 +57,23 @@ void main() {
             vec2 particleUv = vec2(mod(i, width) + 0.5, floor(i / width) + 0.5) / resolution;
             vec3 particlePosition = texture2D(u_positionTexture, particleUv).xyz;
 
+            // Get the repulsing particle charge size based on the background color
+            vec3 particleBgColor = get_background_color(particlePosition);
+            float particleChargeSize = calculate_charge_size(particleBgColor);
+
+            // Calculate the total charge size
+            float totalChargeSize = chargeSize + particleChargeSize;
+
             // Calculate the force direction
             vec3 forceDirection = -(particlePosition - position);
 
             // Calculate the particle distance
             float distance = length(forceDirection);
 
-            // Move to the next particle if the distance is exactly zero, which
-            // indicates that we are comparing the particle with itself, or the
-            // distance is larger than the maximum influence distance
-            if (distance == 0.0 || distance > maxDistance) {
-                continue;
-            }
-
-            // Get the repulsing particle charge size based on the background color
-            vec3 particleBgColor = get_background_color(particlePosition);
-            float particleChargeSize = calculate_charge_size(particleBgColor);
-
-            // Calculate the total charge range
-            float totalChargeSize = chargeSize + particleChargeSize;
-
-            // Check that the distance is smaller than the total charge size
-            if (distance < totalChargeSize) {
+            // Check that we are not comparing the particle with itself (zero
+            // distance) and that the distance is smaller than the total
+            // charge size
+            if (distance != 0.0 && distance < totalChargeSize) {
                 // Add the particle repulsion force
                 totalForce += 0.03 * pow(totalChargeSize / (distance + softening), 2.0) * (forceDirection / distance);
             }
