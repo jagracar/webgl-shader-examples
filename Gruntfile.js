@@ -90,6 +90,7 @@ module.exports = function(grunt) {
 		clean : {
 			build : {
 				src : [ 'WebContent/*.html', 'WebContent/shaders/*.glsl' ]
+				//src : [ 'WebContent/*.html', 'WebContent/shaders/frag-flare.glsl' ]
 			}
 		},
 
@@ -110,6 +111,7 @@ module.exports = function(grunt) {
 			build_shaders : {
 				cwd : 'shaders',
 				cmd : 'for filename in *.glsl; do glslify "${filename}" -o ../WebContent/shaders/"${filename}"; done'
+				//cmd : 'glslify frag-flare.glsl -o ../WebContent/shaders/frag-flare.glsl'
 			}
 		},
 
@@ -134,6 +136,7 @@ module.exports = function(grunt) {
 			stippling : replaceParametersForSimExample('stippling', 'template-example-sim.html', 'shader-example-stippling.js', 'frag-stippling-pos.glsl', 'frag-stippling-vel.glsl', 'vert-stippling.glsl', 'frag-stippling.glsl'),
 			badtv : replaceParametersForExample('badtv', 'template-example-post.html', 'shader-example-postprocessing.js', 'vert-filters.glsl', 'frag-badtv.glsl'),
 			pixelated : replaceParametersForExample('pixelated', 'template-example-post.html', 'shader-example-postprocessing.js', 'vert-filters.glsl', 'frag-pixelated.glsl'),
+			flare : replaceParametersForExample('flare', 'template-example-2d.html', 'shader-example-evolve.js', 'vert-filters.glsl', 'frag-flare.glsl'),
 			fire : replaceParametersForExample('fire', 'template-example-2d.html', 'shader-example-evolve.js', 'vert-filters.glsl', 'frag-fire.glsl'),
 			cursor : replaceParametersForExample('cursor', 'template-example-2d.html', 'shader-example-evolve.js', 'vert-filters.glsl', 'frag-cursor.glsl'),
 			sort : replaceParametersForExample('sort', 'template-example-2d.html', 'shader-example-evolveImage.js', 'vert-filters.glsl', 'frag-sort.glsl')

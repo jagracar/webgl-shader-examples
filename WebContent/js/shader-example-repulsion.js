@@ -93,7 +93,7 @@ function runSketch() {
 			},
 			u_texture : {
 				type : "t",
-				value : new THREE.TextureLoader().load("img/particle.png")
+				value : new THREE.TextureLoader().load("img/particle2.png")
 			}
 		};
 
