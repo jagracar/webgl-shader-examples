@@ -139,7 +139,8 @@ module.exports = function(grunt) {
 			flare : replaceParametersForExample('flare', 'template-example-2d.html', 'shader-example-evolve.js', 'vert-filters.glsl', 'frag-flare.glsl'),
 			fire : replaceParametersForExample('fire', 'template-example-2d.html', 'shader-example-evolve.js', 'vert-filters.glsl', 'frag-fire.glsl'),
 			cursor : replaceParametersForExample('cursor', 'template-example-2d.html', 'shader-example-evolve.js', 'vert-filters.glsl', 'frag-cursor.glsl'),
-			sort : replaceParametersForExample('sort', 'template-example-2d.html', 'shader-example-evolveImage.js', 'vert-filters.glsl', 'frag-sort.glsl')
+			sort : replaceParametersForExample('sort', 'template-example-2d.html', 'shader-example-evolveImage.js', 'vert-filters.glsl', 'frag-sort.glsl'),
+			deform : replaceParametersForExample('deform', 'template-example-3d.html', 'shader-example-3d.js', 'vert-deform.glsl', 'frag-normals.glsl')
 		},
 
 		// grunt-jshint
