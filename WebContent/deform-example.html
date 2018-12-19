@@ -109,7 +109,7 @@ vec3 calculateNormal(vec3 position) {
     vec3 fdx = vec3(dFdx(position.x), dFdx(position.y), dFdx(position.z));
     vec3 fdy = vec3(dFdy(position.x), dFdy(position.y), dFdy(position.z));
 
-    return cross(fdx, fdy);
+    return normalize(cross(fdx, fdy));
 }
 
 /*
