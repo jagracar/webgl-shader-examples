@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="WebGL, shader, three.js, javaScript, example, postprocessin">
+<meta name="description" content="rgb shader example">
+<meta name="author" content="Javier Gracia Carpio">
+
+<title>rgb shader example</title>
+
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+<!-- CSS files -->
+<link rel="stylesheet" href="/css/styles.css">
+
+<!-- JavaScript files -->
+<script type="text/javascript" src="/js/libs/three.min.js"></script>
+<script type="text/javascript" src="/js/libs/CopyShader.js"></script>
+<script type="text/javascript" src="/js/libs/EffectComposer.js"></script>
+<script type="text/javascript" src="/js/libs/RenderPass.js"></script>
+<script type="text/javascript" src="/js/libs/ShaderPass.js"></script>
+<script type="text/javascript" src="/js/libs/stats.min.js"></script>
+<script type="text/javascript" src="/js/libs/dat.gui.min.js"></script>
+<script type="text/javascript" src="/js/libs/OrbitControls.js"></script>
+</head>
+
+<body>
+	<!-- Navigation bar -->
+	<header class="nav-container">
+		<h1 class="nav-header">
+			<a href="/index.html" class="nav-item is-header-item">WebGL-shaders</a>
+		</h1>
+
+		<nav class="nav-menu-wrapper">
+			<span class="nav-item is-menu-item menu-icon" onclick="return false;"></span>
+
+			<ul class="nav-menu-list">
+				<li><a href="/index.html" class="nav-item">Back to list</a></li>
+				<li><a href="/js/shader-example-postprocessing.js" class="nav-item">JavaScript file</a></li>
+				<li><a href="/shaders/vert-filters.glsl" class="nav-item">Vertex shader</a></li>
+				<li><a href="/shaders/frag-rgb.glsl" class="nav-item">Fragment shader</a></li>
+			</ul>
+
+			<ul class="nav-menu-list">
+				<li><a href="/about.html" class="nav-item">About</a></li>
+				<li><a href="https://github.com/jagracar/webgl-shader-examples" class="nav-item"><span class="github-icon"></span>
+						Github</a></li>
+			</ul>
+		</nav>
+	</header>
+
+	<!-- Main content -->
+	<main class="main-container">
+	<article class="content">
+		<div class="sketch-container" id="sketch-container">
+			<div class="sketch-gui" id="sketch-gui"></div>
+			<div class="sketch-stats" id="sketch-stats"></div>
+		</div>
+
+		<script type="x-shader/x-vertex" id="vertexShader">
+#define GLSLIFY 1
+// Texture varyings
+varying vec2 v_uv;
+
+/*
+ * The main program
+ */
+void main() {
+    // Calculate the varyings
+    v_uv = uv;
+
+    // Vertex shader output
+    gl_Position = vec4(position, 1.0);
+}
+
+		</script>
+
+		<script type="x-shader/x-fragment" id="fragmentShader">
+#define GLSLIFY 1
+// Common uniforms
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
+uniform float u_frame;
+
+// Texture uniforms
+uniform sampler2D u_texture;
+
+// Texture varyings
+varying vec2 v_uv;
+
+/*
+ * The main program
+ */
+void main() {
+    // Calculate the color offset directions
+    float angle = u_time;
+    vec2 red_offset = vec2(cos(angle), sin(angle));
+    angle += radians(120.0);
+    vec2 green_offset = vec2(cos(angle), sin(angle));
+    angle += radians(120.0);
+    vec2 blue_offset = vec2(cos(angle), sin(angle));
+
+    // Calculate the offset size as a function of the pixel distance to the center
+    float offset_size = 0.1 * length(gl_FragCoord.xy - 0.5 * u_resolution);
+
+    // Scale the offset size by the relative mouse position
+    offset_size *= u_mouse.x / u_resolution.x;
+
+    // Extract the pixel color values from the input texture
+    float red = texture2D(u_texture, v_uv - offset_size * red_offset / u_resolution).r;
+    float green = texture2D(u_texture, v_uv - offset_size * green_offset / u_resolution).g;
+    float blue = texture2D(u_texture, v_uv - offset_size * blue_offset / u_resolution).b;
+
+    // Fragment shader output
+    gl_FragColor = vec4(red, green, blue, 1.0);
+}
+
+		</script>
+
+		<script type="text/javascript" src="/js/shader-example-postprocessing.js"></script>
+	</article>
+	</main>
+</body>
+</html>

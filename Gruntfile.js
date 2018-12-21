@@ -90,7 +90,7 @@ module.exports = function(grunt) {
 		clean : {
 			build : {
 				src : [ 'WebContent/*.html', 'WebContent/shaders/*.glsl' ]
-				//src : [ 'WebContent/*.html', 'WebContent/shaders/frag-cuts.glsl' ]
+				//src : [ 'WebContent/*.html', 'WebContent/shaders/frag-rgb.glsl' ]
 			}
 		},
 
@@ -111,7 +111,7 @@ module.exports = function(grunt) {
 			build_shaders : {
 				cwd : 'shaders',
 				cmd : 'for filename in *.glsl; do glslify "${filename}" -o ../WebContent/shaders/"${filename}"; done'
-				//cmd : 'glslify frag-cuts.glsl -o ../WebContent/shaders/frag-cuts.glsl'
+				//cmd : 'glslify frag-rgb.glsl -o ../WebContent/shaders/frag-rgb.glsl'
 			}
 		},
 
@@ -137,6 +137,7 @@ module.exports = function(grunt) {
 			badtv : replaceParametersForExample('badtv', 'template-example-post.html', 'shader-example-postprocessing.js', 'vert-filters.glsl', 'frag-badtv.glsl'),
 			pixelated : replaceParametersForExample('pixelated', 'template-example-post.html', 'shader-example-postprocessing.js', 'vert-filters.glsl', 'frag-pixelated.glsl'),
 			cuts : replaceParametersForExample('cuts', 'template-example-post.html', 'shader-example-postprocessing.js', 'vert-filters.glsl', 'frag-cuts.glsl'),
+			rgb : replaceParametersForExample('rgb', 'template-example-post.html', 'shader-example-postprocessing.js', 'vert-filters.glsl', 'frag-rgb.glsl'),
 			flare : replaceParametersForExample('flare', 'template-example-2d.html', 'shader-example-evolve.js', 'vert-filters.glsl', 'frag-flare.glsl'),
 			fire : replaceParametersForExample('fire', 'template-example-2d.html', 'shader-example-evolve.js', 'vert-filters.glsl', 'frag-fire.glsl'),
 			cursor : replaceParametersForExample('cursor', 'template-example-2d.html', 'shader-example-evolve.js', 'vert-filters.glsl', 'frag-cursor.glsl'),
