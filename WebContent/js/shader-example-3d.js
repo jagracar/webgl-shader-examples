@@ -77,6 +77,7 @@ function runSketch() {
 			uniforms : uniforms,
 			vertexShader : document.getElementById("vertexShader").textContent,
 			fragmentShader : document.getElementById("fragmentShader").textContent,
+			side : THREE.DoubleSide,
 			transparent : true,
 			extensions : {
 				derivatives : true

@@ -108,15 +108,26 @@ varying vec3 v_normal;
 vec3 calculateNormal(vec3 position) {
     vec3 fdx = vec3(dFdx(position.x), dFdx(position.y), dFdx(position.z));
     vec3 fdy = vec3(dFdy(position.x), dFdy(position.y), dFdy(position.z));
+    vec3 normal = normalize(cross(fdx, fdy));
 
-    return normalize(cross(fdx, fdy));
+    if (!gl_FrontFacing) {
+        normal = -normal;
+    }
+
+    return normal;
 }
 
 /*
  *  Calculates the diffuse factor produced by the light illumination
  */
 float diffuseFactor(vec3 normal, vec3 light_direction) {
-    return -dot(normalize(normal), normalize(light_direction));
+    float df = dot(normalize(normal), normalize(light_direction));
+
+    if (gl_FrontFacing) {
+        df = -df;
+    }
+
+    return max(0.0, df);
 }
 
 /*

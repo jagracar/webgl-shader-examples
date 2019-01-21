@@ -13,7 +13,7 @@ void main() {
     vec3 light_direction = -vec3((u_mouse - 0.5 * u_resolution) / min_resolution, 0.5);
 
     // Calculate the light diffusion factor
-    float df = max(0.0, diffuseFactor(v_normal, light_direction));
+    float df = diffuseFactor(v_normal, light_direction);
 
     // Move the pixel coordinates origin to the center of the screen
     vec2 pos = gl_FragCoord.xy - 0.5 * u_resolution;

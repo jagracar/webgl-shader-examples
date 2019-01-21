@@ -13,13 +13,12 @@ void main() {
     // Calculate the light diffusion factor
     float df = diffuseFactor(v_normal, light_direction);
 
-    // Define the toon shading steps
-    float nSteps = 4.0;
-    float step = sqrt(df) * nSteps;
-    step = (floor(step) + smoothstep(0.48, 0.52, fract(step))) / nSteps;
-
     // Calculate the surface color
-    float surface_color = step * step;
+    float surface_color = df;
+
+    if (cos(2.0 * v_position.y + 3.0 * u_time) < 0.0) {
+        discard;
+    }
 
     // Fragment shader output
     gl_FragColor = vec4(vec3(surface_color), 1.0);

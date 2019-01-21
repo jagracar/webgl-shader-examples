@@ -28,14 +28,18 @@ float diffuseFactor(vec3 normal, vec3 light_direction) {
 void main() {
     // Use the mouse position to define the light direction
     float min_resolution = min(u_resolution.x, u_resolution.y);
-    vec3 light_direction = -vec3((u_mouse - 0.5 * u_resolution) / min_resolution, 0.25);
+    vec3 light_direction = -vec3((u_mouse - 0.5 * u_resolution) / min_resolution, 0.5);
 
-    // Set the surface color
-    vec3 surface_color = vec3(0.5 + 0.5 * cos(2.0 * v_position.y + 3.0 * u_time));
+    // Calculate the light diffusion factor
+    float df = diffuseFactor(v_normal, light_direction);
 
-    // Apply the light diffusion factor
-    surface_color *= diffuseFactor(v_normal, light_direction);
+    // Calculate the surface color
+    float surface_color = df;
+
+    if (cos(2.0 * v_position.y + 3.0 * u_time) < 0.0) {
+        discard;
+    }
 
     // Fragment shader output
-    gl_FragColor = vec4(surface_color, 1.0);
+    gl_FragColor = vec4(vec3(surface_color), 1.0);
 }

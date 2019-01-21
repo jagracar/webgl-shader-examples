@@ -90,7 +90,7 @@ module.exports = function(grunt) {
 		clean : {
 			build : {
 				src : [ 'WebContent/*.html', 'WebContent/shaders/*.glsl' ]
-				//src : [ 'WebContent/*.html', 'WebContent/shaders/frag-rgb.glsl' ]
+				//src : [ 'WebContent/*.html', 'WebContent/shaders/frag-stripes.glsl' ]
 			}
 		},
 
@@ -111,7 +111,7 @@ module.exports = function(grunt) {
 			build_shaders : {
 				cwd : 'shaders',
 				cmd : 'for filename in *.glsl; do glslify "${filename}" -o ../WebContent/shaders/"${filename}"; done'
-				//cmd : 'glslify frag-rgb.glsl -o ../WebContent/shaders/frag-rgb.glsl'
+				//cmd : 'glslify frag-stripes.glsl -o ../WebContent/shaders/frag-stripes.glsl'
 			}
 		},
 
@@ -125,6 +125,7 @@ module.exports = function(grunt) {
 			pencil : replaceParametersForExample('pencil', 'template-example-3d.html', 'shader-example-3d.js', 'vert-3d.glsl', 'frag-pencil.glsl'),
 			dots : replaceParametersForExample('dots', 'template-example-3d.html', 'shader-example-3d.js', 'vert-3d.glsl', 'frag-dots.glsl'),
 			toon : replaceParametersForExample('toon', 'template-example-3d.html', 'shader-example-3d.js', 'vert-3d.glsl', 'frag-toon.glsl'),
+			stripes : replaceParametersForExample('stripes', 'template-example-3d.html', 'shader-example-3d.js', 'vert-3d.glsl', 'frag-stripes.glsl'),
 			edge : replaceParametersForExample('edge', 'template-example-2d.html', 'shader-example-filters.js', 'vert-filters.glsl', 'frag-edge.glsl'),
 			blur : replaceParametersForExample('blur', 'template-example-2d.html', 'shader-example-filters.js', 'vert-filters.glsl', 'frag-blur.glsl'),
 			pixels : replaceParametersForExample('pixels', 'template-example-2d.html', 'shader-example-filters.js', 'vert-filters.glsl', 'frag-pixelated.glsl'),

@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="keywords" content="WebGL, shader, three.js, javaScript, example, 3D">
-<meta name="description" content="dots shader example">
+<meta name="description" content="stripes shader example">
 <meta name="author" content="Javier Gracia Carpio">
 
-<title>dots shader example</title>
+<title>stripes shader example</title>
 
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
@@ -35,7 +35,7 @@
 				<li><a href="/index.html" class="nav-item">Back to list</a></li>
 				<li><a href="/js/shader-example-3d.js" class="nav-item">JavaScript file</a></li>
 				<li><a href="/shaders/vert-3d.glsl" class="nav-item">Vertex shader</a></li>
-				<li><a href="/shaders/frag-dots.glsl" class="nav-item">Fragment shader</a></li>
+				<li><a href="/shaders/frag-stripes.glsl" class="nav-item">Fragment shader</a></li>
 			</ul>
 
 			<ul class="nav-menu-list">
@@ -87,20 +87,6 @@ varying vec3 v_position;
 varying vec3 v_normal;
 
 /*
- * Returns a value between 1 and 0 that indicates if the pixel is inside the circle
- */
-float circle(vec2 pixel, vec2 center, float radius) {
-    return 1.0 - smoothstep(radius - 1.0, radius + 1.0, length(pixel - center));
-}
-
-/*
- * Returns a rotation matrix for the given angle
- */
-mat2 rotate(float angle) {
-    return mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
-}
-
-/*
  *  Calculates the diffuse factor produced by the light illumination
  */
 float diffuseFactor(vec3 normal, vec3 light_direction) {
@@ -124,20 +110,12 @@ void main() {
     // Calculate the light diffusion factor
     float df = diffuseFactor(v_normal, light_direction);
 
-    // Move the pixel coordinates origin to the center of the screen
-    vec2 pos = gl_FragCoord.xy - 0.5 * u_resolution;
-
-    // Rotate the coordinates 20 degrees
-    pos = rotate(radians(20.0)) * pos;
-
-    // Define the grid
-    float grid_step = 12.0;
-    vec2 grid_pos = mod(pos, grid_step);
-
     // Calculate the surface color
-    float surface_color = 1.0;
-    surface_color -= circle(grid_pos, vec2(grid_step / 2.0), 0.8 * grid_step * pow(1.0 - df, 2.0));
-    surface_color = clamp(surface_color, 0.05, 1.0);
+    float surface_color = df;
+
+    if (cos(2.0 * v_position.y + 3.0 * u_time) < 0.0) {
+        discard;
+    }
 
     // Fragment shader output
     gl_FragColor = vec4(vec3(surface_color), 1.0);

@@ -20,7 +20,13 @@ mat2 rotate(float angle) {
  *  Calculates the diffuse factor produced by the light illumination
  */
 float diffuseFactor(vec3 normal, vec3 light_direction) {
-    return -dot(normalize(normal), normalize(light_direction));
+    float df = dot(normalize(normal), normalize(light_direction));
+
+    if (gl_FrontFacing) {
+        df = -df;
+    }
+
+    return max(0.0, df);
 }
 
 /*
@@ -39,7 +45,7 @@ void main() {
     vec3 light_direction = -vec3((u_mouse - 0.5 * u_resolution) / min_resolution, 0.5);
 
     // Calculate the light diffusion factor
-    float df = max(0.0, diffuseFactor(v_normal, light_direction));
+    float df = diffuseFactor(v_normal, light_direction);
 
     // Move the pixel coordinates origin to the center of the screen
     vec2 pos = gl_FragCoord.xy - 0.5 * u_resolution;
