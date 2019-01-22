@@ -16,6 +16,7 @@ void main() {
     // Calculate the surface color
     float surface_color = df;
 
+    // Don't paint the pixels between the stripes
     if (cos(2.0 * v_position.y + 3.0 * u_time) < 0.0) {
         discard;
     }

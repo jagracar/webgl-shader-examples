@@ -123,11 +123,10 @@ function runSketch() {
 		// Handle all the different options
 		if (controlParameters.Geometry == "Suzanne") {
 			// Load the json file that contains the geometry
-			var loader = new THREE.JSONLoader();
-			loader.load("/objects/suzanne_geometry.json", function(geometry) {
-				// Scale and rotate the geometry
+			var loader = new THREE.BufferGeometryLoader();
+			loader.load("/objects/suzanne_buffergeometry.json", function(geometry) {
+				// Scale the geometry
 				geometry.scale(10, 10, 10);
-				geometry.rotateX(Math.PI / 2);
 
 				// Calculate the vertex normals
 				geometry.computeVertexNormals();
