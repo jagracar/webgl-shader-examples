@@ -136,7 +136,8 @@ function runSketch() {
 
 		// Create the mesh material
 		var material = new THREE.MeshPhongMaterial({
-			color : 0xffffff
+			color : 0xffffff,
+			precision: "mediump"
 		});
 
 		// Handle all the different options
