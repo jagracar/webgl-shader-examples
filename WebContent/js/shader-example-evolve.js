@@ -24,8 +24,11 @@ function runSketch() {
 
 		// Initialize the render targets
 		var size = renderer.getDrawingBufferSize();
-		renderTarget1 = new THREE.WebGLRenderTarget(size.width, size.height);
-		renderTarget2 = new THREE.WebGLRenderTarget(size.width, size.height);
+		var options = {
+			type : /(iPad|iPhone|iPod)/g.test(navigator.userAgent) ? THREE.HalfFloatType : THREE.FloatType
+		};
+		renderTarget1 = new THREE.WebGLRenderTarget(size.width, size.height, options);
+		renderTarget2 = new THREE.WebGLRenderTarget(size.width, size.height, options);
 
 		// Initialize the scenes
 		sceneShader = new THREE.Scene();

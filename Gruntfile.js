@@ -90,7 +90,7 @@ module.exports = function(grunt) {
 		clean : {
 			build : {
 				src : [ 'WebContent/*.html', 'WebContent/shaders/*.glsl' ]
-				//src : [ 'WebContent/*.html', 'WebContent/shaders/frag-stripes.glsl' ]
+				//src : [ 'WebContent/*.html', 'WebContent/shaders/frag-reaction.glsl' ]
 			}
 		},
 
@@ -111,7 +111,7 @@ module.exports = function(grunt) {
 			build_shaders : {
 				cwd : 'shaders',
 				cmd : 'for filename in *.glsl; do glslify "${filename}" -o ../WebContent/shaders/"${filename}"; done'
-				//cmd : 'glslify frag-stripes.glsl -o ../WebContent/shaders/frag-stripes.glsl'
+				//cmd : 'glslify frag-reaction.glsl -o ../WebContent/shaders/frag-reaction.glsl'
 			}
 		},
 
@@ -142,6 +142,7 @@ module.exports = function(grunt) {
 			flare : replaceParametersForExample('flare', 'template-example-2d.html', 'shader-example-evolve.js', 'vert-filters.glsl', 'frag-flare.glsl'),
 			fire : replaceParametersForExample('fire', 'template-example-2d.html', 'shader-example-evolve.js', 'vert-filters.glsl', 'frag-fire.glsl'),
 			cursor : replaceParametersForExample('cursor', 'template-example-2d.html', 'shader-example-evolve.js', 'vert-filters.glsl', 'frag-cursor.glsl'),
+			reaction : replaceParametersForExample('reaction', 'template-example-2d.html', 'shader-example-evolve.js', 'vert-filters.glsl', 'frag-reaction.glsl'),
 			sort : replaceParametersForExample('sort', 'template-example-2d.html', 'shader-example-evolveImage.js', 'vert-filters.glsl', 'frag-sort.glsl'),
 			deform : replaceParametersForExample('deform', 'template-example-3d.html', 'shader-example-3d.js', 'vert-deform.glsl', 'frag-normals.glsl'),
 			attraction : replaceParametersForExample('attraction', 'template-example-3d.html', 'shader-example-3d.js', 'vert-attraction.glsl', 'frag-normals.glsl')
