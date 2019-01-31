@@ -124,8 +124,8 @@ void main() {
     // Set the Gray-Scott reaction-diffusion simulation parameters
     float D_A = 0.8;
     float D_B = 0.4;
-    float feed = 0.055;
-    float kill = 0.062;
+    float feed = 0.06 * v_uv.x;
+    float kill = 0.035 + 0.03 * v_uv.x + (0.022 - 0.015 * v_uv.x) * v_uv.y;
     float dt = 1.0;
 
     // Calculate the chemical concentrations from the pixel color
