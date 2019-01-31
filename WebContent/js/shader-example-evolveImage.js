@@ -25,6 +25,9 @@ function runSketch() {
 		// Initialize the render targets
 		var size = renderer.getDrawingBufferSize();
 		var options = {
+			minFilter : THREE.NearestFilter,
+			magFilter : THREE.NearestFilter,
+			format : THREE.RGBAFormat,
 			type : /(iPad|iPhone|iPod)/g.test(navigator.userAgent) ? THREE.HalfFloatType : THREE.FloatType
 		};
 		renderTarget1 = new THREE.WebGLRenderTarget(size.width, size.height, options);
