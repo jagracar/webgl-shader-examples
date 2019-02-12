@@ -90,7 +90,7 @@ module.exports = function(grunt) {
 		clean : {
 			build : {
 				src : [ 'WebContent/*.html', 'WebContent/shaders/*.glsl' ]
-				//src : [ 'WebContent/*.html', 'WebContent/shaders/frag-reaction.glsl' ]
+				//src : [ 'WebContent/*.html', 'WebContent/shaders/frag-growth.glsl' ]
 			}
 		},
 
@@ -111,7 +111,7 @@ module.exports = function(grunt) {
 			build_shaders : {
 				cwd : 'shaders',
 				cmd : 'for filename in *.glsl; do glslify "${filename}" -o ../WebContent/shaders/"${filename}"; done'
-				//cmd : 'glslify frag-reaction.glsl -o ../WebContent/shaders/frag-reaction.glsl'
+				//cmd : 'glslify frag-growth.glsl -o ../WebContent/shaders/frag-growth.glsl'
 			}
 		},
 
@@ -135,6 +135,7 @@ module.exports = function(grunt) {
 			debug : replaceParametersForSimExample('debug', 'template-example-sim.html', 'shader-example-debug.js', 'frag-debug-pos.glsl', 'frag-debug-vel.glsl', 'vert-debug.glsl', 'frag-debug.glsl'),
 			repulsion : replaceParametersForSimExample('repulsion', 'template-example-sim.html', 'shader-example-repulsion.js', 'frag-repulsion-pos.glsl', 'frag-repulsion-vel.glsl', 'vert-repulsion.glsl', 'frag-repulsion.glsl'),
 			stippling : replaceParametersForSimExample('stippling', 'template-example-sim.html', 'shader-example-stippling.js', 'frag-stippling-pos.glsl', 'frag-stippling-vel.glsl', 'vert-stippling.glsl', 'frag-stippling.glsl'),
+			dla : replaceParametersForSimExample('dla', 'template-example-sim.html', 'shader-example-dla.js', 'frag-dla-pos.glsl', 'frag-dla-vel.glsl', 'vert-dla.glsl', 'frag-dla.glsl'),
 			badtv : replaceParametersForExample('badtv', 'template-example-post.html', 'shader-example-postprocessing.js', 'vert-filters.glsl', 'frag-badtv.glsl'),
 			pixelated : replaceParametersForExample('pixelated', 'template-example-post.html', 'shader-example-postprocessing.js', 'vert-filters.glsl', 'frag-pixelated.glsl'),
 			cuts : replaceParametersForExample('cuts', 'template-example-post.html', 'shader-example-postprocessing.js', 'vert-filters.glsl', 'frag-cuts.glsl'),
