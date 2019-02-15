@@ -68,7 +68,8 @@ function runSketch() {
 			},
 			u_mouse : {
 				type : "v2",
-				value : new THREE.Vector2()
+				value : new THREE.Vector2(0.7 * window.innerWidth, window.innerHeight)
+						.multiplyScalar(window.devicePixelRatio)
 			}
 		};
 

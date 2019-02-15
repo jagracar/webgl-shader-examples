@@ -90,7 +90,7 @@ module.exports = function(grunt) {
 		clean : {
 			build : {
 				src : [ 'WebContent/*.html', 'WebContent/shaders/*.glsl' ]
-				//src : [ 'WebContent/*.html', 'WebContent/shaders/frag-growth.glsl' ]
+				//src : [ 'WebContent/*.html', 'WebContent/shaders/frag-mountains.glsl' ]
 			}
 		},
 
@@ -111,7 +111,7 @@ module.exports = function(grunt) {
 			build_shaders : {
 				cwd : 'shaders',
 				cmd : 'for filename in *.glsl; do glslify "${filename}" -o ../WebContent/shaders/"${filename}"; done'
-				//cmd : 'glslify frag-growth.glsl -o ../WebContent/shaders/frag-growth.glsl'
+				//cmd : 'glslify frag-mountains.glsl -o ../WebContent/shaders/frag-mountains.glsl'
 			}
 		},
 
@@ -146,7 +146,8 @@ module.exports = function(grunt) {
 			reaction : replaceParametersForExample('reaction', 'template-example-2d.html', 'shader-example-evolve.js', 'vert-filters.glsl', 'frag-reaction.glsl'),
 			sort : replaceParametersForExample('sort', 'template-example-2d.html', 'shader-example-evolveImage.js', 'vert-filters.glsl', 'frag-sort.glsl'),
 			deform : replaceParametersForExample('deform', 'template-example-3d.html', 'shader-example-3d.js', 'vert-deform.glsl', 'frag-normals.glsl'),
-			attraction : replaceParametersForExample('attraction', 'template-example-3d.html', 'shader-example-3d.js', 'vert-attraction.glsl', 'frag-normals.glsl')
+			attraction : replaceParametersForExample('attraction', 'template-example-3d.html', 'shader-example-3d.js', 'vert-attraction.glsl', 'frag-normals.glsl'),
+			mountains : replaceParametersForExample('mountains', 'template-example-3d.html', 'shader-example-plane.js', 'vert-mountains.glsl', 'frag-mountains.glsl')
 		},
 
 		// grunt-jshint

@@ -13,9 +13,12 @@ function runSketch() {
 	 */
 	function init() {
 		// Initialize the WebGL renderer
-		renderer = new THREE.WebGLRenderer();
+		renderer = new THREE.WebGLRenderer({
+			antialias : true
+		});
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(window.innerWidth, window.innerHeight);
+		renderer.setClearColor(new THREE.Color(0.7, 0.8, 0.9));
 
 		// Add the renderer to the sketch container
 		var container = document.getElementById("sketch-container");
@@ -25,7 +28,12 @@ function runSketch() {
 		scene = new THREE.Scene();
 
 		// Initialize the camera
-		camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+		camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
+		camera.position.z = 30;
+
+		// Initialize the camera controls
+		var controls = new THREE.OrbitControls(camera, renderer.domElement);
+		controls.enablePan = false;
 
 		// Initialize the clock
 		clock = new THREE.Clock(true);
@@ -36,7 +44,10 @@ function runSketch() {
 		document.getElementById("sketch-stats").appendChild(stats.dom);
 
 		// Create the plane geometry
-		var geometry = new THREE.PlaneBufferGeometry(2, 2);
+		var planeSize = 320;
+		var planeSegments = 32;
+		var geometry = new THREE.PlaneGeometry(planeSize, planeSize, planeSegments, planeSegments);
+		geometry.rotateX(Math.PI / 2);
 
 		// Define the shader uniforms
 		uniforms = {
@@ -57,6 +68,18 @@ function runSketch() {
 				type : "v2",
 				value : new THREE.Vector2(0.7 * window.innerWidth, window.innerHeight)
 						.multiplyScalar(window.devicePixelRatio)
+			},
+			u_tileSize : {
+				type : "f",
+				value : planeSize / planeSegments
+			},
+			u_speed : {
+				type : "f",
+				value : 30.0
+			},
+			u_maxHeight : {
+				type : "f",
+				value : 20.0
 			}
 		};
 
@@ -64,11 +87,17 @@ function runSketch() {
 		var material = new THREE.ShaderMaterial({
 			uniforms : uniforms,
 			vertexShader : document.getElementById("vertexShader").textContent,
-			fragmentShader : document.getElementById("fragmentShader").textContent
+			fragmentShader : document.getElementById("fragmentShader").textContent,
+			side : THREE.DoubleSide,
+			transparent : true,
+			extensions : {
+				derivatives : true
+			}
 		});
 
 		// Create the mesh and add it to the scene
 		var mesh = new THREE.Mesh(geometry, material);
+		mesh.rotateX(Math.PI / 9);
 		scene.add(mesh);
 
 		// Add the event listeners
@@ -97,11 +126,15 @@ function runSketch() {
 	}
 
 	/*
-	 * Updates the renderer size and the uniforms when the window is resized
+	 * Updates the renderer size, the camera aspect ratio and the uniforms when the window is resized
 	 */
 	function onWindowResize(event) {
 		// Update the renderer
 		renderer.setSize(window.innerWidth, window.innerHeight);
+
+		// Update the camera
+		camera.aspect = window.innerWidth / window.innerHeight;
+		camera.updateProjectionMatrix();
 
 		// Update the resolution uniform
 		uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight).multiplyScalar(window.devicePixelRatio);
@@ -120,8 +153,6 @@ function runSketch() {
 	 * Updates the uniforms when the touch moves
 	 */
 	function onTouchMove(event) {
-		event.preventDefault();
-
 		// Update the mouse uniform
 		uniforms.u_mouse.value.set(event.touches[0].pageX, window.innerHeight - event.touches[0].pageY).multiplyScalar(
 				window.devicePixelRatio);

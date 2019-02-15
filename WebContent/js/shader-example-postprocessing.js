@@ -77,7 +77,8 @@ function runSketch() {
 			},
 			u_mouse : {
 				type : "v2",
-				value : new THREE.Vector2()
+				value : new THREE.Vector2(0.5 * window.innerWidth, window.innerHeight)
+						.multiplyScalar(window.devicePixelRatio)
 			},
 			u_texture : {
 				type : "t",
