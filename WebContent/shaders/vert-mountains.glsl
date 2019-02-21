@@ -82,31 +82,40 @@ uniform float u_tileSize;
 uniform float u_speed;
 uniform float u_maxHeight;
 
-varying float v_height;
+// Varying containing the terrain elevation
+varying float v_elevation;
 
-vec3 getCurrentPosition(vec3 initialPosition) {
-    float horizontalShift = mod(u_speed * u_time, u_tileSize);
-    float verticalShift = u_maxHeight
-            * cnoise(0.03 * (initialPosition.xz - vec2(0.0, u_tileSize * floor(u_speed * u_time / u_tileSize))));
-    verticalShift = max(-0.6 * u_maxHeight, verticalShift);
+// Calculates the vertex displaced position
+vec3 getDisplacedPosition(vec3 position) {
+	// Calculate the total flying distance
+	float distance = u_speed * u_time;
 
-    return initialPosition + vec3(0.0, verticalShift, horizontalShift);
+	// Calculate the vertex horizontal shift
+	float h_shift = mod(distance, u_tileSize);
+
+	// Calculate the vertex vertical shift
+	float v_shift = u_maxHeight * cnoise(0.4 * floor(vec2(position.x, position.z - distance) / u_tileSize));
+
+	// Flatten the bottom to simulate the lakes
+	v_shift = max(-0.8 * u_maxHeight, v_shift);
+
+	return position + vec3(0.0, v_shift, h_shift);
 }
 
 /*
  * The main program
  */
 void main() {
-    // Calculate the new vertex position
-    vec3 newPosition = getCurrentPosition(position);
+	// Calculate the new vertex position
+	vec3 new_position = getDisplacedPosition(position);
 
-    // Calculate the modelview position
-    vec4 mv_position = modelViewMatrix * vec4(newPosition, 1.0);
+	// Calculate the modelview position
+	vec4 mv_position = modelViewMatrix * vec4(new_position, 1.0);
 
-    // Save the varyings
-    v_position = mv_position.xyz;
-    v_height = newPosition.y;
+	// Save the varyings
+	v_position = mv_position.xyz;
+	v_elevation = 0.5 * (u_maxHeight + new_position.y);
 
-    // Vertex shader output
-    gl_Position = projectionMatrix * mv_position;
+	// Vertex shader output
+	gl_Position = projectionMatrix * mv_position;
 }

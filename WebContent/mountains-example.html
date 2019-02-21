@@ -33,7 +33,7 @@
 
 			<ul class="nav-menu-list">
 				<li><a href="/index.html" class="nav-item">Back to list</a></li>
-				<li><a href="/js/shader-example-plane.js" class="nav-item">JavaScript file</a></li>
+				<li><a href="/js/shader-example-mountains.js" class="nav-item">JavaScript file</a></li>
 				<li><a href="/shaders/vert-mountains.glsl" class="nav-item">Vertex shader</a></li>
 				<li><a href="/shaders/frag-mountains.glsl" class="nav-item">Fragment shader</a></li>
 			</ul>
@@ -139,33 +139,42 @@ uniform float u_tileSize;
 uniform float u_speed;
 uniform float u_maxHeight;
 
-varying float v_height;
+// Varying containing the terrain elevation
+varying float v_elevation;
 
-vec3 getCurrentPosition(vec3 initialPosition) {
-    float horizontalShift = mod(u_speed * u_time, u_tileSize);
-    float verticalShift = u_maxHeight
-            * cnoise(0.03 * (initialPosition.xz - vec2(0.0, u_tileSize * floor(u_speed * u_time / u_tileSize))));
-    verticalShift = max(-0.6 * u_maxHeight, verticalShift);
+// Calculates the vertex displaced position
+vec3 getDisplacedPosition(vec3 position) {
+	// Calculate the total flying distance
+	float distance = u_speed * u_time;
 
-    return initialPosition + vec3(0.0, verticalShift, horizontalShift);
+	// Calculate the vertex horizontal shift
+	float h_shift = mod(distance, u_tileSize);
+
+	// Calculate the vertex vertical shift
+	float v_shift = u_maxHeight * cnoise(0.4 * floor(vec2(position.x, position.z - distance) / u_tileSize));
+
+	// Flatten the bottom to simulate the lakes
+	v_shift = max(-0.8 * u_maxHeight, v_shift);
+
+	return position + vec3(0.0, v_shift, h_shift);
 }
 
 /*
  * The main program
  */
 void main() {
-    // Calculate the new vertex position
-    vec3 newPosition = getCurrentPosition(position);
+	// Calculate the new vertex position
+	vec3 new_position = getDisplacedPosition(position);
 
-    // Calculate the modelview position
-    vec4 mv_position = modelViewMatrix * vec4(newPosition, 1.0);
+	// Calculate the modelview position
+	vec4 mv_position = modelViewMatrix * vec4(new_position, 1.0);
 
-    // Save the varyings
-    v_position = mv_position.xyz;
-    v_height = newPosition.y;
+	// Save the varyings
+	v_position = mv_position.xyz;
+	v_elevation = 0.5 * (u_maxHeight + new_position.y);
 
-    // Vertex shader output
-    gl_Position = projectionMatrix * mv_position;
+	// Vertex shader output
+	gl_Position = projectionMatrix * mv_position;
 }
 
 		</script>
@@ -213,41 +222,49 @@ float diffuseFactor(vec3 normal, vec3 light_direction) {
     return max(0.0, df);
 }
 
-// The maximum mountain height
+// The plane tile size, the maximum mountain height and the sky color
+uniform float u_tileSize;
 uniform float u_maxHeight;
+uniform vec3 u_skyColor;
 
-varying float v_height;
+// Varying containing the terrain elevation
+varying float v_elevation;
 
 /*
  * The main program
  */
 void main() {
-    // Calculate the new normal vector
-    vec3 new_normal = calculateNormal(v_position);
+	// Calculate the new normal vector
+	vec3 new_normal = calculateNormal(v_position);
 
-    // Use the mouse position to define the light direction
-    float min_resolution = min(u_resolution.x, u_resolution.y);
-    vec3 light_direction = -vec3((u_mouse - 0.5 * u_resolution) / min_resolution, 0.25);
+	// Use the mouse position to define the light direction
+	float min_resolution = min(u_resolution.x, u_resolution.y);
+	vec3 light_direction = -vec3((u_mouse - 0.5 * u_resolution) / min_resolution, 0.25);
 
-    // Set the surface color
-    vec3 surface_color = vec3(0.0, 1.0, 0.0);
+	// Set the default surface color
+	vec3 surface_color = vec3(0.3, 0.65, 0.0);
 
-    if (v_height > 0.7 * u_maxHeight) {
-        surface_color = vec3(1.0);
-    } else if (v_height < -0.5 * u_maxHeight) {
-        surface_color = vec3(0.0, 0.0, 1.0);
-    }
+	// Change the color for the snow peaks and the lakes
+	if (v_elevation > 0.85 * u_maxHeight) {
+		surface_color = vec3(1.0, 1.0, 1.0);
+	} else if (v_elevation < 0.2 * u_maxHeight) {
+		surface_color = vec3(0.3, 0.7, 0.9);
+	}
 
-    // Apply the light diffusion factor
-    surface_color *= diffuseFactor(new_normal, light_direction);
+	// Apply the light diffusion factor
+	surface_color *= diffuseFactor(new_normal, light_direction);
 
-    // Fragment shader output
-    gl_FragColor = vec4(surface_color, 1.0);
+	// Add a fog effect
+	float fog_factor = clamp(0.0, 1.0, -(1.0 - u_mouse.y / u_resolution.y) * v_position.z / (15.0 * u_tileSize));
+	surface_color = mix(surface_color, u_skyColor, fog_factor);
+
+	// Fragment shader output
+	gl_FragColor = vec4(surface_color, 1.0);
 }
 
 		</script>
 
-		<script type="text/javascript" src="/js/shader-example-plane.js"></script>
+		<script type="text/javascript" src="/js/shader-example-mountains.js"></script>
 	</article>
 	</main>
 </body>

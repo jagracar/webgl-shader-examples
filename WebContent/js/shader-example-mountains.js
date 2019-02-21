@@ -3,7 +3,7 @@ window.onload = function() {
 };
 
 function runSketch() {
-	var renderer, scene, camera, clock, stats, uniforms;
+	var renderer, scene, camera, clock, stats, skyColor, uniforms;
 
 	init();
 	animate();
@@ -18,7 +18,6 @@ function runSketch() {
 		});
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(window.innerWidth, window.innerHeight);
-		renderer.setClearColor(new THREE.Color(0.7, 0.8, 0.9));
 
 		// Add the renderer to the sketch container
 		var container = document.getElementById("sketch-container");
@@ -43,11 +42,15 @@ function runSketch() {
 		stats.dom.style.cssText = "";
 		document.getElementById("sketch-stats").appendChild(stats.dom);
 
+		// Set the sky color
+		skyColor = new THREE.Color(0.1, 0.8, 0.9);
+		renderer.setClearColor(skyColor);
+
 		// Create the plane geometry
 		var planeSize = 320;
 		var planeSegments = 32;
 		var geometry = new THREE.PlaneGeometry(planeSize, planeSize, planeSegments, planeSegments);
-		geometry.rotateX(Math.PI / 2);
+		geometry.rotateX(-Math.PI / 2);
 
 		// Define the shader uniforms
 		uniforms = {
@@ -80,6 +83,10 @@ function runSketch() {
 			u_maxHeight : {
 				type : "f",
 				value : 20.0
+			},
+			u_skyColor : {
+				type : "v3",
+				value : skyColor
 			}
 		};
 
@@ -88,7 +95,7 @@ function runSketch() {
 			uniforms : uniforms,
 			vertexShader : document.getElementById("vertexShader").textContent,
 			fragmentShader : document.getElementById("fragmentShader").textContent,
-			side : THREE.DoubleSide,
+			side : THREE.FrontSide,
 			transparent : true,
 			extensions : {
 				derivatives : true
@@ -144,17 +151,29 @@ function runSketch() {
 	 * Updates the uniforms when the mouse moves
 	 */
 	function onMouseMove(event) {
-		// Update the mouse uniform
+		// Calculate the new sky color and update the renderer
+		var sunset = event.pageY / window.innerHeight;
+		var newSkyColor = new THREE.Color(skyColor.r + sunset, skyColor.g - 0.2 * sunset, skyColor.b - 0.2 * sunset);
+		renderer.setClearColor(newSkyColor);
+
+		// Update the uniforms
 		uniforms.u_mouse.value.set(event.pageX, window.innerHeight - event.pageY).multiplyScalar(
 				window.devicePixelRatio);
+		uniforms.u_skyColor.value = newSkyColor;
 	}
 
 	/*
 	 * Updates the uniforms when the touch moves
 	 */
 	function onTouchMove(event) {
-		// Update the mouse uniform
+		// Calculate the new sky color and update the renderer
+		var sunset = event.touches[0].pageY / window.innerHeight;
+		var newSkyColor = new THREE.Color(skyColor.r + sunset, skyColor.g - 0.2 * sunset, skyColor.b - 0.2 * sunset);
+		renderer.setClearColor(newSkyColor);
+
+		// Update the uniforms
 		uniforms.u_mouse.value.set(event.touches[0].pageX, window.innerHeight - event.touches[0].pageY).multiplyScalar(
 				window.devicePixelRatio);
+		uniforms.u_skyColor.value = newSkyColor;
 	}
 }
