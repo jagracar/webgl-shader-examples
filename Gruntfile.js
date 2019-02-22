@@ -147,7 +147,8 @@ module.exports = function(grunt) {
 			sort : replaceParametersForExample('sort', 'template-example-2d.html', 'shader-example-evolveImage.js', 'vert-filters.glsl', 'frag-sort.glsl'),
 			deform : replaceParametersForExample('deform', 'template-example-3d.html', 'shader-example-3d.js', 'vert-deform.glsl', 'frag-normals.glsl'),
 			attraction : replaceParametersForExample('attraction', 'template-example-3d.html', 'shader-example-3d.js', 'vert-attraction.glsl', 'frag-normals.glsl'),
-			mountains : replaceParametersForExample('mountains', 'template-example-3d.html', 'shader-example-mountains.js', 'vert-mountains.glsl', 'frag-mountains.glsl')
+			mountains : replaceParametersForExample('mountains', 'template-example-3d.html', 'shader-example-mountains.js', 'vert-mountains.glsl', 'frag-mountains.glsl'),
+			sphere : replaceParametersForExample('sphere', 'template-example-3d.html', 'shader-example-sphere.js', 'vert-sphere.glsl', 'frag-sphere.glsl')
 		},
 
 		// grunt-jshint
